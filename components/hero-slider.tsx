@@ -7,6 +7,7 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 
 import { heroSlides as fallbackSlides } from "@/lib/site";
 import { createClient } from "@/lib/supabase/client";
+import { withSupabaseFallback } from "@/lib/supabase/safe";
 import { cn } from "@/lib/utils";
 
 type Slide = {
@@ -27,27 +28,26 @@ export function HeroSlider() {
 
   useEffect(() => {
     const supabase = createClient();
-    void (async () => {
+    void withSupabaseFallback(async () => {
       const query = await supabase
         .from("hero_slides")
         .select("title, brand, subtitle, image_src, alt, fit, button_label, button_href, enabled, sort_order")
         .order("sort_order");
       const rows = (query.data ?? []).filter((row) => row.enabled !== false && row.image_src);
-      if (rows.length) {
-        setSlides(
-          rows.map((row) => ({
-            src: row.image_src,
-            alt: row.alt,
-            title: row.title,
-            brand: row.brand,
-            subtitle: row.subtitle ?? undefined,
-            fit: row.fit,
-            button_label: row.button_label ?? "Shop Now",
-            button_href: row.button_href ?? "/espresso-machines",
-          }))
-        );
-      }
-    })();
+      if (!rows.length) return;
+      setSlides(
+        rows.map((row) => ({
+          src: row.image_src,
+          alt: row.alt,
+          title: row.title,
+          brand: row.brand,
+          subtitle: row.subtitle ?? undefined,
+          fit: row.fit,
+          button_label: row.button_label ?? "Shop Now",
+          button_href: row.button_href ?? "/espresso-machines",
+        }))
+      );
+    });
   }, []);
 
   const goTo = useCallback(

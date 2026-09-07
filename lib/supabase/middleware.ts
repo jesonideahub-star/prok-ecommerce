@@ -2,10 +2,18 @@ import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
 
 import { getSupabaseEnvOrNull } from "@/lib/supabase/env";
+import { supabaseFetch } from "@/lib/supabase/fetch";
 
 export async function updateSession(request: NextRequest) {
   const requestHeaders = new Headers(request.headers);
   requestHeaders.set("x-pathname", request.nextUrl.pathname);
+
+  const path = request.nextUrl.pathname;
+  if (!path.startsWith("/admin")) {
+    return NextResponse.next({
+      request: { headers: requestHeaders },
+    });
+  }
 
   const env = getSupabaseEnvOrNull();
   if (!env) {
@@ -19,6 +27,7 @@ export async function updateSession(request: NextRequest) {
   });
 
   const supabase = createServerClient(env.url, env.key, {
+    global: { fetch: supabaseFetch },
     cookies: {
       getAll() {
         return request.cookies.getAll();
@@ -37,13 +46,15 @@ export async function updateSession(request: NextRequest) {
     },
   });
 
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  let user = null;
+  try {
+    const { data } = await supabase.auth.getUser();
+    user = data.user;
+  } catch {
+    // Keep admin routes available when Supabase is unreachable.
+  }
 
-  const path = request.nextUrl.pathname;
-  const isAdminApp = path.startsWith("/admin") && path !== "/admin/login";
-
+  const isAdminApp = path !== "/admin/login";
   if (isAdminApp && !user) {
     const url = request.nextUrl.clone();
     url.pathname = "/admin/login";

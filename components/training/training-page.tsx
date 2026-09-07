@@ -8,6 +8,7 @@ import { CatalogAd } from "@/components/ads/catalog-ad";
 import { isPublished, mapTrainingRow, type TrainingCard } from "@/lib/cms/public";
 import { trainingCourses } from "@/lib/site";
 import { createClient } from "@/lib/supabase/client";
+import { withSupabaseFallback } from "@/lib/supabase/safe";
 
 const fallbackCourses: TrainingCard[] = trainingCourses.map((course, index) => ({
   id: `fallback-training-${index}`,
@@ -23,11 +24,11 @@ export function TrainingPage({ query = "" }: { query?: string }) {
 
   useEffect(() => {
     const supabase = createClient();
-    void (async () => {
+    void withSupabaseFallback(async () => {
       const { data } = await supabase.from("training_courses").select("*").order("sort_order");
       const rows = ((data ?? []) as Record<string, unknown>[]).filter(isPublished);
       if (rows.length) setCourses(rows.map(mapTrainingRow));
-    })();
+    });
   }, []);
 
   const visible = useMemo(() => {

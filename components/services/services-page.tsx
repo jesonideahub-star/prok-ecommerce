@@ -3,6 +3,7 @@ import NextImage from "next/image";
 import Link from "next/link";
 import { ArrowRight, Heart, ShieldCheck, Truck } from "lucide-react";
 
+import { HomeReveal } from "@/components/home-reveal";
 import { diyCleaningProducts, machineServicesCopy, valueProps } from "@/lib/site";
 
 const highlightIcons = [ShieldCheck, Truck, Heart];
@@ -59,36 +60,51 @@ export function ServicesPage() {
       </section>
 
       <section className="mx-auto max-w-[1240px] px-5 py-14 md:px-8 md:py-16">
-        <h2 className="text-center font-serif text-[1.85rem] text-[#6b3e24] md:text-[2.1rem]">
-          Do It Yourself Cleaning
-        </h2>
+        <HomeReveal>
+          <h2 className="text-center font-serif text-[1.85rem] text-[#6b3e24] md:text-[2.1rem]">
+            Do It Yourself Cleaning
+          </h2>
+          <span className="mx-auto mt-4 block h-[2px] w-12 rounded-full bg-[#8b5a2b]/45" />
+        </HomeReveal>
         <div className="mt-8 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-5">
-          {diyCleaningProducts.map((item) => (
-            <Link
-              key={item.name}
-              href={item.href}
-              className="group flex flex-col rounded-xl border border-[#e4e0da] bg-white p-4 transition-colors hover:border-[#d2c4b2]"
-            >
-              <div className="relative mx-auto aspect-square w-full max-w-[180px]">
-                <NextImage
-                  src={item.src}
-                  alt={item.name}
-                  fill
-                  className="object-contain"
-                  sizes="180px"
-                />
-              </div>
-              <h3 className="mt-4 font-serif text-[17px] leading-snug text-[#4a4038] transition-colors group-hover:text-[#8b5a2b]">
-                {item.name}
-              </h3>
-              <p className="mt-1 text-[13px] text-zinc-400">{item.brand}</p>
-              <span className="mt-4 inline-flex items-center gap-2 text-[13px] text-zinc-500 transition-colors group-hover:text-[#8b5a2b]">
-                Learn more
-                <span className="flex size-6 items-center justify-center rounded-full bg-[#d9d5d1] text-white transition-colors group-hover:bg-[#8b5a2b]">
-                  <ArrowRight className="size-3.5" />
+          {diyCleaningProducts.map((item, index) => (
+            <HomeReveal key={item.name} delay={80 + index * 70} className="h-full">
+              <Link
+                href={item.href}
+                className="group flex h-full flex-col rounded-xl border border-[#e4e0da] bg-white p-4 shadow-[0_8px_18px_rgba(80,50,20,0.04)] transition-all duration-500 ease-out hover:-translate-y-2 hover:border-[#c4a882] hover:shadow-[0_22px_40px_rgba(80,50,20,0.14)]"
+              >
+                <div className="relative mx-auto aspect-square w-full max-w-[180px] rounded-lg bg-[#faf6ef]">
+                  <div
+                    className="absolute inset-0 animate-product-float group-hover:[animation-play-state:paused]"
+                    style={{ animationDelay: `${index * 280}ms` }}
+                  >
+                    <NextImage
+                      src={item.src}
+                      alt={item.name}
+                      fill
+                      unoptimized
+                      className="object-contain p-2 drop-shadow-[0_14px_18px_rgba(80,50,20,0.12)] transition-transform duration-700 ease-out group-hover:scale-110"
+                      sizes="180px"
+                    />
+                  </div>
+                  <span className="pointer-events-none absolute inset-0 overflow-hidden rounded-lg">
+                    <span className="absolute inset-y-0 w-1/2 -translate-x-full bg-gradient-to-r from-transparent via-white/50 to-transparent group-hover:animate-cta-shine" />
+                  </span>
+                </div>
+                <h3 className="mt-4 font-serif text-[17px] leading-snug text-[#4a4038] transition-colors duration-300 group-hover:text-[#8b5a2b]">
+                  {item.name}
+                </h3>
+                <p className="mt-1 text-[13px] text-zinc-400 transition-colors duration-300 group-hover:text-[#a07a58]">
+                  {item.brand}
+                </p>
+                <span className="mt-auto inline-flex items-center gap-2 pt-4 text-[13px] text-zinc-500 transition-colors duration-300 group-hover:text-[#8b5a2b]">
+                  Learn more
+                  <span className="flex size-6 items-center justify-center rounded-full bg-[#d9d5d1] text-white transition-all duration-300 group-hover:translate-x-0.5 group-hover:bg-[#8b5a2b] group-hover:shadow-[0_6px_12px_rgba(139,90,43,0.35)]">
+                    <ArrowRight className="size-3.5 transition-transform duration-300 group-hover:translate-x-px" />
+                  </span>
                 </span>
-              </span>
-            </Link>
+              </Link>
+            </HomeReveal>
           ))}
         </div>
       </section>

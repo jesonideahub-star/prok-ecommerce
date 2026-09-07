@@ -8,6 +8,7 @@ import { ArrowUpRight } from "lucide-react";
 import { isPublished, mapNewsRow, uniqueByTitle, type NewsCard } from "@/lib/cms/public";
 import { newsItems } from "@/lib/site";
 import { createClient } from "@/lib/supabase/client";
+import { withSupabaseFallback } from "@/lib/supabase/safe";
 
 const fallbackNews: NewsCard[] = newsItems.map((item, index) => ({
   id: `fallback-news-${index}`,
@@ -26,11 +27,11 @@ export function LatestNews() {
 
   useEffect(() => {
     const supabase = createClient();
-    void (async () => {
+    void withSupabaseFallback(async () => {
       const { data } = await supabase.from("news").select("*").order("sort_order");
       const rows = ((data ?? []) as Record<string, unknown>[]).filter(isPublished);
       if (rows.length) setItems(uniqueByTitle(rows.map(mapNewsRow)));
-    })();
+    });
   }, []);
 
   const featured = items.find((item) => item.featured) ?? items[0];

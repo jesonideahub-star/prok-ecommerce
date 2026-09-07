@@ -9,6 +9,7 @@ import { CollectionBanner } from "@/components/collection-banner";
 import { isPublished, mapEventRow, mapNewsRow, uniqueByTitle, type EventCard, type NewsCard } from "@/lib/cms/public";
 import { newsItems } from "@/lib/site";
 import { createClient } from "@/lib/supabase/client";
+import { withSupabaseFallback } from "@/lib/supabase/safe";
 
 const fallbackNews: NewsCard[] = newsItems.map((item, index) => ({
   id: `fallback-news-${index}`,
@@ -28,14 +29,14 @@ export function NewsEventsPage() {
 
   useEffect(() => {
     const supabase = createClient();
-    void (async () => {
+    void withSupabaseFallback(async () => {
       const newsQuery = await supabase.from("news").select("*").order("sort_order");
       const newsRows = ((newsQuery.data ?? []) as Record<string, unknown>[]).filter(isPublished);
       if (newsRows.length) setNews(uniqueByTitle(newsRows.map(mapNewsRow)));
       const eventQuery = await supabase.from("events").select("*").order("sort_order");
       const eventRows = ((eventQuery.data ?? []) as Record<string, unknown>[]).filter(isPublished);
       setEvents(uniqueByTitle(eventRows.map(mapEventRow)));
-    })();
+    });
   }, []);
 
   return (

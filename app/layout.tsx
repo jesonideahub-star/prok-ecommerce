@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { headers } from "next/headers";
 import { Geist, Geist_Mono, Playfair_Display } from "next/font/google";
+import Script from "next/script";
 
 import { getAdsenseClient } from "@/lib/ads";
 import { consentBootScript } from "@/lib/consent";
@@ -44,17 +45,20 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
       lang="en"
       className={`${geistSans.variable} ${geistMono.variable} ${playfair.variable} h-full scroll-smooth antialiased`}
     >
-      <head>
-        <script dangerouslySetInnerHTML={{ __html: consentBootScript }} />
+      <body className="flex min-h-full flex-col bg-[#f6f1e8]">
+        {children}
+        <Script id="consent-boot" strategy="beforeInteractive">
+          {consentBootScript}
+        </Script>
         {showAds ? (
-          <script
-            async
+          <Script
+            id="adsense"
             src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${adsenseClient}`}
             crossOrigin="anonymous"
+            strategy="afterInteractive"
           />
         ) : null}
-      </head>
-      <body className="flex min-h-full flex-col bg-[#f6f1e8]">{children}</body>
+      </body>
     </html>
   );
 }
