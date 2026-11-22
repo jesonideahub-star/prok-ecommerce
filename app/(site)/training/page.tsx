@@ -5,15 +5,9 @@ import { TrainingPage } from "@/components/training/training-page";
 export const metadata: Metadata = {
   title: "Barista Training | Prokrate International",
   description:
-    "Marcafé Academy barista courses to advance your coffee expertise.",
+    "Hands-on barista courses from the first shot to service — Barista 101, Barista 102, and café team training.",
 };
 
-function firstParam(value: string | string[] | undefined) {
-  return Array.isArray(value) ? value[0] : value;
-}
-
-export default async function Page({ searchParams }: PageProps<"/training">) {
-  const params = await searchParams;
-
-  return <TrainingPage query={firstParam(params.q) ?? ""} />;
+export default function Page() {
+  return <TrainingPage />;
 }
