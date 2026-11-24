@@ -440,12 +440,12 @@ export function RoseHome() {
             <div className="relative mb-5 text-center">
               <div className="flex items-center justify-center gap-4">
                 <span className="hidden h-px w-24 bg-[#FCE4E7] sm:block" />
-                <h2 className="font-serif text-3xl font-bold tracking-wide text-[#2b2118] sm:text-4xl">
-                  TOP <span className="text-[#D7192D]">SELLERS</span>
+                <h2 className="font-serif text-3xl font-bold tracking-wide text-[#D7192D] sm:text-4xl">
+                  TOP SELLERS
                 </h2>
                 <span className="hidden h-px w-24 bg-[#FCE4E7] sm:block" />
               </div>
-              <p className="mt-1 text-sm text-[#6f6259] sm:text-base">
+              <p className="mt-1 text-sm text-[#D7192D] sm:text-base">
                 Our most loved espresso machines and grinders, trusted by coffee professionals worldwide.
               </p>
             </div>
