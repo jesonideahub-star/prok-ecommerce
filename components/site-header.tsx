@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import Image from "@/components/media-image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
@@ -17,6 +16,8 @@ import {
 import { BrandMark } from "@/components/brand-mark";
 import { CoffeeMenu } from "@/components/coffee-menu";
 import { EspressoMachineMenu } from "@/components/espresso-machine-menu";
+import { FlavourMenu } from "@/components/flavour-menu";
+import { GrinderMenu } from "@/components/grinder-menu";
 import { SiteLogo } from "@/components/site-logo";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -167,17 +168,10 @@ function SearchForm({
   );
 }
 
-function catalogUseFromHref(href: string) {
-  const query = href.split("?")[1];
-  if (!query) return null;
-  return new URLSearchParams(query).get("use");
-}
-
 export function SiteHeader() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
   const [mega, setMega] = useState<string | null>(null);
-  const [catalogUse, setCatalogUse] = useState("cafe");
   const pathname = usePathname();
 
   const openItem = navItems.find((item) => item.label === mega);
@@ -191,9 +185,6 @@ export function SiteHeader() {
   function openNavItem(item: NavItem) {
     setMega(hasDropdown(item) ? item.label : null);
     setSearchOpen(false);
-    if (item.label === "Espresso Machines") {
-      setCatalogUse("cafe");
-    }
   }
 
   return (
@@ -294,84 +285,15 @@ export function SiteHeader() {
         </div>
       ) : null}
 
-      {openItem &&
-      isCatalogMega(openItem) &&
-      openItem.label !== "Espresso Machines" &&
-      openItem.label !== "Coffee" ? (
-        <div className="absolute inset-x-0 top-full border-t border-[#FCE4E7] bg-[#FFF3F4] shadow-[0_18px_40px_rgba(215,25,45,0.12)]">
-          <div className="mx-auto max-w-[1440px] px-8 py-8 lg:px-10 lg:py-10">
-            <div className="flex flex-wrap gap-16 lg:gap-28">
-              <ul className="space-y-1">
-                {openItem.children.map((child) => {
-                  const childUse = catalogUseFromHref(child.href);
-                  const active = Boolean(childUse && childUse === catalogUse);
+      {openItem && isCatalogMega(openItem) && openItem.label === "Grinders" ? (
+        <div className="absolute inset-x-0 top-full border-t border-[#FCE4E7] shadow-[0_18px_40px_rgba(215,25,45,0.12)]">
+          <GrinderMenu onNavigate={close} />
+        </div>
+      ) : null}
 
-                  return (
-                    <li key={child.label}>
-                      <Link
-                        href={child.href}
-                        className={cn(
-                          "block rounded-md px-1 py-1.5 text-[15px] transition-colors hover:text-[#D7192D]",
-                          active ? "font-medium text-[#D7192D]" : "text-zinc-700"
-                        )}
-                        onMouseEnter={() => {
-                          if (childUse) setCatalogUse(childUse);
-                        }}
-                        onClick={close}
-                      >
-                        {child.label}
-                      </Link>
-                    </li>
-                  );
-                })}
-              </ul>
-              {openItem.extras.length > 0 ? (
-                <ul className="space-y-1">
-                  {openItem.extras.map((child) => (
-                    <li key={child.label}>
-                      <Link
-                        href={child.href}
-                        className="block rounded-md px-1 py-1.5 text-[15px] text-zinc-700 transition-colors hover:text-[#D7192D]"
-                        onClick={close}
-                      >
-                        {child.label}
-                      </Link>
-                    </li>
-                  ))}
-                </ul>
-              ) : null}
-              {!("brands" in openItem) && openItem.featured.length > 0 ? (
-                <div className="ml-auto flex gap-6">
-                  {openItem.featured.map((brand) => (
-                    <div key={brand.cta} className="flex w-36 flex-col items-center">
-                      <div className="flex h-[100px] w-36 items-center justify-center rounded-xl bg-white ring-1 ring-[#FCE4E7]">
-                        {brand.src ? (
-                          <div className="relative h-20 w-32">
-                            <Image
-                              src={brand.src}
-                              alt={brand.alt}
-                              fill
-                              className="object-contain p-2"
-                              sizes="144px"
-                            />
-                          </div>
-                        ) : brand.name ? (
-                          <BrandMark name={brand.name} size="lg" />
-                        ) : null}
-                      </div>
-                      <Link
-                        href={brand.href}
-                        className="mt-3 text-center text-sm text-[#D7192D] hover:underline"
-                        onClick={close}
-                      >
-                        {brand.cta}
-                      </Link>
-                    </div>
-                  ))}
-                </div>
-              ) : null}
-            </div>
-          </div>
+      {openItem && isCatalogMega(openItem) && openItem.label === "Flavours" ? (
+        <div className="absolute inset-x-0 top-full border-t border-[#FCE4E7] shadow-[0_18px_40px_rgba(215,25,45,0.12)]">
+          <FlavourMenu onNavigate={close} />
         </div>
       ) : null}
 

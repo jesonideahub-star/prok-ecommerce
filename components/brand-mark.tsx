@@ -43,47 +43,13 @@ function CatcherMark({ large }: { large?: boolean }) {
 
 function CasadioMark({ large }: { large?: boolean }) {
   return (
-    <span className="flex flex-col items-center text-center leading-none">
-      <svg
-        viewBox="0 0 64 64"
-        className={cn(large ? "size-14" : "size-10")}
-        aria-hidden="true"
-      >
-        <circle cx="32" cy="32" r="29" fill="none" stroke="#111" strokeWidth="2.2" />
-        <circle cx="32" cy="32" r="22" fill="none" stroke="#111" strokeWidth="1.2" />
-        <circle cx="32" cy="29" r="9" fill="#111" />
-        <path
-          d="M20 36c3.5 11 20.5 11 24 0"
-          fill="none"
-          stroke="#111"
-          strokeWidth="2.2"
-        />
-        <path
-          d="M24 22c2-4 6-6 8-6s6 2 8 6"
-          fill="none"
-          stroke="#111"
-          strokeWidth="1.6"
-        />
-        <circle cx="28.5" cy="27.5" r="1.5" fill="#fff" />
-        <circle cx="35.5" cy="27.5" r="1.5" fill="#fff" />
-      </svg>
-      <span
-        className={cn(
-          "mt-1.5 font-bold tracking-[0.18em] text-zinc-900",
-          large ? "text-[15px]" : "text-[12px]"
-        )}
-      >
-        CASADIO
-      </span>
-      <span
-        className={cn(
-          "mt-0.5 tracking-[0.12em] text-zinc-600",
-          large ? "text-[9px]" : "text-[7px]"
-        )}
-      >
-        BOLOGNA - 1950
-      </span>
-    </span>
+    <Image
+      src="/images/brand-casadio-official.png"
+      alt="Casadio"
+      width={1405}
+      height={688}
+      className={cn("w-auto object-contain", large ? "h-14 max-w-[150px]" : "h-10 max-w-[120px]")}
+    />
   );
 }
 
