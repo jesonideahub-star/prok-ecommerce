@@ -36,9 +36,15 @@ type MachineProduct = {
 };
 
 const imageExtensions = /\.(avif|gif|jpe?g|png|webp)$/i;
-const nonMachineKeywords = /\b(grinder|grinding|mill|tamper|accessor(?:y|ies)|clean(?:er|ing)?|brush|knockbox)\b/i;
 const espressoMachineBucket = "Espresso_Machines";
 const cafeBucket = "Cafe";
+const restaurantBucket = "Restaurant";
+const useEspressoMachineBrands = new Set([
+  "Casadio",
+  "Didiesse",
+  "La Nuova Era",
+  "Slayer",
+]);
 
 function normalizeFilename(filename: string) {
   return filename
@@ -82,6 +88,7 @@ function groupCountFromPath(path: string) {
 function inferMachineBrand(path: string) {
   const normalizedPath = path.toLowerCase();
   if (/\bcasadio\b/.test(normalizedPath)) return "Casadio";
+  if (/\bdidiesse\b/.test(normalizedPath)) return "Didiesse";
   if (/\bla\s+n(?:uo|ou)va(?:\s+era)?\b/.test(normalizedPath)) return "La Nuova Era";
   if (/\bslayer\b|\bsteam\s*(?:lp|ep|single)\b|\bespresso\s*v3\b/.test(normalizedPath)) {
     return "Slayer";
@@ -194,9 +201,7 @@ async function loadMachineProducts(): Promise<MachineProduct[]> {
         continue;
       }
 
-      if (!imageExtensions.test(entry.name) || nonMachineKeywords.test(entry.name)) {
-        continue;
-      }
+      if (!imageExtensions.test(entry.name)) continue;
 
       const knownDetails = knownMachineDetails.get(normalizeFilename(entry.name));
       const nameGroup = `${entryPath} ${entry.name}`.match(
@@ -262,8 +267,8 @@ async function loadMachineProducts(): Promise<MachineProduct[]> {
   );
 }
 
-async function loadCafeProducts(): Promise<MachineProduct[]> {
-  const bucket = createClient().storage.from(cafeBucket);
+async function loadUseProducts(bucketName: string): Promise<MachineProduct[]> {
+  const bucket = createClient().storage.from(bucketName);
 
   async function listDirectory(path: string) {
     const entries = [];
@@ -304,6 +309,7 @@ async function loadCafeProducts(): Promise<MachineProduct[]> {
       const brand =
         inferMachineBrand(entryPath) ??
         (parentDirectory ? brandDisplayName(parentDirectory) : "Other");
+      if (!useEspressoMachineBrands.has(brand)) continue;
 
       products.push({
         name: productDisplayName(entry.name),
@@ -352,14 +358,16 @@ export function EspressoMachinesPage({
   const [sort, setSort] = useState<SortKey>("default");
   const [view, setView] = useState<ViewMode>("grid");
   const [machineProducts, setMachineProducts] = useState<MachineProduct[]>([]);
-  const [cafeProducts, setCafeProducts] = useState<MachineProduct[]>([]);
+  const [useProducts, setUseProducts] = useState<MachineProduct[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [loadError, setLoadError] = useState<string | null>(null);
-  const [isLoadingCafe, setIsLoadingCafe] = useState(false);
-  const [cafeLoadError, setCafeLoadError] = useState<string | null>(null);
+  const [isLoadingUseProducts, setIsLoadingUseProducts] = useState(false);
+  const [useProductsLoadError, setUseProductsLoadError] = useState<string | null>(null);
   const router = useRouter();
   const groupCount = group === "1" || group === "2" ? Number(group) : undefined;
-  const productsForFilters = use === "cafe" ? cafeProducts : machineProducts;
+  const useBucket =
+    use === "cafe" ? cafeBucket : use === "restaurant" ? restaurantBucket : undefined;
+  const productsForFilters = useBucket ? useProducts : machineProducts;
   const brandFilters = useMemo(
     () =>
       [...new Set(productsForFilters.map((item) => item.brand))]
@@ -398,38 +406,41 @@ export function EspressoMachinesPage({
   }, []);
 
   useEffect(() => {
-    if (use !== "cafe") return;
+    const bucketName = useBucket ?? "";
+    if (!bucketName) return;
 
     let active = true;
+    const selectedUseLabel = useLabel ?? brandDisplayName(bucketName);
 
-    async function loadCafe() {
+    async function loadForUse() {
       try {
-        setIsLoadingCafe(true);
-        setCafeLoadError(null);
-        const products = await loadCafeProducts();
-        if (active) setCafeProducts(products);
+        setIsLoadingUseProducts(true);
+        setUseProductsLoadError(null);
+        setUseProducts([]);
+        const products = await loadUseProducts(bucketName);
+        if (active) setUseProducts(products);
       } catch (error) {
-        console.error(`Unable to load cafe machines from the ${cafeBucket} bucket.`, error);
+        console.error(`Unable to load ${selectedUseLabel.toLowerCase()} machines from the ${bucketName} bucket.`, error);
         if (active) {
-          setCafeLoadError(
-            "Cafe machines could not be loaded from the Cafe product library. Please try again later."
+          setUseProductsLoadError(
+            `${selectedUseLabel} machines could not be loaded from the ${bucketName} product library. Please try again later.`
           );
         }
       } finally {
-        if (active) setIsLoadingCafe(false);
+        if (active) setIsLoadingUseProducts(false);
       }
     }
 
-    void loadCafe();
+    void loadForUse();
     return () => {
       active = false;
     };
-  }, [use]);
+  }, [useBucket, useLabel]);
 
   const items = useMemo(() => {
-    const products = use === "cafe" ? cafeProducts : machineProducts;
+    const products = useBucket ? useProducts : machineProducts;
     const next = products.filter((item) => {
-      if (use !== "cafe" && use && item.uses && !item.uses.includes(use)) return false;
+      if (!useBucket && use && item.uses && !item.uses.includes(use)) return false;
       if (groupCount && item.groups !== groupCount) return false;
       if (activeBrand && brandSlug(item.brand) !== activeBrand) return false;
       return true;
@@ -438,10 +449,10 @@ export function EspressoMachinesPage({
     if (sort === "az") next.sort((a, b) => a.name.localeCompare(b.name));
     if (sort === "za") next.sort((a, b) => b.name.localeCompare(a.name));
     return next;
-  }, [activeBrand, cafeProducts, groupCount, machineProducts, sort, use]);
+  }, [activeBrand, groupCount, machineProducts, sort, use, useBucket, useProducts]);
 
-  const currentIsLoading = use === "cafe" ? isLoadingCafe : isLoading;
-  const currentLoadError = use === "cafe" ? cafeLoadError : loadError;
+  const currentIsLoading = useBucket ? isLoadingUseProducts : isLoading;
+  const currentLoadError = useBucket ? useProductsLoadError : loadError;
 
   function updateFilters(next: { use?: string; group?: string; brand?: string }) {
     router.push(catalogHref(next));
@@ -650,7 +661,7 @@ export function EspressoMachinesPage({
 
             {currentIsLoading ? (
               <p role="status" className="rounded-xl border border-[#FCE4E7] bg-white p-5 text-sm text-[#645b5b]">
-                {use === "cafe" ? "Loading cafe machines…" : "Loading espresso machines…"}
+                {useBucket ? `Loading ${useLabel?.toLowerCase()} machines…` : "Loading espresso machines…"}
               </p>
             ) : currentLoadError ? (
               <p role="alert" className="rounded-xl border border-[#f1b8c0] bg-white p-5 text-sm text-[#8f1927]">
@@ -715,10 +726,10 @@ export function EspressoMachinesPage({
               </div>
             ) : (
               <p className="rounded-xl border border-[#FCE4E7] bg-white p-5 text-sm text-[#645b5b]">
-                {(use === "cafe" ? cafeProducts : machineProducts).length
+                {(useBucket ? useProducts : machineProducts).length
                   ? "No espresso machines match these filters."
-                  : use === "cafe"
-                    ? "No image files were found in the Cafe product library."
+                  : useBucket
+                    ? `No espresso machine images were found in the ${useBucket} product library.`
                     : "No espresso machines were found in the product library."}
               </p>
             )}
