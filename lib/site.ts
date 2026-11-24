@@ -102,7 +102,7 @@ export const navItems = [
   { label: "Barista Training", href: "/training" },
   { label: "Services", href: "/services" },
   { label: "News & Events", href: "/news-events" },
-  { label: "Contact Us", href: "/#contact" },
+  { label: "Contact Us", href: "/contact" },
 ] as const;
 
 export const headerNavOrder = [

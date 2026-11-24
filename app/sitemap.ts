@@ -12,6 +12,7 @@ const pages = [
   "/services",
   "/training",
   "/news-events",
+  "/contact",
   "/privacy-policy",
   "/cookie-policy",
   "/terms-of-service",

@@ -26,7 +26,7 @@ export function PartnerCta() {
             Experience the difference of working with the leading brands in the coffee industry.
           </p>
           <Link
-            href="/#contact"
+            href="/contact"
             className="mt-3 inline-flex items-center gap-2 rounded-full bg-[#d0122d] px-6 py-2 text-xs font-semibold text-white transition hover:bg-[#a91020]"
           >
             Contact Us <ArrowRight className="size-3.5" />

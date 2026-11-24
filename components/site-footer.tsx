@@ -10,7 +10,7 @@ type SocialName = "Facebook" | "Instagram" | "YouTube" | "TikTok";
 const legalLinks = [
   { label: "Privacy Policy", href: "/privacy-policy" },
   { label: "Terms & Conditions", href: "/terms-of-service" },
-  { label: "Contact Us", href: "#contact" },
+  { label: "Contact Us", href: "/contact" },
 ] as const;
 
 const socials = [
