@@ -308,7 +308,7 @@ export function RoseHome() {
             className="object-cover object-center"
             sizes="(min-width: 1280px) 1216px, 100vw"
           />
-          <div className="absolute inset-0 bg-gradient-to-r from-[#D7192D]/75 via-[#D7192D]/40 to-transparent" />
+          <div className="absolute inset-0 bg-transparent" />
           <div className="relative flex h-full items-center px-6 py-8 sm:px-12 lg:px-16">
             <div className="max-w-[520px]">
               <p className="flex items-center text-xs font-semibold tracking-[0.18em] text-[#FCE4E7] uppercase">
