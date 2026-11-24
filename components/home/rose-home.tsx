@@ -298,33 +298,34 @@ export function RoseHome() {
 
   return (
     <div className="overflow-hidden bg-[#FFF3F4] text-[#2b2118]">
-      <section className="mx-auto max-w-[1280px] px-4 pt-4 sm:px-6 lg:px-8">
-        <div className="relative h-[250px] overflow-hidden rounded-[10px] bg-[#D7192D] text-white sm:h-[340px] lg:h-[392px]">
+      <section className="mx-auto max-w-[1920px] px-4 pt-4 sm:px-6 lg:px-8">
+        <div className="relative h-[250px] overflow-hidden rounded-[10px] bg-[#D7192D] text-white sm:h-[340px] lg:h-[520px]">
           <Image
             src={slide.src}
             alt={slide.alt}
             fill
             priority
+            unoptimized
             className="object-cover object-center"
-            sizes="(min-width: 1280px) 1216px, 100vw"
+            sizes="100vw"
           />
-          <div className="absolute inset-0 bg-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-r from-black/65 via-black/30 to-transparent" />
           <div className="relative flex h-full items-center px-6 py-8 sm:px-12 lg:px-16">
-            <div className="max-w-[520px]">
-              <p className="flex items-center text-xs font-semibold tracking-[0.18em] text-[#FCE4E7] uppercase">
-                <span className="mr-3 h-px w-7 bg-[#FCE4E7]" />
+            <div className="max-w-[520px] [text-shadow:0_2px_8px_rgba(0,0,0,0.65)]">
+              <p className="flex items-center text-xs font-semibold tracking-[0.18em] text-white uppercase">
+                <span className="mr-3 h-px w-7 bg-white" />
                 {slide.eyebrow}
               </p>
               <h1 className="mt-3 font-serif text-4xl leading-[0.9] font-semibold sm:text-5xl lg:text-[58px]">
                 {slide.title}
-                <span className="block italic text-[#FCE4E7]">{slide.accent}</span>
+                <span className="block italic text-[#ffd166]">{slide.accent}</span>
               </h1>
-              <p className="mt-4 max-w-[430px] text-sm leading-5 text-white/95 sm:text-base sm:leading-6">
+              <p className="mt-4 max-w-[430px] text-sm leading-5 text-white sm:text-base sm:leading-6">
                 {slide.body}
               </p>
               <Link
                 href={slide.href}
-                className="mt-5 inline-flex items-center gap-2 rounded-full bg-white px-5 py-2.5 text-sm font-semibold text-[#D7192D] transition hover:bg-[#FCE4E7]"
+                className="mt-5 inline-flex items-center gap-2 rounded-full bg-[#D7192D] px-5 py-2.5 text-sm font-bold text-white shadow-[0_3px_12px_rgba(0,0,0,0.3)] transition hover:bg-[#b91427]"
               >
                 {slide.cta}
                 <ChevronRight className="size-4" />
@@ -422,9 +423,7 @@ export function RoseHome() {
                 </div>
                 <h3 className="text-sm font-semibold">{item.name}</h3>
                 <p className="mt-1 text-[11px] text-[#6f6259]">{item.detail}</p>
-                <p className="mt-1 text-xs">★★★★★ <span className="text-[10px]">(4.8)</span></p>
-                <p className="mt-1 text-sm font-bold text-[#D7192D]">{item.price} {item.before ? <span className="text-[10px] font-normal text-[#9a8e84] line-through">{item.before}</span> : null}</p>
-                <button type="button" className="mt-2 w-full rounded-full bg-[#D7192D] py-1.5 text-[11px] font-semibold text-white">Add to Cart</button>
+                <p className="mt-1 text-xs"><span className="text-[#f4b400]" aria-label="5 out of 5 stars">★★★★★</span> <span className="text-[10px]">(4.8)</span></p>
               </article>
             ))}
           </div>

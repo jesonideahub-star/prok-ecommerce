@@ -218,7 +218,7 @@
 }
 
 :root {
-  --background: #fff6ee;
+  --background: #fff3f4;
   --foreground: #2b2118;
   --card: #fffaf5;
   --card-foreground: #2b2118;
@@ -299,9 +299,9 @@
 }
 
 .public-site-content {
-  background-color: #fff3f4;
+  background-color: var(--background);
 }
 
 .public-site-content > main {
-  background-color: #fff3f4;
+  background-color: var(--background);
 }
