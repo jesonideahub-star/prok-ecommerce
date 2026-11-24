@@ -15,7 +15,7 @@ export function ValueProps({ imageSrc }: { imageSrc?: string | null }) {
         className="object-cover animate-ken-burns"
         sizes="100vw"
       />
-      <div className="absolute inset-0 bg-[#3d2416]/72" />
+      <div className="absolute inset-0 bg-[#2b2118]/72" />
 
       <div className="relative mx-auto grid max-w-[1280px] grid-cols-1 gap-3 px-4 py-6 sm:px-6 md:grid-cols-3 md:gap-4 md:py-8 lg:px-8">
         {valueProps.map((item, i) => {

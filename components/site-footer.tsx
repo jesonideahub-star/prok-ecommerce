@@ -89,7 +89,7 @@ const socials = [
 
 export function SiteFooter() {
   return (
-    <footer id="contact" className="bg-[#eadfce] text-zinc-700">
+    <footer id="contact" className="bg-[#fff6ee] text-[#2b2118]">
       <div className="mx-auto flex max-w-[1180px] flex-col gap-12 px-6 py-14 md:flex-row md:items-start md:justify-between md:py-16">
         <div className="max-w-sm">
           <SiteLogo className="inline-flex" showPitcorp={false} />
@@ -135,7 +135,7 @@ export function SiteFooter() {
               <ul className="mt-3 space-y-2">
                 {column.links.map((link) => (
                   <li key={link.label} id={link.label === "News & Events" ? "news" : undefined}>
-                    <Link href={link.href} className="text-sm text-[#5b8def] hover:underline">
+                    <Link href={link.href} className="text-sm text-[#d0122d] hover:underline">
                       {link.label}
                     </Link>
                   </li>
@@ -146,7 +146,7 @@ export function SiteFooter() {
         </div>
       </div>
 
-      <div className="border-t border-zinc-200">
+      <div className="border-t border-[#f3e0d2]">
         <div className="mx-auto flex max-w-[1180px] flex-col gap-3 px-6 py-5 text-xs text-zinc-500 sm:flex-row sm:items-center sm:justify-between">
           <p>© 2026 {siteContact.legalName}. All rights reserved.</p>
           <div className="flex flex-wrap gap-x-6 gap-y-1">

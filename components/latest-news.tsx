@@ -39,10 +39,10 @@ export function LatestNews() {
   if (!featured) return null;
 
   return (
-    <section id="news" className="bg-[#f6f1e8] px-4 py-16 md:px-8 md:py-20">
+    <section id="news" className="bg-[#fff6ee] px-4 py-16 md:px-8 md:py-20">
       <div className="mx-auto max-w-[1180px]">
         <div className="text-center">
-          <p className="text-xs font-semibold tracking-[0.22em] text-[#8b5a2b] uppercase">
+          <p className="text-xs font-semibold tracking-[0.22em] text-[#d0122d] uppercase">
             News & Events
           </p>
           <h2 className="mt-2 font-serif text-3xl text-zinc-800 md:text-[2.5rem]">
@@ -66,7 +66,7 @@ export function LatestNews() {
             </div>
             <div className="flex flex-col justify-center px-7 py-10 md:px-12 md:py-14">
               <div className="flex flex-wrap items-center gap-3">
-                <span className="rounded-full bg-[#8b5a2b] px-3 py-1 text-[10px] font-semibold tracking-[0.14em] text-white uppercase">
+                <span className="rounded-full bg-[#d0122d] px-3 py-1 text-[10px] font-semibold tracking-[0.14em] text-white uppercase">
                   {featured.tag}
                 </span>
                 <span className="text-xs tracking-wide text-zinc-400 uppercase">
@@ -79,7 +79,7 @@ export function LatestNews() {
               <p className="mt-4 max-w-[46ch] text-[15px] leading-7 text-zinc-500">
                 {featured.excerpt}
               </p>
-              <span className="mt-8 inline-flex items-center gap-1.5 text-sm font-medium text-[#8b5a2b]">
+              <span className="mt-8 inline-flex items-center gap-1.5 text-sm font-medium text-[#d0122d]">
                 Read the story
                 <ArrowUpRight className="size-4" />
               </span>

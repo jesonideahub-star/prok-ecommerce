@@ -232,7 +232,7 @@ export function ProductEditor({ productId }: { productId?: string }) {
   return (
     <form onSubmit={(event) => void save(event)} className="space-y-8">
       <div className="flex items-center justify-between">
-        <h1 className="font-serif text-3xl text-[#3d2416]">{productId ? "Edit product" : "Add product"}</h1>
+        <h1 className="font-serif text-3xl text-[#2b2118]">{productId ? "Edit product" : "Add product"}</h1>
         <Button type="submit">Save product</Button>
       </div>
       {error ? <p className="rounded-lg bg-red-50 px-3 py-2 text-sm text-red-700">{error}</p> : null}
@@ -335,7 +335,7 @@ export function ProductEditor({ productId }: { productId?: string }) {
             </p>
           </div>
           <div className="flex flex-wrap gap-2">
-            <label className="inline-flex h-9 cursor-pointer items-center rounded-lg bg-[#82502a] px-3 text-sm text-white">
+            <label className="inline-flex h-9 cursor-pointer items-center rounded-lg bg-[#d0122d] px-3 text-sm text-white">
               {uploading ? "Uploading…" : "Upload images"}
               <input
                 type="file"
@@ -359,7 +359,7 @@ export function ProductEditor({ productId }: { productId?: string }) {
           </div>
         </div>
         {images.length === 0 ? (
-          <label className="flex min-h-40 cursor-pointer flex-col items-center justify-center rounded-xl border border-dashed border-[#be9f79] bg-[#faf6ef] px-4 text-center text-sm text-[#6b3e24]">
+          <label className="flex min-h-40 cursor-pointer flex-col items-center justify-center rounded-xl border border-dashed border-[#be9f79] bg-[#faf6ef] px-4 text-center text-sm text-[#9b1020]">
             <span className="font-medium">Drop or choose multiple images</span>
             <span className="mt-1 text-xs text-zinc-500">JPG, PNG, or WebP. First upload becomes the primary image.</span>
             <input

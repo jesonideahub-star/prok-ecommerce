@@ -73,24 +73,24 @@ export function CookieBanner() {
 
   return (
     <div
-      className="fixed inset-x-0 bottom-0 z-[80] border-t border-[#eadfce] bg-[#fffaf4]/97 px-4 py-4 shadow-[0_-12px_32px_rgba(80,50,20,0.12)] backdrop-blur-md md:px-6"
+      className="fixed inset-x-0 bottom-0 z-[80] border-t border-[#eadfce] bg-[#fffaf5]/97 px-4 py-4 shadow-[0_-12px_32px_rgba(80,50,20,0.12)] backdrop-blur-md md:px-6"
       role="dialog"
       aria-labelledby="cookie-banner-title"
       aria-describedby="cookie-banner-copy"
     >
       <div className="mx-auto flex max-w-[1180px] flex-col gap-4 md:flex-row md:items-center md:justify-between">
         <div className="max-w-3xl">
-          <p id="cookie-banner-title" className="text-sm font-semibold text-[#3d2416]">
+          <p id="cookie-banner-title" className="text-sm font-semibold text-[#2b2118]">
             Cookies and ads
           </p>
           <p id="cookie-banner-copy" className="mt-1 text-sm leading-relaxed text-zinc-600">
             We use cookies and Google AdSense to show ads, measure traffic, and improve the site.
             Personalized ads need your consent. See our{" "}
-            <Link href="/privacy-policy" className="underline decoration-[#c4a882] underline-offset-2 hover:text-[#8b5a2b]">
+            <Link href="/privacy-policy" className="underline decoration-[#c4a882] underline-offset-2 hover:text-[#d0122d]">
               Privacy Policy
             </Link>{" "}
             and{" "}
-            <Link href="/cookie-policy" className="underline decoration-[#c4a882] underline-offset-2 hover:text-[#8b5a2b]">
+            <Link href="/cookie-policy" className="underline decoration-[#c4a882] underline-offset-2 hover:text-[#d0122d]">
               Cookie Policy
             </Link>
             .
@@ -100,14 +100,14 @@ export function CookieBanner() {
           <button
             type="button"
             onClick={() => applyConsent("denied")}
-            className="h-10 rounded-full border border-[#eadfce] bg-white px-4 text-sm font-medium text-[#3d2416] transition-colors hover:border-[#c4a882]"
+            className="h-10 rounded-full border border-[#eadfce] bg-white px-4 text-sm font-medium text-[#2b2118] transition-colors hover:border-[#c4a882]"
           >
             Reject ads cookies
           </button>
           <button
             type="button"
             onClick={() => applyConsent("granted")}
-            className="h-10 rounded-full bg-[#82502a] px-4 text-sm font-medium text-white transition-colors hover:bg-[#6d4123]"
+            className="h-10 rounded-full bg-[#d0122d] px-4 text-sm font-medium text-white transition-colors hover:bg-[#9b1020]"
           >
             Accept all
           </button>

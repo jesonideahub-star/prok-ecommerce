@@ -10,7 +10,7 @@ const highlightIcons = [ShieldCheck, Truck, Heart];
 
 export function ServicesPage() {
   return (
-    <main className="flex-1 bg-[#f6f1e8]">
+    <main className="flex-1 bg-[#fff6ee]">
       <section className="mx-auto max-w-[1180px] px-5 py-8 md:px-8 md:py-10">
         <div className="relative min-h-[340px] overflow-hidden rounded-2xl md:min-h-[440px]">
           <Image
@@ -40,7 +40,7 @@ export function ServicesPage() {
             className="object-cover object-center"
             sizes="(min-width: 1180px) 1180px, 100vw"
           />
-          <div className="absolute inset-0 bg-[#3d2416]/78" />
+          <div className="absolute inset-0 bg-[#2b2118]/78" />
           <div className="relative grid grid-cols-1 gap-4 px-5 py-10 sm:grid-cols-3 sm:gap-5 md:px-8 md:py-14">
             {valueProps.map((item, index) => {
               const Icon = highlightIcons[index];
@@ -61,10 +61,10 @@ export function ServicesPage() {
 
       <section className="mx-auto max-w-[1240px] px-5 py-14 md:px-8 md:py-16">
         <HomeReveal>
-          <h2 className="text-center font-serif text-[1.85rem] text-[#6b3e24] md:text-[2.1rem]">
+          <h2 className="text-center font-serif text-[1.85rem] text-[#9b1020] md:text-[2.1rem]">
             Do It Yourself Cleaning
           </h2>
-          <span className="mx-auto mt-4 block h-[2px] w-12 rounded-full bg-[#8b5a2b]/45" />
+          <span className="mx-auto mt-4 block h-[2px] w-12 rounded-full bg-[#d0122d]/45" />
         </HomeReveal>
         <div className="mt-8 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-5">
           {diyCleaningProducts.map((item, index) => (
@@ -91,15 +91,15 @@ export function ServicesPage() {
                     <span className="absolute inset-y-0 w-1/2 -translate-x-full bg-gradient-to-r from-transparent via-white/50 to-transparent group-hover:animate-cta-shine" />
                   </span>
                 </div>
-                <h3 className="mt-4 font-serif text-[17px] leading-snug text-[#4a4038] transition-colors duration-300 group-hover:text-[#8b5a2b]">
+                <h3 className="mt-4 font-serif text-[17px] leading-snug text-[#4a4038] transition-colors duration-300 group-hover:text-[#d0122d]">
                   {item.name}
                 </h3>
                 <p className="mt-1 text-[13px] text-zinc-400 transition-colors duration-300 group-hover:text-[#a07a58]">
                   {item.brand}
                 </p>
-                <span className="mt-auto inline-flex items-center gap-2 pt-4 text-[13px] text-zinc-500 transition-colors duration-300 group-hover:text-[#8b5a2b]">
+                <span className="mt-auto inline-flex items-center gap-2 pt-4 text-[13px] text-zinc-500 transition-colors duration-300 group-hover:text-[#d0122d]">
                   Learn more
-                  <span className="flex size-6 items-center justify-center rounded-full bg-[#d9d5d1] text-white transition-all duration-300 group-hover:translate-x-0.5 group-hover:bg-[#8b5a2b] group-hover:shadow-[0_6px_12px_rgba(139,90,43,0.35)]">
+                  <span className="flex size-6 items-center justify-center rounded-full bg-[#d9d5d1] text-white transition-all duration-300 group-hover:translate-x-0.5 group-hover:bg-[#d0122d] group-hover:shadow-[0_6px_12px_rgba(139,90,43,0.35)]">
                     <ArrowRight className="size-3.5 transition-transform duration-300 group-hover:translate-x-px" />
                   </span>
                 </span>

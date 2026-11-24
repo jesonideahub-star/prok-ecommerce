@@ -4,7 +4,7 @@ import { useState } from "react";
 import Image from "@/components/media-image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { ChevronDown, Menu, Search, User, X } from "lucide-react";
+import { ChevronDown, Headphones, Mail, Menu, Search, ShieldCheck, ShoppingCart, Truck, User, X } from "lucide-react";
 
 import { BrandMark } from "@/components/brand-mark";
 import { CoffeeMenu } from "@/components/coffee-menu";
@@ -78,12 +78,18 @@ function NavLink({
         href={item.href}
         aria-current={isActive ? "page" : undefined}
         className={cn(
-          "inline-flex items-center gap-1 rounded-full border px-4 py-[7px] text-[15px] font-medium tracking-[-0.01em] whitespace-nowrap transition-colors",
-          highlighted
-            ? "border-[#82502a] bg-[#82502a] text-white"
-            : "border-[#be9f79] bg-[#e7dbc8] text-[#222222] hover:border-[#82502a] hover:bg-[#82502a] hover:text-white"
+          "inline-flex items-center gap-1 whitespace-nowrap text-sm font-medium transition-colors",
+          item.label === "Home" &&
+            "rounded-full bg-[#d0122d] px-3.5 py-1.5 text-white hover:bg-[#b10f26]",
+          item.label === "Contact Us" &&
+            "rounded-full bg-[#f5c400] px-3.5 py-1.5 font-semibold text-[#2b2118] hover:bg-[#ffd24a]",
+          item.label !== "Home" &&
+            item.label !== "Contact Us" &&
+            (highlighted ? "text-[#d0122d]" : "text-[#3a2a22] hover:text-[#d0122d]")
         )}
       >
+        {item.label === "Home" ? <span aria-hidden="true">⌂</span> : null}
+        {item.label === "Contact Us" ? <Mail className="size-3.5" /> : null}
         {navDisplayLabel(item.label)}
         {dropdown ? (
           <ChevronDown
@@ -131,7 +137,7 @@ function SearchForm({ className }: { className?: string }) {
 
   return (
     <form
-      className={cn("flex min-w-0 overflow-hidden rounded-lg", className)}
+      className={cn("flex min-w-0 items-center overflow-hidden rounded-full border border-[#ead8cc] bg-white pr-1", className)}
       onSubmit={(event) => {
         event.preventDefault();
         document.getElementById("espresso-machines")?.scrollIntoView({
@@ -152,7 +158,7 @@ function SearchForm({ className }: { className?: string }) {
       <Button
         type="submit"
         aria-label="Search"
-        className="size-11 shrink-0 rounded-none border-0 bg-[#1a633a] text-white hover:bg-[#164f2e]"
+        className="size-11 shrink-0 rounded-full border-0 bg-[#d0122d] text-white hover:bg-[#b10f26]"
       >
         <Search className="size-5" />
       </Button>
@@ -188,10 +194,34 @@ export function SiteHeader() {
 
   return (
     <header
-      className="sticky top-0 z-50 overflow-x-clip bg-[#d3b99b] text-neutral-900 shadow-[0_8px_24px_rgba(80,50,20,0.08)]"
+      className="sticky top-0 z-50 overflow-x-clip bg-white text-[#2b2118] shadow-[0_8px_24px_rgba(155,16,32,0.06)]"
       onMouseLeave={() => setMega(null)}
     >
-      <div className="mx-auto flex max-w-[1440px] items-center gap-4 px-4 py-3 sm:px-6 lg:gap-8 lg:px-10 lg:py-5">
+      <div className="bg-[#c4161c] text-white">
+        <div className="mx-auto flex max-w-[1440px] items-center justify-between gap-4 px-4 py-1.5 text-[11px] sm:px-6 sm:text-xs lg:px-10">
+          <div className="flex min-w-0 items-center gap-4 sm:gap-6">
+            <span className="inline-flex items-center gap-1.5">
+              <Truck className="size-3.5 shrink-0" />
+              <span className="truncate">Free Shipping on orders over ₱2,000</span>
+            </span>
+            <span className="hidden items-center gap-1.5 md:inline-flex">
+              <ShieldCheck className="size-3.5" />
+              Secure Payment
+            </span>
+            <span className="hidden items-center gap-1.5 lg:inline-flex">
+              <Headphones className="size-3.5" />
+              24/7 Customer Support
+            </span>
+          </div>
+          <div className="flex items-center gap-2.5">
+            <a href="#contact" aria-label="Facebook" className="hover:opacity-80">f</a>
+            <a href="#contact" aria-label="Instagram" className="hover:opacity-80">⌾</a>
+            <a href="#contact" aria-label="YouTube" className="hover:opacity-80">▷</a>
+            <a href="#contact" aria-label="TikTok" className="hover:opacity-80">♪</a>
+          </div>
+        </div>
+      </div>
+      <div className="mx-auto flex max-w-[1440px] items-center gap-4 px-4 py-3 sm:px-6 lg:gap-8 lg:px-10 lg:py-4">
         <SiteLogo className="min-w-0 shrink-0 [&_img]:h-10 sm:[&_img]:h-11 lg:[&_img]:h-12" />
 
         <SearchForm className="hidden max-w-[760px] flex-1 md:flex" />
@@ -199,14 +229,20 @@ export function SiteHeader() {
         <div className="ml-auto flex items-center gap-4">
           <Link
             href="/admin/login"
-            className="hidden items-center gap-2 text-[13px] font-medium text-[#222222] hover:text-[#82502a] md:inline-flex"
+            className="hidden items-center gap-2 text-[13px] font-medium text-[#3a2a22] hover:text-[#d0122d] md:inline-flex"
           >
             <User className="size-[22px] stroke-[1.6]" />
             Admin Login
           </Link>
+          <Link href="/espresso-machines" aria-label="Cart" className="relative hidden text-[#3a2a22] hover:text-[#d0122d] md:inline-flex">
+            <ShoppingCart className="size-[22px] stroke-[1.6]" />
+            <span className="absolute -top-2 -right-2 flex size-4 items-center justify-center rounded-full bg-[#d0122d] text-[10px] font-semibold text-white">
+              0
+            </span>
+          </Link>
           <button
             type="button"
-            className="inline-flex size-10 items-center justify-center text-neutral-800 hover:text-[#165c38] lg:hidden"
+            className="inline-flex size-10 items-center justify-center text-[#3a2a22] hover:text-[#d0122d] lg:hidden"
             onClick={() => setMobileOpen((value) => !value)}
             aria-expanded={mobileOpen}
             aria-label={mobileOpen ? "Close menu" : "Open menu"}
@@ -222,19 +258,17 @@ export function SiteHeader() {
 
       <nav className="hidden lg:block">
         <div className="mx-auto max-w-[1440px] px-4 pb-4 sm:px-6 lg:px-10">
-          <div className="flex items-center justify-between gap-10">
+          <div className="flex items-center gap-5">
             <NavCluster items={row1Left} mega={mega} pathname={pathname} onOpen={openNavItem} />
-            <NavCluster items={row1Right} mega={mega} pathname={pathname} onOpen={openNavItem} />
-          </div>
-          <div className="mt-1.5 flex items-center justify-between gap-10">
-            <NavCluster items={row2Left} mega={mega} pathname={pathname} onOpen={openNavItem} />
+            <span className="h-4 w-px bg-[#ead8cc]" />
+            <NavCluster items={[...row1Right, ...row2Left]} mega={mega} pathname={pathname} onOpen={openNavItem} />
             <NavCluster items={row2Right} mega={mega} pathname={pathname} onOpen={openNavItem} />
           </div>
         </div>
       </nav>
 
       {openItem && isBrandsMega(openItem) ? (
-        <div className="absolute inset-x-0 top-full border-t border-[#cbb392] bg-[#fffaf4] shadow-[0_18px_40px_rgba(80,50,20,0.12)]">
+        <div className="absolute inset-x-0 top-full border-t border-[#cbb392] bg-[#fffaf5] shadow-[0_18px_40px_rgba(80,50,20,0.12)]">
           <div className="mx-auto flex max-w-[1440px] items-stretch gap-2 overflow-visible px-3 py-6 sm:gap-3 sm:px-6 lg:px-10 lg:py-7">
             {openItem.brands.map((name) => (
               <Link
@@ -266,7 +300,7 @@ export function SiteHeader() {
       isCatalogMega(openItem) &&
       openItem.label !== "Espresso Machines" &&
       openItem.label !== "Coffee" ? (
-        <div className="absolute inset-x-0 top-full border-t border-[#cbb392] bg-[#fffaf4] shadow-[0_18px_40px_rgba(80,50,20,0.12)]">
+        <div className="absolute inset-x-0 top-full border-t border-[#cbb392] bg-[#fffaf5] shadow-[0_18px_40px_rgba(80,50,20,0.12)]">
           <div className="mx-auto max-w-[1440px] px-8 py-8 lg:px-10 lg:py-10">
             <div className="flex flex-wrap gap-16 lg:gap-28">
               <ul className="space-y-1">
@@ -279,8 +313,8 @@ export function SiteHeader() {
                       <Link
                         href={child.href}
                         className={cn(
-                          "block rounded-md px-1 py-1.5 text-[15px] transition-colors hover:text-[#165c38]",
-                          active ? "font-medium text-[#165c38]" : "text-zinc-700"
+                          "block rounded-md px-1 py-1.5 text-[15px] transition-colors hover:text-[#d0122d]",
+                          active ? "font-medium text-[#d0122d]" : "text-zinc-700"
                         )}
                         onMouseEnter={() => {
                           if (childUse) setCatalogUse(childUse);
@@ -299,7 +333,7 @@ export function SiteHeader() {
                     <li key={child.label}>
                       <Link
                         href={child.href}
-                        className="block rounded-md px-1 py-1.5 text-[15px] text-zinc-700 transition-colors hover:text-[#165c38]"
+                        className="block rounded-md px-1 py-1.5 text-[15px] text-zinc-700 transition-colors hover:text-[#d0122d]"
                         onClick={close}
                       >
                         {child.label}
@@ -329,7 +363,7 @@ export function SiteHeader() {
                       </div>
                       <Link
                         href={brand.href}
-                        className="mt-3 text-center text-sm text-[#165c38] hover:underline"
+                        className="mt-3 text-center text-sm text-[#d0122d] hover:underline"
                         onClick={close}
                       >
                         {brand.cta}
@@ -344,13 +378,13 @@ export function SiteHeader() {
       ) : null}
 
       {openItem && hasChildren(openItem) && !isCatalogMega(openItem) && !isBrandsMega(openItem) ? (
-        <div className="absolute inset-x-0 top-full border-t border-[#cbb392] bg-[#fffaf4] py-3 shadow-[0_18px_40px_rgba(80,50,20,0.12)]">
+        <div className="absolute inset-x-0 top-full border-t border-[#cbb392] bg-[#fffaf5] py-3 shadow-[0_18px_40px_rgba(80,50,20,0.12)]">
           <div className="mx-auto flex max-w-[1440px] gap-6 px-10">
             {openItem.children.map((child) => (
               <Link
                 key={child.label}
                 href={child.href}
-                className="text-sm text-zinc-700 hover:text-[#165c38]"
+                className="text-sm text-zinc-700 hover:text-[#d0122d]"
                 onClick={close}
               >
                 {child.label}
@@ -362,12 +396,12 @@ export function SiteHeader() {
 
       <div
         className={cn(
-          "border-t border-[#be9f79] bg-[#d3b99b] lg:hidden",
+          "border-t border-[#f3e0d2] bg-white lg:hidden",
           mobileOpen ? "block" : "hidden"
         )}
       >
         <div className="flex max-h-[70vh] flex-col overflow-y-auto px-4 py-3">
-          <div className="mb-2 flex flex-col gap-3 border-b border-[#be9f79] pb-3">
+          <div className="mb-2 flex flex-col gap-3 border-b border-[#f3e0d2] pb-3">
             <Link
               href="/admin/login"
               className="inline-flex items-center gap-2 text-sm font-medium text-[#222222]"
@@ -384,9 +418,11 @@ export function SiteHeader() {
                 aria-current={pathMatches(pathname, item.href) ? "page" : undefined}
                 className={cn(
                   "flex items-center justify-between rounded-full border px-4 py-2.5 text-sm font-medium",
-                  pathMatches(pathname, item.href)
-                    ? "border-[#82502a] bg-[#82502a] text-white"
-                    : "border-[#be9f79] bg-[#e7dbc8] text-[#222222]"
+                  pathMatches(pathname, item.href) || item.label === "Home"
+                    ? "border-[#d0122d] bg-[#d0122d] text-white"
+                    : item.label === "Contact Us"
+                      ? "border-[#f5c400] bg-[#f5c400] text-[#2b2118]"
+                      : "border-[#f3e0d2] bg-[#fff6ee] text-[#2b2118]"
                 )}
                 onClick={close}
               >

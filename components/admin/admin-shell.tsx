@@ -93,7 +93,7 @@ export function AdminShell({
 
   return (
     <div className="flex min-h-full bg-[#efe6d8]">
-      <aside className="sticky top-0 flex h-screen w-[260px] shrink-0 flex-col bg-[#3d2416] text-[#f6efe6]">
+      <aside className="sticky top-0 flex h-screen w-[260px] shrink-0 flex-col bg-[#2b2118] text-[#f6efe6]">
         <div className="border-b border-white/10 px-4 py-4">
           <Link href="/admin" className="block rounded-xl bg-[#f6efe6] px-3 py-3">
             <Image
@@ -133,7 +133,7 @@ export function AdminShell({
                           href={child.href}
                           className={cn(
                             "block rounded-md px-2 py-1.5 text-[#e7dbc8] hover:bg-white/10 hover:text-white",
-                            isActive(pathname, child.href) && "bg-[#82502a] text-white"
+                            isActive(pathname, child.href) && "bg-[#d0122d] text-white"
                           )}
                         >
                           {child.label}
@@ -151,7 +151,7 @@ export function AdminShell({
                 href={item.href}
                 className={cn(
                   "mb-1 flex items-center gap-2 rounded-lg px-3 py-2 hover:bg-white/10",
-                  isActive(pathname, item.href, "exact" in item && item.exact) && "bg-[#82502a] text-white"
+                  isActive(pathname, item.href, "exact" in item && item.exact) && "bg-[#d0122d] text-white"
                 )}
               >
                 <item.icon className="size-4" />
@@ -174,8 +174,8 @@ export function AdminShell({
       </aside>
       <div className="min-w-0 flex-1">
         <header className="flex items-center justify-between border-b border-[#eadfce] bg-white px-6 py-4">
-          <p className="text-sm text-[#6b3e24]">Website content management</p>
-          <Link href="/" className="text-sm font-medium text-[#82502a] hover:underline">
+          <p className="text-sm text-[#9b1020]">Website content management</p>
+          <Link href="/" className="text-sm font-medium text-[#d0122d] hover:underline">
             View site
           </Link>
         </header>

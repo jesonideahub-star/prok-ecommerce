@@ -72,7 +72,7 @@ export function FlavoursPage({ tab }: { tab?: string }) {
   const noun = activeTab ? tabNoun[activeTab] : { one: "flavour", many: "flavours" };
 
   return (
-    <main className="flex-1 overflow-hidden bg-[#f6f1e8]">
+    <main className="flex-1 overflow-hidden bg-[#fff6ee]">
       <CollectionBanner
         title={title}
         description={tabCopy?.description ?? flavourCatalogCopy.description}
@@ -82,7 +82,7 @@ export function FlavoursPage({ tab }: { tab?: string }) {
 
       <section className="relative mx-auto max-w-[1240px] px-5 md:px-8">
         <div className="animate-scale-in rounded-[28px] bg-[#fff9f2]/95 px-4 py-10 shadow-[0_18px_40px_rgba(80,50,20,0.08)] ring-1 ring-[#eadfce] backdrop-blur-sm md:px-10 md:py-12 [animation-delay:140ms]">
-          <h2 className="animate-fade-up text-center font-serif text-2xl font-bold text-[#1a7a72] md:text-[1.85rem] [animation-delay:200ms]">
+          <h2 className="animate-fade-up text-center font-serif text-2xl font-bold text-[#d0122d] md:text-[1.85rem] [animation-delay:200ms]">
             {flavourCatalogCopy.shopHeading}
           </h2>
           <p className="mt-2 animate-fade-up text-center text-sm text-zinc-500 [animation-delay:260ms]">
@@ -101,7 +101,7 @@ export function FlavoursPage({ tab }: { tab?: string }) {
                   <span
                     className={cn(
                       "relative block size-[88px] overflow-hidden rounded-full bg-white shadow-[0_12px_28px_rgba(80,50,20,0.14)] ring-2 ring-white transition-all duration-500 group-hover:-translate-y-1.5 group-hover:scale-[1.05] group-hover:shadow-[0_18px_36px_rgba(80,50,20,0.2)] sm:size-[132px] sm:ring-4 md:size-[148px]",
-                      active && "ring-[#c4783a] ring-offset-2 ring-offset-[#fff9f2] sm:ring-offset-4"
+                      active && "ring-[#d0122d] ring-offset-2 ring-offset-[#fff9f2] sm:ring-offset-4"
                     )}
                   >
                     <Image
@@ -121,7 +121,7 @@ export function FlavoursPage({ tab }: { tab?: string }) {
                   <span
                     className={cn(
                       "text-center text-[13px] font-bold tracking-wide transition-colors duration-300 sm:text-[15px]",
-                      active ? "text-[#8b5a2b]" : "text-[#c4783a] group-hover:text-[#8b5a2b]"
+                      active ? "text-[#d0122d]" : "text-[#d0122d] group-hover:text-[#d0122d]"
                     )}
                   >
                     {item.label}
@@ -136,7 +136,7 @@ export function FlavoursPage({ tab }: { tab?: string }) {
       <section className="mx-auto max-w-[1240px] px-5 py-10 md:px-8 md:py-14">
         <div className="flex animate-fade-up flex-wrap items-end justify-between gap-4 border-b border-[#eadfce] pb-5 [animation-delay:320ms]">
           <div>
-            <h2 className="font-serif text-2xl font-bold text-[#3d2416] md:text-3xl">
+            <h2 className="font-serif text-2xl font-bold text-[#2b2118] md:text-3xl">
               {tabCopy?.selection ?? "The collection"}
             </h2>
             <p className="mt-1 text-sm text-zinc-500">

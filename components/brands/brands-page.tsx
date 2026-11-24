@@ -44,7 +44,7 @@ export function BrandsPage({ brand }: { brand?: string }) {
   }, [brand, sort]);
 
   return (
-    <main className="flex-1 overflow-hidden bg-[#f6f1e8]">
+    <main className="flex-1 overflow-hidden bg-[#fff6ee]">
       <CollectionBanner
         title={selectedBrand ?? brandCatalogCopy.title}
         description={

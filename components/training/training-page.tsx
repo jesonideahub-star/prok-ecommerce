@@ -42,7 +42,7 @@ export function TrainingPage({ query = "" }: { query?: string }) {
   }, [courses, search]);
 
   return (
-    <main className="flex-1 bg-[#f6f1e8]">
+    <main className="flex-1 bg-[#fff6ee]">
       <section className="mx-auto max-w-[1180px] px-5 py-8 md:px-8 md:py-10">
         <div className="relative h-[220px] overflow-hidden rounded-xl md:h-[280px]">
           <Image
@@ -83,7 +83,7 @@ export function TrainingPage({ query = "" }: { query?: string }) {
             </label>
             <button
               type="submit"
-              className="inline-flex h-10 items-center justify-center rounded-md bg-[#6b3e24] px-4 text-sm font-medium text-white hover:bg-[#5a331e]"
+              className="inline-flex h-10 items-center justify-center rounded-md bg-[#9b1020] px-4 text-sm font-medium text-white hover:bg-[#7a0e18]"
             >
               Search Courses
             </button>
@@ -107,7 +107,7 @@ export function TrainingPage({ query = "" }: { query?: string }) {
                 </div>
                 <div className="px-5 py-5">
                   {course.category ? (
-                    <p className="text-xs tracking-[0.14em] text-[#8b5a2b] uppercase">{course.category}</p>
+                    <p className="text-xs tracking-[0.14em] text-[#d0122d] uppercase">{course.category}</p>
                   ) : null}
                   <h2 className="font-serif text-3xl font-bold text-[#c0392b]">{course.title}</h2>
                   <p className="mt-2 text-sm text-zinc-400">{course.description}</p>
@@ -132,7 +132,7 @@ export function TrainingPage({ query = "" }: { query?: string }) {
                     {course.price != null ? <span>₱ {course.price.toLocaleString("en-PH")}</span> : null}
                   </div>
                   {course.enrollment_href ? (
-                    <Link href={course.enrollment_href} className="mt-4 inline-block text-sm font-medium text-[#82502a] hover:underline">
+                    <Link href={course.enrollment_href} className="mt-4 inline-block text-sm font-medium text-[#d0122d] hover:underline">
                       Register
                     </Link>
                   ) : null}

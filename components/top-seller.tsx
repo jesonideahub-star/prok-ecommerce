@@ -125,7 +125,7 @@ export function TopSeller({ title }: { title?: string | null }) {
             type="button"
             onClick={() => go(-1)}
             aria-label="Previous top sellers"
-            className="hidden size-11 shrink-0 items-center justify-center rounded-lg bg-[#eadfce] text-[#6b3e24] hover:bg-[#e0d2bc] sm:inline-flex"
+            className="hidden size-11 shrink-0 items-center justify-center rounded-lg bg-[#eadfce] text-[#9b1020] hover:bg-[#e0d2bc] sm:inline-flex"
           >
             <ChevronLeft className="size-6 stroke-[1.5]" />
           </button>
@@ -186,7 +186,7 @@ export function TopSeller({ title }: { title?: string | null }) {
             type="button"
             onClick={() => go(1)}
             aria-label="Next top sellers"
-            className="hidden size-11 shrink-0 items-center justify-center rounded-lg bg-[#eadfce] text-[#6b3e24] hover:bg-[#e0d2bc] sm:inline-flex"
+            className="hidden size-11 shrink-0 items-center justify-center rounded-lg bg-[#eadfce] text-[#9b1020] hover:bg-[#e0d2bc] sm:inline-flex"
           >
             <ChevronRight className="size-6 stroke-[1.5]" />
           </button>
@@ -197,7 +197,7 @@ export function TopSeller({ title }: { title?: string | null }) {
             type="button"
             onClick={() => go(-1)}
             aria-label="Previous top sellers"
-            className="inline-flex size-11 items-center justify-center rounded-lg bg-[#eadfce] text-[#6b3e24]"
+            className="inline-flex size-11 items-center justify-center rounded-lg bg-[#eadfce] text-[#9b1020]"
           >
             <ChevronLeft className="size-6 stroke-[1.5]" />
           </button>
@@ -205,7 +205,7 @@ export function TopSeller({ title }: { title?: string | null }) {
             type="button"
             onClick={() => go(1)}
             aria-label="Next top sellers"
-            className="inline-flex size-11 items-center justify-center rounded-lg bg-[#eadfce] text-[#6b3e24]"
+            className="inline-flex size-11 items-center justify-center rounded-lg bg-[#eadfce] text-[#9b1020]"
           >
             <ChevronRight className="size-6 stroke-[1.5]" />
           </button>

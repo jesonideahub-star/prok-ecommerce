@@ -116,7 +116,7 @@ export function EntityManager({
     <div className="space-y-6">
       <div className="flex items-start justify-between gap-4">
         <div>
-          <h1 className="font-serif text-3xl text-[#3d2416]">{title}</h1>
+          <h1 className="font-serif text-3xl text-[#2b2118]">{title}</h1>
           {description ? <p className="mt-1 text-sm text-zinc-500">{description}</p> : null}
         </div>
         <Button type="button" onClick={() => setEditing({ ...blank })}>
@@ -125,11 +125,11 @@ export function EntityManager({
       </div>
 
       {error ? <p className="rounded-lg bg-red-50 px-3 py-2 text-sm text-red-700">{error}</p> : null}
-      {message ? <p className="text-sm text-[#165c38]">{message}</p> : null}
+      {message ? <p className="text-sm text-[#d0122d]">{message}</p> : null}
 
       <div className="overflow-x-auto rounded-xl border border-[#eadfce] bg-white">
         <table className="w-full min-w-[640px] text-left text-sm">
-          <thead className="bg-[#faf6ef] text-[#6b3e24]">
+          <thead className="bg-[#faf6ef] text-[#9b1020]">
             <tr>
               <th className="px-4 py-3 font-medium">Item</th>
               <th className="px-4 py-3 font-medium">Status</th>
@@ -154,7 +154,7 @@ export function EntityManager({
                 </td>
                 <td className="px-4 py-3">{String(row.sort_order ?? "—")}</td>
                 <td className="px-4 py-3">
-                  <button type="button" className="mr-3 text-[#82502a] hover:underline" onClick={() => setEditing(row)}>
+                  <button type="button" className="mr-3 text-[#d0122d] hover:underline" onClick={() => setEditing(row)}>
                     Edit
                   </button>
                   <button type="button" className="text-red-700 hover:underline" onClick={() => void remove(String(row.id))}>
@@ -177,7 +177,7 @@ export function EntityManager({
 
       {editing ? (
         <form onSubmit={(event) => void save(event)} className="grid gap-4 rounded-xl border border-[#eadfce] bg-white p-5 md:grid-cols-2">
-          <h2 className="md:col-span-2 font-serif text-xl text-[#3d2416]">
+          <h2 className="md:col-span-2 font-serif text-xl text-[#2b2118]">
             {editing.id ? "Edit" : "Add"} {title.replace(/s$/, "")}
           </h2>
           {fields.map((field) => (

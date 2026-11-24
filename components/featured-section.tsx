@@ -7,7 +7,7 @@ import { cn } from "@/lib/utils";
 function MachinePlate({ label, delay = 0 }: { label: string; delay?: number }) {
   return (
     <span
-      className="absolute top-5 left-5 z-10 animate-fade-up border border-white/85 px-3 py-1.5 text-[11px] font-medium tracking-[0.32em] text-white uppercase transition-[letter-spacing,background-color,border-color,color] duration-300 group-hover:border-[#f0c27a] group-hover:bg-[#82502a]/35 group-hover:tracking-[0.4em] group-hover:text-[#f0c27a] md:top-6 md:left-6"
+      className="absolute top-5 left-5 z-10 animate-fade-up border border-white/85 px-3 py-1.5 text-[11px] font-medium tracking-[0.32em] text-white uppercase transition-[letter-spacing,background-color,border-color,color] duration-300 group-hover:border-[#f0c27a] group-hover:bg-[#d0122d]/35 group-hover:tracking-[0.4em] group-hover:text-[#f0c27a] md:top-6 md:left-6"
       style={{ animationDelay: `${delay}ms` }}
     >
       {label}
@@ -117,7 +117,7 @@ export function FeaturedSection({
   homesSrc?: string | null;
 } = {}) {
   return (
-    <section id="espresso-machines" className="bg-[#f6f1e8] p-3 md:p-4">
+    <section id="espresso-machines" className="bg-[#fff6ee] p-3 md:p-4">
       <div className="grid grid-cols-1 gap-3 lg:grid-cols-[1.55fr_1fr] lg:gap-4">
         <div className="grid grid-rows-2 gap-3 lg:min-h-[720px] lg:gap-4">
           <Tile

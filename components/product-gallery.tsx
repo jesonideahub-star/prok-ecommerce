@@ -12,7 +12,7 @@ function formatPeso(value: number) {
 
 export function ProductGallery() {
   return (
-    <section className="bg-[#f6f1e8] px-4 py-12 md:px-8 md:py-16">
+    <section className="bg-[#fff6ee] px-4 py-12 md:px-8 md:py-16">
       <div className="mx-auto max-w-[1240px]">
         <h2 className="text-center text-2xl font-bold tracking-tight text-neutral-900 md:text-[1.85rem]">
           Start your dream cafe business

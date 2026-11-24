@@ -29,7 +29,7 @@ const serviceIcons = [
 
 export function AboutPage() {
   return (
-    <main className="flex-1 overflow-hidden bg-[#f6f1e8]">
+    <main className="flex-1 overflow-hidden bg-[#fff6ee]">
       <CollectionBanner
         title="Our Company"
         description={aboutCopy.company}
@@ -54,9 +54,9 @@ export function AboutPage() {
         <div className="relative overflow-hidden rounded-2xl bg-white shadow-[8px_12px_28px_rgba(0,0,0,0.12)]">
           <div className="absolute top-4 left-4 z-10 flex gap-2">
             <span className="flex size-12 items-center justify-center rounded-full bg-white shadow">
-              <Coffee className="size-5 text-[#8b5a2b]" />
+              <Coffee className="size-5 text-[#d0122d]" />
             </span>
-            <span className="flex size-12 items-center justify-center rounded-full border-2 border-[#8b5a2b] bg-white text-center text-[8px] leading-tight font-bold text-[#8b5a2b]">
+            <span className="flex size-12 items-center justify-center rounded-full border-2 border-[#d0122d] bg-white text-center text-[8px] leading-tight font-bold text-[#d0122d]">
               SCA
               <br />
               MEMBER
@@ -90,7 +90,7 @@ export function AboutPage() {
                 const Icon = serviceIcons[i];
                 return (
                   <li key={service} className="flex items-start gap-2">
-                    <Icon className="mt-0.5 size-4 shrink-0 text-[#8b5a2b]" />
+                    <Icon className="mt-0.5 size-4 shrink-0 text-[#d0122d]" />
                     <span>{service}</span>
                   </li>
                 );
@@ -188,7 +188,7 @@ export function AboutPage() {
       </section>
 
       <section id="our-brand" className="px-4 pb-16 md:px-6 lg:px-8">
-        <h2 className="text-center text-2xl font-bold tracking-[0.14em] text-[#6b3e24] uppercase">
+        <h2 className="text-center text-2xl font-bold tracking-[0.14em] text-[#9b1020] uppercase">
           Our Brand
         </h2>
         <div className="mx-auto mt-8 grid max-w-[1280px] grid-cols-2 gap-3 sm:grid-cols-4 xl:flex xl:items-stretch">

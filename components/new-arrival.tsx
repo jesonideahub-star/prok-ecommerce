@@ -28,7 +28,7 @@ export function NewArrival({
     <section className="bg-[#fff9f2] px-4 py-14 md:px-8 md:py-16">
       <div className="mx-auto max-w-[1100px]">
         <div className="text-center">
-          <h2 className="font-serif text-3xl text-[#8b5a2b] md:text-4xl">{title || "New Arrival"}</h2>
+          <h2 className="font-serif text-3xl text-[#d0122d] md:text-4xl">{title || "New Arrival"}</h2>
           <p className="mt-2 text-sm text-zinc-500">
             {description || "Our most loved selections by coffee connoisseurs"}
           </p>
@@ -36,7 +36,7 @@ export function NewArrival({
 
         <div className="mt-10 grid items-center gap-10 md:grid-cols-2 md:gap-14">
           <div className="text-center md:px-4">
-            <h3 key={item.name} className="animate-hero-copy font-serif text-2xl text-[#8b5a2b] md:text-[1.75rem]">
+            <h3 key={item.name} className="animate-hero-copy font-serif text-2xl text-[#d0122d] md:text-[1.75rem]">
               {item.name}
             </h3>
             <p key={`${item.name}-heading`} className="mt-4 animate-hero-copy text-sm text-zinc-400 [animation-delay:80ms]">
@@ -74,11 +74,11 @@ export function NewArrival({
               onClick={() => setIndex(i)}
               className={cn(
                 "h-2.5 overflow-hidden rounded-full transition-all duration-300",
-                i === index ? "w-8 bg-[#8b5a2b]/30" : "size-2.5 bg-zinc-300 hover:bg-zinc-400"
+                i === index ? "w-8 bg-[#d0122d]/30" : "size-2.5 bg-zinc-300 hover:bg-zinc-400"
               )}
             >
               {i === index ? (
-                <span className="block h-full origin-left rounded-full bg-[#8b5a2b] animate-slide-progress [animation-duration:6.5s]" />
+                <span className="block h-full origin-left rounded-full bg-[#d0122d] animate-slide-progress [animation-duration:6.5s]" />
               ) : null}
             </button>
           ))}

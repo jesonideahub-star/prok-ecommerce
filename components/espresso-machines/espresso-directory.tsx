@@ -28,7 +28,7 @@ export function EspressoDirectory() {
             <div className="min-w-0">
               <Link
                 href={group.href}
-                className="block text-base font-bold tracking-tight text-[#3d2416] transition-all duration-300 group-hover:translate-x-1 group-hover:text-[#8b5a2b] sm:text-[1.2rem] md:text-[1.35rem]"
+                className="block text-base font-bold tracking-tight text-[#2b2118] transition-all duration-300 group-hover:translate-x-1 group-hover:text-[#d0122d] sm:text-[1.2rem] md:text-[1.35rem]"
               >
                 {group.title}
               </Link>
@@ -37,7 +37,7 @@ export function EspressoDirectory() {
                   <li key={link.href}>
                     <Link
                       href={link.href}
-                      className="text-[13px] font-medium text-[#c4783a] transition-colors duration-300 hover:text-[#8b5a2b] group-hover:text-[#8b5a2b] sm:text-[15px]"
+                      className="text-[13px] font-medium text-[#d0122d] transition-colors duration-300 hover:text-[#d0122d] group-hover:text-[#d0122d] sm:text-[15px]"
                     >
                       {link.label}
                     </Link>

@@ -26,7 +26,7 @@ function renderText(text: string) {
       <a
         key={index}
         href={href}
-        className="font-medium text-[#82502a] underline decoration-[#c4a882] underline-offset-2"
+        className="font-medium text-[#d0122d] underline decoration-[#c4a882] underline-offset-2"
       >
         {match[1]}
       </a>
@@ -107,10 +107,10 @@ export function SiteChat() {
     <div className="pointer-events-none fixed right-4 bottom-4 z-[90] flex flex-col items-end gap-3 sm:right-5 sm:bottom-5">
       {open ? (
         <section
-          className="pointer-events-auto flex h-[min(520px,calc(100dvh-7rem))] w-[min(380px,calc(100vw-2rem))] flex-col overflow-hidden rounded-2xl bg-[#fffaf4] shadow-[0_18px_50px_rgba(80,50,20,0.22)] ring-1 ring-[#eadfce]"
+          className="pointer-events-auto flex h-[min(520px,calc(100dvh-7rem))] w-[min(380px,calc(100vw-2rem))] flex-col overflow-hidden rounded-2xl bg-[#fffaf5] shadow-[0_18px_50px_rgba(80,50,20,0.22)] ring-1 ring-[#eadfce]"
           aria-label="Prokrate chat"
         >
-          <header className="flex items-center justify-between bg-[#82502a] px-4 py-3 text-white">
+          <header className="flex items-center justify-between bg-[#d0122d] px-4 py-3 text-white">
             <div>
               <p className="text-sm font-semibold">Prokrate Assistant</p>
               <p className="text-[11px] text-white/75">Machines, coffee, flavours &amp; service</p>
@@ -135,8 +135,8 @@ export function SiteChat() {
                   className={cn(
                     "max-w-[85%] whitespace-pre-wrap rounded-2xl px-3 py-2 text-[13px] leading-5",
                     item.role === "user"
-                      ? "rounded-br-md bg-[#82502a] text-white"
-                      : "rounded-bl-md bg-white text-[#3d2416] ring-1 ring-[#eadfce]"
+                      ? "rounded-br-md bg-[#d0122d] text-white"
+                      : "rounded-bl-md bg-white text-[#2b2118] ring-1 ring-[#eadfce]"
                   )}
                 >
                   {renderText(item.content)}
@@ -153,7 +153,7 @@ export function SiteChat() {
                     key={item}
                     type="button"
                     onClick={() => void send(item)}
-                    className="rounded-full bg-white px-2.5 py-1 text-left text-[11px] text-[#82502a] ring-1 ring-[#eadfce] transition-colors hover:bg-[#f6efe6]"
+                    className="rounded-full bg-white px-2.5 py-1 text-left text-[11px] text-[#d0122d] ring-1 ring-[#eadfce] transition-colors hover:bg-[#f6efe6]"
                   >
                     {item}
                   </button>
@@ -169,12 +169,12 @@ export function SiteChat() {
               onChange={(event) => setInput(event.target.value)}
               placeholder="Ask about a machine or flavour…"
               maxLength={1200}
-              className="h-10 min-w-0 flex-1 rounded-full border border-[#eadfce] bg-[#fffaf4] px-3 text-sm text-[#3d2416] outline-none focus:border-[#c4a882]"
+              className="h-10 min-w-0 flex-1 rounded-full border border-[#eadfce] bg-[#fffaf5] px-3 text-sm text-[#2b2118] outline-none focus:border-[#c4a882]"
             />
             <button
               type="submit"
               disabled={pending || !input.trim()}
-              className="flex size-10 items-center justify-center rounded-full bg-[#82502a] text-white transition-colors hover:bg-[#6d4123] disabled:opacity-40"
+              className="flex size-10 items-center justify-center rounded-full bg-[#d0122d] text-white transition-colors hover:bg-[#9b1020] disabled:opacity-40"
               aria-label="Send"
             >
               <Send className="size-4" />
@@ -187,7 +187,7 @@ export function SiteChat() {
       <button
         type="button"
         onClick={() => setOpen(true)}
-        className="pointer-events-auto flex size-14 items-center justify-center rounded-full bg-[#82502a] text-white shadow-[0_12px_28px_rgba(80,50,20,0.28)] transition-transform hover:scale-105 hover:bg-[#6d4123]"
+        className="pointer-events-auto flex size-14 items-center justify-center rounded-full bg-[#d0122d] text-white shadow-[0_12px_28px_rgba(80,50,20,0.28)] transition-transform hover:scale-105 hover:bg-[#9b1020]"
         aria-expanded={open}
         aria-label="Open Prokrate assistant"
       >

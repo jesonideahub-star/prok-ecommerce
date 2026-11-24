@@ -27,10 +27,10 @@ export function PackageDeals({
     "packages" in featured ? featured.packages[selected] : undefined;
 
   return (
-    <section id="packages" className="bg-[#f6f1e8] px-4 py-14 md:px-8 md:py-20">
+    <section id="packages" className="bg-[#fff6ee] px-4 py-14 md:px-8 md:py-20">
       <div className="mx-auto max-w-[1180px]">
         <div className="text-center">
-          <p className="text-xs font-semibold tracking-[0.22em] text-[#8b5a2b] uppercase">
+          <p className="text-xs font-semibold tracking-[0.22em] text-[#d0122d] uppercase">
             Café starter bundles
           </p>
           <h2 className="mt-2 font-serif text-3xl text-zinc-800 md:text-[2.35rem]">
@@ -55,10 +55,10 @@ export function PackageDeals({
 
             <div className="flex flex-col px-6 py-8 md:px-8 md:py-10">
               <div className="flex flex-wrap items-center gap-2">
-                <span className="rounded-full bg-[#8b5a2b] px-3 py-1 text-[10px] font-semibold tracking-[0.14em] text-white uppercase">
+                <span className="rounded-full bg-[#d0122d] px-3 py-1 text-[10px] font-semibold tracking-[0.14em] text-white uppercase">
                   {featured.brand}
                 </span>
-                <span className="inline-flex items-center gap-1 text-[11px] font-medium tracking-wide text-[#8b5a2b] uppercase">
+                <span className="inline-flex items-center gap-1 text-[11px] font-medium tracking-wide text-[#d0122d] uppercase">
                   <Shield className="size-3.5" />
                   {featured.warranty}
                 </span>
@@ -89,7 +89,7 @@ export function PackageDeals({
                     className={cn(
                       "rounded-xl border px-3 py-3 text-left transition-colors",
                       index === selected
-                        ? "border-[#8b5a2b] bg-[#8b5a2b] text-white"
+                        ? "border-[#d0122d] bg-[#d0122d] text-white"
                         : "border-zinc-200 bg-[#fff9f2] text-zinc-700 hover:border-[#c4a484]"
                     )}
                   >
@@ -118,7 +118,7 @@ export function PackageDeals({
               <ul className="mt-5 space-y-1.5">
                 {featured.inclusions.map((item) => (
                   <li key={item} className="flex items-start gap-2 text-sm text-zinc-600">
-                    <Check className="mt-0.5 size-4 shrink-0 text-[#8b5a2b]" />
+                    <Check className="mt-0.5 size-4 shrink-0 text-[#d0122d]" />
                     {item}
                   </li>
                 ))}
@@ -130,7 +130,7 @@ export function PackageDeals({
 
               <Link
                 href="/#contact"
-                className="mt-6 inline-flex h-11 items-center justify-center rounded-md bg-[#8b5a2b] px-6 text-sm font-medium text-white hover:bg-[#6b3e24]"
+                className="mt-6 inline-flex h-11 items-center justify-center rounded-md bg-[#d0122d] px-6 text-sm font-medium text-white hover:bg-[#9b1020]"
               >
                 Inquire about this package
               </Link>
@@ -164,20 +164,20 @@ export function PackageDeals({
                 </p>
                 <p className="mt-1 text-sm text-zinc-400 line-through">{peso(deal.before)}</p>
                 <p className="text-2xl font-bold text-[#a32020]">{peso(deal.after)}</p>
-                <p className="mt-1 text-xs font-medium text-[#8b5a2b]">
+                <p className="mt-1 text-xs font-medium text-[#d0122d]">
                   Includes {deal.grinder} · ₱{deal.freebiesWorth.toLocaleString("en-PH")}+ freebies
                 </p>
                 <ul className="mt-4 line-clamp-4 space-y-1 text-xs text-zinc-500">
                   {deal.inclusions.slice(0, 4).map((item) => (
                     <li key={item} className="flex gap-2">
-                      <Check className="mt-0.5 size-3.5 shrink-0 text-[#8b5a2b]" />
+                      <Check className="mt-0.5 size-3.5 shrink-0 text-[#d0122d]" />
                       {item}
                     </li>
                   ))}
                 </ul>
                 <Link
                   href="/#contact"
-                  className="mt-5 inline-flex h-10 items-center justify-center rounded-md bg-[#8b5a2b] px-4 text-sm font-medium text-white hover:bg-[#6b3e24]"
+                  className="mt-5 inline-flex h-10 items-center justify-center rounded-md bg-[#d0122d] px-4 text-sm font-medium text-white hover:bg-[#9b1020]"
                 >
                   Inquire now
                 </Link>

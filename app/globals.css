@@ -218,14 +218,14 @@
 }
 
 :root {
-  --background: oklch(0.962 0.012 85);
-  --foreground: oklch(0.27 0.03 50);
-  --card: oklch(0.995 0.004 85);
-  --card-foreground: oklch(0.27 0.03 50);
-  --popover: oklch(0.995 0.004 85);
-  --popover-foreground: oklch(0.27 0.03 50);
-  --primary: oklch(0.42 0.07 50);
-  --primary-foreground: oklch(0.98 0.01 85);
+  --background: #fff6ee;
+  --foreground: #2b2118;
+  --card: #fffaf5;
+  --card-foreground: #2b2118;
+  --popover: #fffaf5;
+  --popover-foreground: #2b2118;
+  --primary: #d0122d;
+  --primary-foreground: #fff6ee;
   --secondary: oklch(0.94 0.02 80);
   --secondary-foreground: oklch(0.32 0.04 50);
   --muted: oklch(0.94 0.018 80);

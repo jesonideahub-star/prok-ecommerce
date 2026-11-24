@@ -36,7 +36,7 @@ export function ServicesBanner({
         {buttonLabel && buttonHref ? (
           <Link
             href={buttonHref}
-            className="relative mt-8 inline-flex h-11 items-center justify-center overflow-hidden rounded-full border border-white px-8 text-sm font-medium text-white shadow-[0_8px_24px_rgba(0,0,0,0.25)] transition-all duration-300 hover:scale-[1.04] hover:bg-white hover:text-[#3d2416]"
+            className="relative mt-8 inline-flex h-11 items-center justify-center overflow-hidden rounded-full border border-white px-8 text-sm font-medium text-white shadow-[0_8px_24px_rgba(0,0,0,0.25)] transition-all duration-300 hover:scale-[1.04] hover:bg-white hover:text-[#2b2118]"
           >
             <span className="absolute inset-0 -skew-x-12 bg-gradient-to-r from-transparent via-white/30 to-transparent animate-cta-shine" />
             <span className="relative">{buttonLabel}</span>

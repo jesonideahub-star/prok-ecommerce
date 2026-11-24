@@ -7,7 +7,7 @@ import { cleaningCatalogCopy, cleaningProducts } from "@/lib/site";
 
 export function CleaningSolutionPage() {
   return (
-    <main className="flex-1 overflow-hidden bg-[#f6f1e8]">
+    <main className="flex-1 overflow-hidden bg-[#fff6ee]">
       <CollectionBanner
         title={cleaningCatalogCopy.title}
         description={cleaningCatalogCopy.description}

@@ -109,7 +109,7 @@ export function EspressoMachinesPage({
       : espressoCatalogCopy.title;
 
   return (
-    <main className="flex-1 overflow-hidden bg-[#f6f1e8]">
+    <main className="flex-1 overflow-hidden bg-[#fff6ee]">
       <CollectionBanner
         title={title}
         description={
@@ -123,7 +123,7 @@ export function EspressoMachinesPage({
 
       <section className="relative mx-auto max-w-[1240px] px-5 md:px-8">
         <div className="animate-scale-in rounded-[28px] bg-[#fff9f2]/95 px-4 py-8 shadow-[0_18px_40px_rgba(80,50,20,0.08)] ring-1 ring-[#eadfce] backdrop-blur-sm md:px-10 md:py-10 [animation-delay:140ms]">
-          <h2 className="animate-fade-up text-center font-serif text-2xl font-bold text-[#1a7a72] md:text-[1.85rem] [animation-delay:200ms]">
+          <h2 className="animate-fade-up text-center font-serif text-2xl font-bold text-[#d0122d] md:text-[1.85rem] [animation-delay:200ms]">
             Shop Machine
           </h2>
           <p className="mt-2 animate-fade-up text-center text-sm text-zinc-500 [animation-delay:260ms]">
@@ -146,7 +146,7 @@ export function EspressoMachinesPage({
                   <span
                     className={cn(
                       "relative block size-[132px] overflow-hidden rounded-full shadow-[0_12px_28px_rgba(80,50,20,0.14)] ring-4 ring-white transition-all duration-500 group-hover:-translate-y-1.5 group-hover:scale-[1.05] group-hover:shadow-[0_18px_36px_rgba(80,50,20,0.22)] sm:size-[148px]",
-                      active && "ring-[#c4783a] ring-offset-4 ring-offset-[#fff9f2]"
+                      active && "ring-[#d0122d] ring-offset-4 ring-offset-[#fff9f2]"
                     )}
                   >
                     <Image
@@ -161,7 +161,7 @@ export function EspressoMachinesPage({
                   <span
                     className={cn(
                       "text-[15px] font-bold tracking-wide transition-colors duration-300",
-                      active ? "text-[#8b5a2b]" : "text-[#c4783a] group-hover:text-[#8b5a2b]"
+                      active ? "text-[#d0122d]" : "text-[#d0122d] group-hover:text-[#d0122d]"
                     )}
                   >
                     {item.label}
@@ -177,7 +177,7 @@ export function EspressoMachinesPage({
       <section className="mx-auto max-w-[1240px] px-4 py-8 sm:px-5 md:px-8 md:py-14">
         <div className="flex flex-col gap-4 border-b border-[#eadfce] pb-5 sm:flex-row sm:flex-wrap sm:items-end sm:justify-between">
           <div>
-            <h2 className="font-serif text-xl font-bold text-[#3d2416] sm:text-2xl md:text-3xl">
+            <h2 className="font-serif text-xl font-bold text-[#2b2118] sm:text-2xl md:text-3xl">
               {useLabel ? `${useLabel} selection` : "The collection"}
             </h2>
             <p className="mt-1 text-sm text-zinc-500">
@@ -193,7 +193,7 @@ export function EspressoMachinesPage({
               className={cn(
                 "inline-flex h-9 items-center justify-center rounded-full px-3 text-center text-sm font-medium transition-all duration-300 hover:-translate-y-0.5 sm:px-4",
                 groupCount === 1
-                  ? "bg-[#8b5a2b] text-white"
+                  ? "bg-[#d0122d] text-white"
                   : "bg-white text-[#5c3a22] ring-1 ring-[#eadfce] hover:bg-[#eadfce]"
               )}
             >
@@ -204,7 +204,7 @@ export function EspressoMachinesPage({
               className={cn(
                 "inline-flex h-9 items-center justify-center rounded-full px-3 text-center text-sm font-medium transition-all duration-300 hover:-translate-y-0.5 sm:px-4",
                 groupCount === 2
-                  ? "bg-[#8b5a2b] text-white"
+                  ? "bg-[#d0122d] text-white"
                   : "bg-white text-[#5c3a22] ring-1 ring-[#eadfce] hover:bg-[#eadfce]"
               )}
             >

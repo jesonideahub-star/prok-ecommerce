@@ -81,7 +81,7 @@ export function AdminLoginForm() {
           className="h-10"
         />
       </label>
-      <Button type="submit" className="h-10 w-full bg-[#82502a] text-white hover:bg-[#6b3e24]" disabled={busy}>
+      <Button type="submit" className="h-10 w-full bg-[#d0122d] text-white hover:bg-[#9b1020]" disabled={busy}>
         {busy ? "Signing in…" : "Sign in"}
       </Button>
       <p className="text-xs leading-5 text-zinc-500">

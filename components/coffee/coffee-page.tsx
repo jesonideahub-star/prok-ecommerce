@@ -70,7 +70,7 @@ export function CoffeePage({
   const title = tabCopy?.title ?? coffeeCatalogCopy.title;
 
   return (
-    <main className="flex-1 overflow-hidden bg-[#f6f1e8]">
+    <main className="flex-1 overflow-hidden bg-[#fff6ee]">
       <CollectionBanner
         title={title}
         description={tabCopy?.description ?? coffeeCatalogCopy.description}
@@ -80,7 +80,7 @@ export function CoffeePage({
 
       <section className="relative mx-auto max-w-[1240px] px-5 md:px-8">
         <div className="animate-scale-in rounded-[28px] bg-[#fff9f2] px-4 py-8 shadow-[0_18px_40px_rgba(80,50,20,0.08)] ring-1 ring-[#eadfce] md:px-10 md:py-10 [animation-delay:140ms]">
-          <h2 className="animate-fade-up text-center font-serif text-2xl font-bold text-[#1a7a72] md:text-[1.85rem] [animation-delay:200ms]">
+          <h2 className="animate-fade-up text-center font-serif text-2xl font-bold text-[#d0122d] md:text-[1.85rem] [animation-delay:200ms]">
             {coffeeCatalogCopy.shopHeading}
           </h2>
           <p className="mt-2 animate-fade-up text-center text-sm text-zinc-500 [animation-delay:260ms]">
@@ -106,7 +106,7 @@ export function CoffeePage({
                 <div
                   className={cn(
                     "absolute inset-x-0 bottom-0 p-6 md:p-8",
-                    item.overlay === "orange" ? "text-[#c4783a]" : "text-white"
+                    item.overlay === "orange" ? "text-[#d0122d]" : "text-white"
                   )}
                 >
                   <h3 className="text-3xl font-bold tracking-tight md:text-4xl">{item.title}</h3>
@@ -121,7 +121,7 @@ export function CoffeePage({
       <section className="mx-auto max-w-[1240px] px-5 py-10 md:px-8 md:py-14">
         <div className="flex animate-fade-up flex-col gap-4 border-b border-[#eadfce] pb-5 sm:flex-row sm:flex-wrap sm:items-end sm:justify-between [animation-delay:320ms]">
           <div>
-            <h2 className="font-serif text-2xl font-bold text-[#3d2416] md:text-3xl">
+            <h2 className="font-serif text-2xl font-bold text-[#2b2118] md:text-3xl">
               {tabCopy?.selection ?? "The collection"}
             </h2>
             <p className="mt-1 text-sm text-zinc-500">

@@ -36,7 +36,7 @@ export function CollectionBanner({
       <div className="pointer-events-none absolute inset-0">
         <div className="absolute -top-24 left-[-8%] size-[420px] rounded-full bg-[#e8d5b8]/55 blur-3xl animate-soft-pulse" />
         <div className="absolute top-10 right-[-6%] size-[360px] rounded-full bg-[#c4a882]/25 blur-3xl animate-soft-pulse [animation-delay:1.2s]" />
-        <div className="absolute bottom-0 left-[35%] size-[280px] rounded-full bg-[#1a7a72]/10 blur-3xl" />
+        <div className="absolute bottom-0 left-[35%] size-[280px] rounded-full bg-[#d0122d]/10 blur-3xl" />
       </div>
 
       {overlaySrc ? (
@@ -48,7 +48,7 @@ export function CollectionBanner({
             className="object-cover animate-ken-burns"
             sizes="100vw"
           />
-          <div className="absolute inset-0 bg-gradient-to-b from-[#f6f1e8]/65 via-[#f6f1e8]/90 to-[#f6f1e8]" />
+          <div className="absolute inset-0 bg-gradient-to-b from-[#fff6ee]/65 via-[#fff6ee]/90 to-[#fff6ee]" />
         </div>
       ) : null}
 
@@ -80,12 +80,12 @@ export function CollectionBanner({
         : null}
 
       <div className="relative mx-auto max-w-[1240px] px-5 pt-10 pb-6 md:px-8 md:pt-14 md:pb-8">
-        <p className="animate-fade-up text-xs font-semibold tracking-[0.28em] text-[#8b5a2b] uppercase">
+        <p className="animate-fade-up text-xs font-semibold tracking-[0.28em] text-[#d0122d] uppercase">
           {eyebrow}
         </p>
         <h1
           key={title}
-          className="mt-3 max-w-[20ch] animate-fade-up font-serif text-4xl font-bold tracking-tight text-[#3d2416] md:text-[3.25rem]"
+          className="mt-3 max-w-[20ch] animate-fade-up font-serif text-4xl font-bold tracking-tight text-[#2b2118] md:text-[3.25rem]"
         >
           {title}
         </h1>

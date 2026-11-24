@@ -45,7 +45,7 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
       lang="en"
       className={`${geistSans.variable} ${geistMono.variable} ${playfair.variable} h-full scroll-smooth antialiased`}
     >
-      <body className="flex min-h-full flex-col bg-[#f6f1e8]">
+      <body className="flex min-h-full flex-col bg-[#fff6ee]">
         {children}
         <Script id="consent-boot" strategy="beforeInteractive">
           {consentBootScript}

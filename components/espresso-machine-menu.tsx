@@ -31,7 +31,7 @@ export function EspressoMachineMenu({
   className?: string;
 }) {
   return (
-    <div className={cn("bg-[#fffaf4]", className)}>
+    <div className={cn("bg-[#fffaf5]", className)}>
       <div className="mx-auto max-w-[1280px] px-6 py-8 md:px-10 md:py-10">
         <div className="flex flex-wrap gap-16 lg:gap-28">
           <ul className="space-y-1">
@@ -41,9 +41,9 @@ export function EspressoMachineMenu({
                   href={item.href}
                   onClick={onNavigate}
                   className={cn(
-                    "block rounded-md py-1.5 text-[15px] transition-colors hover:text-[#165c38]",
+                    "block rounded-md py-1.5 text-[15px] transition-colors hover:text-[#d0122d]",
                     use === item.slug
-                      ? "font-medium text-[#165c38]"
+                      ? "font-medium text-[#d0122d]"
                       : "text-zinc-700"
                   )}
                 >
@@ -59,9 +59,9 @@ export function EspressoMachineMenu({
                   href={item.href}
                   onClick={onNavigate}
                   className={cn(
-                    "block rounded-md py-1.5 text-[15px] transition-colors hover:text-[#165c38]",
+                    "block rounded-md py-1.5 text-[15px] transition-colors hover:text-[#d0122d]",
                     group === item.value
-                      ? "font-medium text-[#165c38]"
+                      ? "font-medium text-[#d0122d]"
                       : "text-zinc-700"
                   )}
                 >
@@ -75,7 +75,7 @@ export function EspressoMachineMenu({
               <Link
                 href="/#packages"
                 onClick={onNavigate}
-                className="block rounded-md py-1.5 text-[15px] font-medium text-[#165c38] transition-colors hover:text-[#124c2e]"
+                className="block rounded-md py-1.5 text-[15px] font-medium text-[#d0122d] transition-colors hover:text-[#124c2e]"
               >
                 Package Deals
               </Link>

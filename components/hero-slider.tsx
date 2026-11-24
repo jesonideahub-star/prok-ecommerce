@@ -68,7 +68,7 @@ export function HeroSlider() {
   return (
     <section className="relative overflow-hidden bg-[#eadfce] px-3 pt-6 pb-8 md:px-5 md:pt-8">
       <div className="pointer-events-none absolute -top-24 left-[-8%] size-[420px] rounded-full bg-[#c4a882]/35 blur-3xl animate-soft-pulse" />
-      <div className="pointer-events-none absolute top-16 right-[-10%] size-[360px] rounded-full bg-[#8b5a2b]/20 blur-3xl animate-soft-pulse [animation-delay:1.4s]" />
+      <div className="pointer-events-none absolute top-16 right-[-10%] size-[360px] rounded-full bg-[#d0122d]/20 blur-3xl animate-soft-pulse [animation-delay:1.4s]" />
       <div className="relative mx-auto h-[52vh] min-h-[320px] max-h-[860px] w-full max-w-[1440px] overflow-hidden rounded-2xl border border-black/5 bg-black shadow-[0_18px_50px_rgba(80,50,20,0.28)] sm:h-[60vh] sm:min-h-[400px] md:h-[78vh] md:min-h-[460px]">
         {slides.map((item, i) => (
           <div

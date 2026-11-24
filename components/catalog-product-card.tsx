@@ -50,11 +50,11 @@ export function CatalogProductCard({
       </div>
       <CardContent className="px-2 pt-2 pb-4 sm:px-4 sm:pt-3 sm:pb-5">
         {brand ? (
-          <p className="text-[10px] font-medium tracking-[0.16em] text-[#8b5a2b] uppercase sm:text-[11px]">
+          <p className="text-[10px] font-medium tracking-[0.16em] text-[#d0122d] uppercase sm:text-[11px]">
             {brand}
           </p>
         ) : null}
-        <p className="mt-1 text-[13px] font-medium text-[#3d2416] transition-colors duration-300 group-hover:text-[#8b5a2b] sm:text-[15px]">{name}</p>
+        <p className="mt-1 text-[13px] font-medium text-[#2b2118] transition-colors duration-300 group-hover:text-[#d0122d] sm:text-[15px]">{name}</p>
         {detail ? <p className="mt-1 text-xs text-zinc-500">{detail}</p> : null}
       </CardContent>
     </Card>
