@@ -1,9 +1,9 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Image from "@/components/media-image";
 import Link from "next/link";
-import { ChevronDown } from "lucide-react";
+import { ChevronDown, LoaderCircle, RotateCcw } from "lucide-react";
 
 import { CatalogAd } from "@/components/ads/catalog-ad";
 import { CatalogProductCard } from "@/components/catalog-product-card";
@@ -18,9 +18,111 @@ import {
   coffeeProducts,
   coffeeTabCopy,
 } from "@/lib/site";
+import { createClient } from "@/lib/supabase/client";
 import { cn } from "@/lib/utils";
 
 type SortKey = "default" | "az" | "za";
+type CoffeeProduct = {
+  name: string;
+  brand: string;
+  category: "beans" | "pods";
+  detail?: string;
+  brews: readonly string[];
+  src: string;
+};
+
+const coffeeBucket = "Marcafe";
+const imageExtensions = /\.(avif|gif|jpe?g|png|webp)$/i;
+
+function normalizeCoffeeFilename(filename: string) {
+  return filename
+    .replace(imageExtensions, "")
+    .replace(/^product-/i, "")
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/[^a-z0-9]/g, "");
+}
+
+function coffeeDisplayName(filename: string) {
+  return filename
+    .replace(imageExtensions, "")
+    .replace(/[_-]+/g, " ")
+    .replace(/\s+/g, " ")
+    .trim()
+    .replace(/^marcafe\s+/i, "")
+    .replace(/\b[a-z]/g, (letter) => letter.toUpperCase());
+}
+
+async function loadCoffeeProducts(): Promise<CoffeeProduct[]> {
+  const bucket = createClient().storage.from(coffeeBucket);
+
+  async function listDirectory(path: string) {
+    const entries = [];
+    const limit = 1000;
+
+    for (let offset = 0; ; offset += limit) {
+      const { data, error } = await bucket.list(path, {
+        limit,
+        offset,
+        sortBy: { column: "name", order: "asc" },
+      });
+
+      if (error) throw error;
+      entries.push(...(data ?? []));
+      if (!data || data.length < limit) break;
+    }
+
+    return entries;
+  }
+
+  async function walk(path: string): Promise<CoffeeProduct[]> {
+    const entries = await listDirectory(path);
+    const products: CoffeeProduct[] = [];
+
+    for (const entry of entries) {
+      const entryPath = path ? `${path}/${entry.name}` : entry.name;
+      if (entry.id === null) {
+        products.push(...(await walk(entryPath)));
+        continue;
+      }
+
+      if (!imageExtensions.test(entry.name)) continue;
+
+      const normalizedName = normalizeCoffeeFilename(entry.name);
+      const knownProduct = coffeeProducts.find((item) => {
+        const productName = normalizeCoffeeFilename(item.name);
+        const productFilename = normalizeCoffeeFilename(
+          item.src.split("/").at(-1) ?? ""
+        );
+        return (
+          normalizedName === productName ||
+          normalizedName.endsWith(productName) ||
+          normalizedName === productFilename ||
+          normalizedName.endsWith(productFilename) ||
+          (productName === "caffedecaffeinato" &&
+            normalizedName.includes("decaf"))
+        );
+      });
+      const isPods =
+        knownProduct?.category === "pods" ||
+        /pod|capsule|cialde|decaf/i.test(`${entryPath} ${entry.name}`);
+
+      products.push({
+        name: knownProduct?.name ?? coffeeDisplayName(entry.name),
+        brand: knownProduct?.brand ?? "Marcafé",
+        category: isPods ? "pods" : "beans",
+        detail: knownProduct?.detail,
+        brews: knownProduct?.brews ?? [],
+        src: bucket.getPublicUrl(entryPath).data.publicUrl,
+      });
+    }
+
+    return products;
+  }
+
+  return (await walk("")).sort((a, b) => a.name.localeCompare(b.name));
+}
 
 const heroCoffees = [
   {
@@ -47,12 +149,39 @@ export function CoffeePage({
   brew?: string;
 }) {
   const [sort, setSort] = useState<SortKey>("default");
+  const [products, setProducts] = useState<CoffeeProduct[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [loadError, setLoadError] = useState(false);
+  const [reloadKey, setReloadKey] = useState(0);
   const activeCategory = category === "beans" || category === "pods" ? category : undefined;
   const activeShop = coffeeCategories.find((item) => item.slug === activeCategory);
   const tabCopy = activeCategory ? coffeeTabCopy[activeCategory] : undefined;
 
+  useEffect(() => {
+    let active = true;
+
+    async function load() {
+      try {
+        setIsLoading(true);
+        setLoadError(false);
+        const loadedProducts = await loadCoffeeProducts();
+        if (active) setProducts(loadedProducts);
+      } catch (error) {
+        console.error(`Unable to load coffee products from the ${coffeeBucket} bucket.`, error);
+        if (active) setLoadError(true);
+      } finally {
+        if (active) setIsLoading(false);
+      }
+    }
+
+    void load();
+    return () => {
+      active = false;
+    };
+  }, [reloadKey]);
+
   const items = useMemo(() => {
-    const next = coffeeProducts.filter((item) => {
+    const next = products.filter((item) => {
       if (activeCategory && item.category !== activeCategory) return false;
       if (brew && !item.brews.some((value) => value === brew)) return false;
       return true;
@@ -65,7 +194,7 @@ export function CoffeePage({
       next.sort((a, b) => b.name.localeCompare(a.name));
     }
     return next;
-  }, [activeCategory, brew, sort]);
+  }, [activeCategory, brew, products, sort]);
 
   const title = tabCopy?.title ?? coffeeCatalogCopy.title;
 
@@ -125,7 +254,9 @@ export function CoffeePage({
               {tabCopy?.selection ?? "The collection"}
             </h2>
             <p className="mt-1 text-sm text-zinc-500">
-              {items.length} {items.length === 1 ? "coffee" : "coffees"}
+              {isLoading
+                ? "Loading Marcafé products…"
+                : `${items.length} ${items.length === 1 ? "coffee" : "coffees"}`}
             </p>
           </div>
           <div className="flex w-full flex-wrap items-center gap-3 sm:w-auto">
@@ -148,7 +279,26 @@ export function CoffeePage({
           </div>
         </div>
 
-        {items.length ? (
+        {isLoading ? (
+          <div className="mt-8 flex min-h-[220px] items-center justify-center gap-2 rounded-2xl border border-[#eadfce] bg-white/70 text-sm text-zinc-500">
+            <LoaderCircle className="size-4 animate-spin" />
+            Loading products from the Marcafe bucket…
+          </div>
+        ) : loadError ? (
+          <div className="mt-8 flex min-h-[220px] flex-col items-center justify-center gap-3 rounded-2xl border border-[#eadfce] bg-white/70 text-center">
+            <p className="text-sm text-zinc-500">
+              Marcafé products could not be loaded from the product library.
+            </p>
+            <button
+              type="button"
+              onClick={() => setReloadKey((key) => key + 1)}
+              className="inline-flex items-center gap-2 rounded-full bg-[#d0122d] px-4 py-2 text-xs font-semibold text-white transition-colors hover:bg-[#ad1025]"
+            >
+              <RotateCcw className="size-3.5" />
+              Try again
+            </button>
+          </div>
+        ) : items.length ? (
           <>
             <CatalogAd />
             <div className="mt-6 grid grid-cols-2 gap-3 sm:mt-8 sm:grid-cols-3 sm:gap-5 lg:grid-cols-4">
