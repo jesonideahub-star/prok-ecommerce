@@ -91,16 +91,17 @@ function NavLink({
         className={cn(
           "inline-flex items-center gap-1 whitespace-nowrap rounded-full px-3 py-2.5 text-[13px] font-medium transition-colors xl:px-4 xl:text-[15px] 2xl:px-5 2xl:text-[18px]",
           isActive &&
-            "bg-[#d0122d] text-white hover:bg-[#b10f26]",
+            item.label !== "Contact Us" &&
+            "bg-[#D7192D] text-white hover:bg-[#b91427]",
           item.label === "Contact Us" &&
-            "rounded-full bg-[#f5c400] px-4 py-2.5 font-semibold text-[#2b2118] hover:bg-[#ffd24a] 2xl:px-6 2xl:py-3",
+            "rounded-full bg-[#FFBF55] px-4 py-2.5 font-semibold text-[#2b2118] hover:bg-[#F7B744] 2xl:px-6 2xl:py-3",
           !isActive &&
             item.label !== "Contact Us" &&
-            (highlighted ? "text-[#d0122d]" : "text-[#3a2a22] hover:text-[#d0122d]"),
+            (highlighted ? "text-[#D7192D]" : "text-[#3a2a22] hover:text-[#D7192D]"),
           !isActive && item.label === "Contact Us" && "text-[#2b2118]"
         )}
       >
-        {item.label === "Contact Us" ? <Mail className="size-3.5" /> : null}
+        {item.label === "Contact Us" ? <Mail className="size-4" /> : null}
         {navDisplayLabel(item.label)}
         {dropdown ? (
           <ChevronDown
@@ -179,7 +180,7 @@ function SearchForm({
         type="submit"
         aria-label="Search"
         className={cn(
-          "shrink-0 rounded-full border-0 bg-[#d0122d] text-white hover:bg-[#b10f26]",
+          "shrink-0 rounded-full border-0 bg-[#D7192D] text-white hover:bg-[#b91427]",
           large ? "size-[58px]" : "size-11"
         )}
       >
@@ -220,7 +221,7 @@ export function SiteHeader() {
       className="sticky top-0 z-50 overflow-x-clip bg-white text-[#2b2118]"
       onMouseLeave={() => setMega(null)}
     >
-      <div className="hidden bg-[linear-gradient(100deg,#a9141d_0%,#bd2228_52%,#a9141d_100%)] text-white lg:block">
+      <div className="hidden bg-[#D7192D] text-white lg:block">
         <div className="mx-auto grid h-[46px] max-w-[1900px] grid-cols-4 items-center px-8 text-sm font-semibold">
           <span className="inline-flex items-center gap-3">
             <Truck className="size-6 shrink-0" />
@@ -247,7 +248,7 @@ export function SiteHeader() {
         <SiteLogo showPitcorp={false} className="min-w-0 shrink-0 [&_img]:h-10 sm:[&_img]:h-11 lg:[&_img]:h-12" />
         <button
           type="button"
-          className="inline-flex size-10 items-center justify-center text-[#3a2a22] hover:text-[#d0122d]"
+          className="inline-flex size-10 items-center justify-center text-[#3a2a22] hover:text-[#D7192D]"
           onClick={() => setMobileOpen((value) => !value)}
           aria-expanded={mobileOpen}
           aria-label={mobileOpen ? "Close menu" : "Open menu"}
@@ -262,7 +263,7 @@ export function SiteHeader() {
         <div className="ml-auto flex shrink-0 items-center gap-9">
           <Link
             href="/admin/login"
-            className="inline-flex items-center gap-3 text-[15px] font-medium text-[#2b2118] hover:text-[#d0122d]"
+            className="inline-flex items-center gap-3 text-[15px] font-medium text-[#2b2118] hover:text-[#D7192D]"
           >
             <User className="size-7 stroke-[1.6] text-[#c4161c]" />
             Admin Login
@@ -270,10 +271,10 @@ export function SiteHeader() {
           <Link
             href="/espresso-machines"
             aria-label="Cart"
-            className="relative inline-flex text-[#2b2118] hover:text-[#d0122d]"
+            className="relative inline-flex text-[#2b2118] hover:text-[#D7192D]"
           >
             <ShoppingCart className="size-8 stroke-[1.6]" />
-            <span className="absolute -top-3 -right-3 flex size-7 items-center justify-center rounded-full bg-[#f5c45b] text-xs font-semibold text-[#2b2118]">
+            <span className="absolute -top-3 -right-3 flex size-7 items-center justify-center rounded-full bg-[#FCE4E7] text-xs font-semibold text-[#D7192D]">
               0
             </span>
           </Link>
@@ -303,14 +304,14 @@ export function SiteHeader() {
       </div>
 
       {openItem && isBrandsMega(openItem) ? (
-        <div className="absolute inset-x-0 top-full border-t border-[#cbb392] bg-[#fffaf5] shadow-[0_18px_40px_rgba(80,50,20,0.12)]">
+        <div className="absolute inset-x-0 top-full border-t border-[#FCE4E7] bg-[#FFF3F4] shadow-[0_18px_40px_rgba(215,25,45,0.12)]">
           <div className="mx-auto flex max-w-[1440px] items-stretch gap-2 overflow-visible px-3 py-6 sm:gap-3 sm:px-6 lg:px-10 lg:py-7">
             {openItem.brands.map((name) => (
               <Link
                 key={name}
                 href={brandPageHref(name)}
                 onClick={close}
-                className="flex min-h-[140px] min-w-0 flex-1 items-center justify-center rounded-xl bg-white px-1.5 py-4 ring-1 ring-[#eadfce] transition-all duration-300 ease-out hover:z-10 hover:-translate-y-1.5 hover:scale-[1.04] hover:shadow-[0_12px_24px_rgba(80,50,20,0.12)] sm:min-h-[160px] sm:px-2"
+                className="flex min-h-[140px] min-w-0 flex-1 items-center justify-center rounded-xl bg-white px-1.5 py-4 ring-1 ring-[#FCE4E7] transition-all duration-300 ease-out hover:z-10 hover:-translate-y-1.5 hover:scale-[1.04] hover:shadow-[0_12px_24px_rgba(215,25,45,0.12)] sm:min-h-[160px] sm:px-2"
               >
                 <BrandMark name={name} size="lg" />
               </Link>
@@ -320,13 +321,13 @@ export function SiteHeader() {
       ) : null}
 
       {openItem && isCatalogMega(openItem) && openItem.label === "Coffee" ? (
-        <div className="absolute inset-x-0 top-full border-t border-[#cbb392] shadow-[0_18px_40px_rgba(80,50,20,0.12)]">
+        <div className="absolute inset-x-0 top-full border-t border-[#FCE4E7] shadow-[0_18px_40px_rgba(215,25,45,0.12)]">
           <CoffeeMenu onNavigate={close} />
         </div>
       ) : null}
 
       {openItem && isCatalogMega(openItem) && openItem.label === "Espresso Machines" ? (
-        <div className="absolute inset-x-0 top-full border-t border-[#cbb392] shadow-[0_18px_40px_rgba(80,50,20,0.12)]">
+        <div className="absolute inset-x-0 top-full border-t border-[#FCE4E7] shadow-[0_18px_40px_rgba(215,25,45,0.12)]">
           <EspressoMachineMenu onNavigate={close} />
         </div>
       ) : null}
@@ -335,7 +336,7 @@ export function SiteHeader() {
       isCatalogMega(openItem) &&
       openItem.label !== "Espresso Machines" &&
       openItem.label !== "Coffee" ? (
-        <div className="absolute inset-x-0 top-full border-t border-[#cbb392] bg-[#fffaf5] shadow-[0_18px_40px_rgba(80,50,20,0.12)]">
+        <div className="absolute inset-x-0 top-full border-t border-[#FCE4E7] bg-[#FFF3F4] shadow-[0_18px_40px_rgba(215,25,45,0.12)]">
           <div className="mx-auto max-w-[1440px] px-8 py-8 lg:px-10 lg:py-10">
             <div className="flex flex-wrap gap-16 lg:gap-28">
               <ul className="space-y-1">
@@ -348,8 +349,8 @@ export function SiteHeader() {
                       <Link
                         href={child.href}
                         className={cn(
-                          "block rounded-md px-1 py-1.5 text-[15px] transition-colors hover:text-[#d0122d]",
-                          active ? "font-medium text-[#d0122d]" : "text-zinc-700"
+                          "block rounded-md px-1 py-1.5 text-[15px] transition-colors hover:text-[#D7192D]",
+                          active ? "font-medium text-[#D7192D]" : "text-zinc-700"
                         )}
                         onMouseEnter={() => {
                           if (childUse) setCatalogUse(childUse);
@@ -368,7 +369,7 @@ export function SiteHeader() {
                     <li key={child.label}>
                       <Link
                         href={child.href}
-                        className="block rounded-md px-1 py-1.5 text-[15px] text-zinc-700 transition-colors hover:text-[#d0122d]"
+                        className="block rounded-md px-1 py-1.5 text-[15px] text-zinc-700 transition-colors hover:text-[#D7192D]"
                         onClick={close}
                       >
                         {child.label}
@@ -381,7 +382,7 @@ export function SiteHeader() {
                 <div className="ml-auto flex gap-6">
                   {openItem.featured.map((brand) => (
                     <div key={brand.cta} className="flex w-36 flex-col items-center">
-                      <div className="flex h-[100px] w-36 items-center justify-center rounded-xl bg-white ring-1 ring-[#eadfce]">
+                      <div className="flex h-[100px] w-36 items-center justify-center rounded-xl bg-white ring-1 ring-[#FCE4E7]">
                         {brand.src ? (
                           <div className="relative h-20 w-32">
                             <Image
@@ -398,7 +399,7 @@ export function SiteHeader() {
                       </div>
                       <Link
                         href={brand.href}
-                        className="mt-3 text-center text-sm text-[#d0122d] hover:underline"
+                        className="mt-3 text-center text-sm text-[#D7192D] hover:underline"
                         onClick={close}
                       >
                         {brand.cta}
@@ -413,13 +414,13 @@ export function SiteHeader() {
       ) : null}
 
       {openItem && hasChildren(openItem) && !isCatalogMega(openItem) && !isBrandsMega(openItem) ? (
-        <div className="absolute inset-x-0 top-full border-t border-[#cbb392] bg-[#fffaf5] py-3 shadow-[0_18px_40px_rgba(80,50,20,0.12)]">
+        <div className="absolute inset-x-0 top-full border-t border-[#FCE4E7] bg-[#FFF3F4] py-3 shadow-[0_18px_40px_rgba(215,25,45,0.12)]">
           <div className="mx-auto flex max-w-[1440px] gap-6 px-10">
             {openItem.children.map((child) => (
               <Link
                 key={child.label}
                 href={child.href}
-                className="text-sm text-zinc-700 hover:text-[#d0122d]"
+                className="text-sm text-zinc-700 hover:text-[#D7192D]"
                 onClick={close}
               >
                 {child.label}
@@ -431,12 +432,12 @@ export function SiteHeader() {
 
       <div
         className={cn(
-          "border-t border-[#f3e0d2] bg-white lg:hidden",
+          "border-t border-[#FCE4E7] bg-white lg:hidden",
           mobileOpen ? "block" : "hidden"
         )}
       >
         <div className="flex max-h-[70vh] flex-col overflow-y-auto px-4 py-3">
-          <div className="mb-2 flex flex-col gap-3 border-b border-[#f3e0d2] pb-3">
+          <div className="mb-2 flex flex-col gap-3 border-b border-[#FCE4E7] pb-3">
             <Link
               href="/admin/login"
               className="inline-flex items-center gap-2 text-sm font-medium text-[#222222]"
@@ -454,10 +455,10 @@ export function SiteHeader() {
                 className={cn(
                   "flex items-center justify-between rounded-full border px-4 py-2.5 text-sm font-medium",
                   pathMatches(pathname, item.href)
-                    ? "border-[#d0122d] bg-[#d0122d] text-white"
+                    ? "border-[#D7192D] bg-[#D7192D] text-white"
                     : item.label === "Contact Us"
-                      ? "border-[#f5c400] bg-[#f5c400] text-[#2b2118]"
-                      : "border-[#f3e0d2] bg-[#fff6ee] text-[#2b2118]"
+                      ? "border-[#FFBF55] bg-[#FFBF55] text-[#2b2118]"
+                      : "border-[#FCE4E7] bg-[#FFF3F4] text-[#2b2118]"
                 )}
                 onClick={close}
               >

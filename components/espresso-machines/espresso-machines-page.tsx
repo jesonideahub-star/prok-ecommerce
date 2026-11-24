@@ -1,25 +1,14 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Image from "@/components/media-image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { ChevronDown } from "lucide-react";
+import { ChevronDown, ChevronRight, Grid2X2, List, RotateCcw } from "lucide-react";
 
-import { CatalogAd } from "@/components/ads/catalog-ad";
-import { BrandStrip } from "@/components/brand-strip";
-import { CatalogProductCard } from "@/components/catalog-product-card";
-import {
-  catalogHeroFloatLeft,
-  catalogHeroFloatRight,
-  CollectionBanner,
-} from "@/components/collection-banner";
-import { EspressoDirectory } from "@/components/espresso-machines/espresso-directory";
-import { HomeReveal } from "@/components/home-reveal";
+import { createClient } from "@/lib/supabase/client";
 import {
   brandSlug,
-  espressoBrandCategories,
-  espressoCatalogCopy,
   espressoMachines,
   espressoShopUses,
   espressoUseLabels,
@@ -27,23 +16,188 @@ import {
 import { cn } from "@/lib/utils";
 
 type SortKey = "default" | "az" | "za";
+type ViewMode = "grid" | "list";
 
-const heroMachines = [
-  {
-    src: "/images/hero-espresso-slayer.png",
-    alt: "Slayer EP espresso machine",
-    className: catalogHeroFloatRight,
-    delay: "0ms",
-    local: true,
-  },
-  {
-    src: "/images/hero-espresso-compact.png",
-    alt: "Casadio Compact espresso machine",
-    className: catalogHeroFloatLeft,
-    delay: "180ms",
-    local: true,
-  },
-] as const;
+type MachineProduct = {
+  name: string;
+  brand: string;
+  src: string;
+  path: string;
+  contentTag?: string;
+  groups?: number;
+  uses?: readonly string[];
+};
+
+const imageExtensions = /\.(avif|gif|jpe?g|png|webp)$/i;
+const nonMachineKeywords = /\b(grinder|grinding|mill|tamper|accessor(?:y|ies)|clean(?:er|ing)?|brush|knockbox)\b/i;
+const espressoMachineBucket = "Espresso_Machines";
+
+function normalizeFilename(filename: string) {
+  return filename
+    .replace(imageExtensions, "")
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/[^a-z0-9]/g, "");
+}
+
+function normalizeContentTag(tag?: string) {
+  return tag?.trim().replace(/^W\//i, "").replace(/^["']|["']$/g, "") || undefined;
+}
+
+const knownMachineDetails = new Map(
+  espressoMachines.map((item) => [
+    normalizeFilename(item.src.split("/").at(-1) ?? ""),
+    item,
+  ])
+);
+
+function brandDisplayName(folder: string) {
+  if (folder.trim().toLowerCase() === "la nuova") return "La Nuova Era";
+  return folder
+    .replace(/[_-]+/g, " ")
+    .replace(/\s+/g, " ")
+    .trim()
+    .replace(/\b[a-z]/g, (letter) => letter.toUpperCase());
+}
+
+function groupCountFromPath(path: string) {
+  const folder = path.match(
+    /(?:^|\/)(single(?:\s+group)?|double(?:\s+group)?|[123]\s*(?:groups?|gr))(?=\/|$)/i
+  )?.[1]?.toLowerCase();
+
+  if (folder?.startsWith("single")) return 1;
+  if (folder?.startsWith("double")) return 2;
+  return folder ? Number(folder.match(/[123]/)?.[0]) : undefined;
+}
+
+function inferMachineBrand(path: string) {
+  const normalizedPath = path.toLowerCase();
+  if (/\bcasadio\b/.test(normalizedPath)) return "Casadio";
+  if (/\bla\s+n(?:uo|ou)va(?:\s+era)?\b/.test(normalizedPath)) return "La Nuova Era";
+  if (/\bslayer\b|\bsteam\s*(?:lp|ep|single)\b|\bespresso\s*v3\b/.test(normalizedPath)) {
+    return "Slayer";
+  }
+  return undefined;
+}
+
+function productDisplayName(filename: string) {
+  return filename
+    .replace(imageExtensions, "")
+    .replace(/[_-]+/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+async function loadMachineProducts(): Promise<MachineProduct[]> {
+  const supabase = createClient();
+  const bucket = supabase.storage.from(espressoMachineBucket);
+
+  async function listDirectory(path: string) {
+    const entries = [];
+    const limit = 1000;
+
+    for (let offset = 0; ; offset += limit) {
+      const { data, error } = await bucket.list(path, {
+        limit,
+        offset,
+        sortBy: { column: "name", order: "asc" },
+      });
+
+      if (error) throw error;
+      entries.push(...(data ?? []));
+      if (!data || data.length < limit) break;
+    }
+
+    return entries;
+  }
+
+  async function walk(
+    path: string,
+    parentBrand?: string,
+    parentGroup?: number
+  ): Promise<MachineProduct[]> {
+    const entries = await listDirectory(path);
+    const files: MachineProduct[] = [];
+
+    for (const entry of entries) {
+      const entryPath = path ? `${path}/${entry.name}` : entry.name;
+      if (entry.id === null) {
+        const folderGroup = groupCountFromPath(entryPath);
+        const isGroupFolder = groupCountFromPath(entry.name) !== undefined;
+        const nestedBrand =
+          parentBrand ?? (parentGroup || isGroupFolder ? undefined : brandDisplayName(entry.name));
+        files.push(...(await walk(entryPath, nestedBrand, folderGroup ?? parentGroup)));
+        continue;
+      }
+
+      if (!imageExtensions.test(entry.name) || nonMachineKeywords.test(entry.name)) {
+        continue;
+      }
+
+      const knownDetails = knownMachineDetails.get(normalizeFilename(entry.name));
+      const nameGroup = `${entryPath} ${entry.name}`.match(
+        /(?:^|[\s/_-])([123])\s*(?:groups?|gr)\b/i
+      )?.[1];
+      const brand = parentBrand ?? inferMachineBrand(entryPath) ?? "Other";
+
+      files.push({
+        name: productDisplayName(entry.name),
+        brand,
+        path: entryPath,
+        src: bucket.getPublicUrl(entryPath).data.publicUrl,
+        contentTag: normalizeContentTag(entry.metadata?.eTag),
+        groups: groupCountFromPath(entryPath) ?? parentGroup ?? knownDetails?.groups ??
+          (nameGroup ? Number(nameGroup) : undefined),
+        uses: knownDetails?.uses,
+      });
+    }
+
+    return files;
+  }
+
+  const products = await walk("");
+  const uniqueProducts = new Map<string, MachineProduct>();
+  const seenImageContent = new Map<string, (number | undefined)[]>();
+  for (const product of products) {
+    const brandKey = normalizeFilename(product.brand);
+    const nameKey = normalizeFilename(product.name);
+    const productKey = `${brandKey}:${nameKey}`;
+    const existing = uniqueProducts.get(productKey);
+    const hasDistinctGroupVariant =
+      existing?.groups !== undefined &&
+      product.groups !== undefined &&
+      existing.groups !== product.groups;
+    const key = hasDistinctGroupVariant
+      ? `${productKey}:group-${product.groups}`
+      : productKey;
+    const contentKey = product.contentTag;
+    const priorGroups = contentKey ? seenImageContent.get(contentKey) ?? [] : [];
+    const duplicateContent =
+      contentKey &&
+      priorGroups.some(
+        (priorGroup) =>
+          priorGroup === undefined ||
+          product.groups === undefined ||
+          priorGroup === product.groups
+      );
+
+    // Keep distinct group-count variants even when Storage reports identical image content.
+    if (duplicateContent && !uniqueProducts.has(key)) continue;
+
+    const current = uniqueProducts.get(key);
+    if (!current || (!current.groups && product.groups)) {
+      uniqueProducts.set(key, product);
+    }
+    if (contentKey && !priorGroups.includes(product.groups)) {
+      seenImageContent.set(contentKey, [...priorGroups, product.groups]);
+    }
+  }
+
+  return [...uniqueProducts.values()].sort(
+    (a, b) => a.brand.localeCompare(b.brand) || a.name.localeCompare(b.name)
+  );
+}
 
 function catalogHref({
   use,
@@ -72,96 +226,146 @@ export function EspressoMachinesPage({
   brand?: string;
 }) {
   const [sort, setSort] = useState<SortKey>("default");
+  const [view, setView] = useState<ViewMode>("grid");
+  const [machineProducts, setMachineProducts] = useState<MachineProduct[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [loadError, setLoadError] = useState<string | null>(null);
   const router = useRouter();
   const groupCount = group === "1" || group === "2" ? Number(group) : undefined;
+  const brandFilters = useMemo(
+    () =>
+      [...new Set(machineProducts.map((item) => item.brand))]
+        .sort((a, b) => a.localeCompare(b))
+        .map((label) => ({ label, slug: brandSlug(label) })),
+    [machineProducts]
+  );
+  const activeBrand = brandFilters.find((item) => item.slug === brand)?.slug;
   const useLabel = use ? espressoUseLabels[use] : undefined;
-  const activeShop = espressoShopUses.find((item) => item.slug === use);
-  const brandLabel = espressoBrandCategories.find((item) => item.slug === brand)?.label;
-  const activeBrand = brandLabel ? brand : undefined;
+
+  useEffect(() => {
+    let active = true;
+
+    async function load() {
+      try {
+        setIsLoading(true);
+        setLoadError(null);
+        const products = await loadMachineProducts();
+        if (active) setMachineProducts(products);
+      } catch (error) {
+        console.error(`Unable to load espresso machines from the ${espressoMachineBucket} bucket.`, error);
+        if (active) {
+          setLoadError(
+            "Espresso machines could not be loaded from the product library. Please try again later."
+          );
+        }
+      } finally {
+        if (active) setIsLoading(false);
+      }
+    }
+
+    void load();
+    return () => {
+      active = false;
+    };
+  }, []);
 
   const items = useMemo(() => {
-    const next = espressoMachines.filter((item) => {
-      if (use && !item.uses.some((value) => value === use)) {
-        return false;
-      }
-      if (groupCount && item.groups !== groupCount) {
-        return false;
-      }
-      if (activeBrand && brandSlug(item.brand) !== activeBrand) {
-        return false;
-      }
+    const next = machineProducts.filter((item) => {
+      if (use && item.uses && !item.uses.includes(use)) return false;
+      if (groupCount && item.groups !== groupCount) return false;
+      if (activeBrand && brandSlug(item.brand) !== activeBrand) return false;
       return true;
     });
 
-    if (sort === "az") {
-      next.sort((a, b) => a.name.localeCompare(b.name));
-    }
-    if (sort === "za") {
-      next.sort((a, b) => b.name.localeCompare(a.name));
-    }
+    if (sort === "az") next.sort((a, b) => a.name.localeCompare(b.name));
+    if (sort === "za") next.sort((a, b) => b.name.localeCompare(a.name));
     return next;
-  }, [activeBrand, groupCount, sort, use]);
+  }, [activeBrand, groupCount, machineProducts, sort, use]);
 
-  const title = useLabel
-    ? `Machines for ${useLabel}`
-    : groupCount
-      ? `${groupCount === 1 ? "Single" : "Double"} Group Machines`
-      : espressoCatalogCopy.title;
+  function updateFilters(next: { use?: string; group?: string; brand?: string }) {
+    router.push(catalogHref(next));
+  }
+
+  function toggleGroup(value: string) {
+    updateFilters({
+      use,
+      brand: activeBrand,
+      group: group === value ? undefined : value,
+    });
+  }
+
+  function toggleBrand(value: string) {
+    updateFilters({
+      use,
+      group: groupCount ? String(groupCount) : undefined,
+      brand: activeBrand === value ? undefined : value,
+    });
+  }
 
   return (
-    <main className="flex-1 overflow-hidden bg-[#fff6ee]">
-      <CollectionBanner
-        title={title}
-        description={
-          useLabel
-            ? `Professional espresso machines chosen for ${useLabel.toLowerCase()} service — built for flavor, steam, and a counter that looks the part.`
-            : espressoCatalogCopy.description
-        }
-        floats={heroMachines}
-        overlaySrc={activeShop?.src}
-      />
+    <main className="flex-1 overflow-hidden bg-[#FFF3F4] text-[#30231e]">
+      <section className="relative isolate h-[190px] overflow-hidden border-b border-[#f4b7c0] bg-[#FCE4E7] sm:h-[220px] lg:h-[250px]">
+        <Image
+          src="/images/hero-espresso.png"
+          alt="Professional espresso machine"
+          fill
+          priority
+          className="z-0 object-cover object-[72%_52%]"
+          sizes="100vw"
+        />
+        <div className="absolute inset-0 z-10 bg-[linear-gradient(90deg,rgba(255,243,244,.98)_0%,rgba(255,243,244,.94)_30%,rgba(252,228,231,.7)_48%,rgba(252,228,231,.04)_80%)]" />
+        <div className="absolute -left-20 top-1/2 z-10 size-[330px] -translate-y-1/2 rounded-full border-[24px] border-[#D7192D]/10 sm:size-[420px]" />
+        <div className="relative z-20 mx-auto flex h-full max-w-[1440px] items-center px-5 sm:px-8 lg:px-12">
+          <div className="max-w-[530px]">
+            <h1 className="font-serif text-[32px] leading-none font-bold tracking-tight text-[#3b1c17] sm:text-[40px] lg:text-[48px]">
+              Espresso Machines
+            </h1>
+            <p className="mt-2 text-sm font-medium text-[#3b1c17] sm:text-base">
+              Precision. Performance. Exceptional Coffee.
+            </p>
+          </div>
+        </div>
+      </section>
 
-      <section className="relative mx-auto max-w-[1240px] px-5 md:px-8">
-        <div className="animate-scale-in rounded-[28px] bg-[#fff9f2]/95 px-4 py-8 shadow-[0_18px_40px_rgba(80,50,20,0.08)] ring-1 ring-[#eadfce] backdrop-blur-sm md:px-10 md:py-10 [animation-delay:140ms]">
-          <h2 className="animate-fade-up text-center font-serif text-2xl font-bold text-[#d0122d] md:text-[1.85rem] [animation-delay:200ms]">
+      <section className="relative mx-auto max-w-[1440px] px-4 py-4 sm:px-6 sm:py-5 lg:px-8">
+        <div className="rounded-[26px] border border-[#f8d5d9] bg-[linear-gradient(115deg,#fff_0%,#FFF3F4_50%,#FCE4E7_100%)] px-4 py-4 shadow-[0_8px_24px_rgba(215,25,45,.06)] sm:px-7 sm:py-5">
+          <h2 className="text-center font-serif text-[22px] leading-none font-bold text-[#D7192D] sm:text-[28px]">
             Shop Machine
           </h2>
-          <p className="mt-2 animate-fade-up text-center text-sm text-zinc-500 [animation-delay:260ms]">
+          <p className="mt-1 text-center text-xs text-[#4c3938] sm:text-sm">
             Choose where the machine will live
           </p>
-          <div className="-mx-1 mt-8 flex flex-nowrap items-start justify-start gap-x-6 overflow-x-auto px-1 pb-2 sm:mx-0 sm:flex-wrap sm:justify-center sm:gap-x-8 sm:overflow-visible sm:px-0 sm:pb-0 md:gap-x-12">
-            {espressoShopUses.map((item, index) => {
+          <div className="mt-3 flex gap-4 overflow-x-auto px-1 pb-1 sm:justify-center sm:gap-7 sm:overflow-visible">
+            {espressoShopUses.map((item) => {
               const active = use === item.slug;
               return (
                 <Link
                   key={item.slug}
-                  href={
-                    active
-                      ? catalogHref({ brand: activeBrand })
-                      : catalogHref({ use: item.slug, brand: activeBrand })
-                  }
-                  className="group flex w-[132px] shrink-0 animate-fade-up flex-col items-center gap-3 sm:w-[148px]"
-                  style={{ animationDelay: `${280 + index * 80}ms` }}
+                  href={catalogHref({
+                    use: active ? undefined : item.slug,
+                    group: groupCount ? String(groupCount) : undefined,
+                    brand: activeBrand,
+                  })}
+                  className="group flex w-[86px] shrink-0 flex-col items-center gap-1.5 sm:w-[112px] sm:gap-2"
                 >
                   <span
                     className={cn(
-                      "relative block size-[132px] overflow-hidden rounded-full shadow-[0_12px_28px_rgba(80,50,20,0.14)] ring-4 ring-white transition-all duration-500 group-hover:-translate-y-1.5 group-hover:scale-[1.05] group-hover:shadow-[0_18px_36px_rgba(80,50,20,0.22)] sm:size-[148px]",
-                      active && "ring-[#d0122d] ring-offset-4 ring-offset-[#fff9f2]"
+                      "relative block size-[78px] overflow-hidden rounded-full border-[3px] border-white shadow-[0_4px_12px_rgba(80,40,30,.18)] transition duration-300 group-hover:-translate-y-1 group-hover:shadow-[0_8px_20px_rgba(215,25,45,.2)] sm:size-[104px]",
+                      active && "ring-2 ring-[#D7192D] ring-offset-2 ring-offset-[#FFF3F4]"
                     )}
                   >
                     <Image
                       src={item.src}
-                      alt={item.label}
+                      alt=""
                       fill
-                      className="object-cover transition-transform duration-700 group-hover:scale-110"
-                      sizes="148px"
+                      className="object-cover"
+                      sizes="104px"
                     />
-                    <span className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
                   </span>
                   <span
                     className={cn(
-                      "text-[15px] font-bold tracking-wide transition-colors duration-300",
-                      active ? "text-[#d0122d]" : "text-[#d0122d] group-hover:text-[#d0122d]"
+                      "text-xs font-bold sm:text-sm",
+                      active ? "text-[#D7192D]" : "text-[#D7192D]"
                     )}
                   >
                     {item.label}
@@ -173,117 +377,180 @@ export function EspressoMachinesPage({
         </div>
       </section>
 
-      <HomeReveal>
-      <section className="mx-auto max-w-[1240px] px-4 py-8 sm:px-5 md:px-8 md:py-14">
-        <div className="flex flex-col gap-4 border-b border-[#eadfce] pb-5 sm:flex-row sm:flex-wrap sm:items-end sm:justify-between">
-          <div>
-            <h2 className="font-serif text-xl font-bold text-[#2b2118] sm:text-2xl md:text-3xl">
-              {useLabel ? `${useLabel} selection` : "The collection"}
+      <section className="mx-auto max-w-[1440px] px-3 pb-5 sm:px-5 lg:px-8">
+        <div className="grid items-start gap-3 md:grid-cols-[150px_minmax(0,1fr)] lg:grid-cols-[210px_minmax(0,1fr)] lg:gap-4">
+          <aside className="rounded-xl border border-[#f8d5d9] bg-[linear-gradient(145deg,#FCE4E7,#FFF3F4)] p-3 shadow-[0_4px_14px_rgba(215,25,45,.06)] sm:p-4">
+            <h2 className="border-b border-[#efc5cb] pb-2 font-serif text-sm font-bold text-[#3b1c17] sm:text-base">
+              Filter Products
             </h2>
-            <p className="mt-1 text-sm text-zinc-500">
-              {items.length} {items.length === 1 ? "machine" : "machines"}
-              {brandLabel ? ` · ${brandLabel}` : ""}
-              {groupCount ? ` · ${groupCount === 1 ? "single" : "double"} group` : ""}
-            </p>
-          </div>
-          <div className="flex w-full flex-col gap-2 sm:w-auto sm:flex-row sm:flex-wrap sm:items-center sm:gap-3">
-            <div className="grid grid-cols-2 gap-2 sm:flex sm:contents">
-            <Link
-              href={catalogHref({ use, group: groupCount === 1 ? undefined : "1", brand: activeBrand })}
-              className={cn(
-                "inline-flex h-9 items-center justify-center rounded-full px-3 text-center text-sm font-medium transition-all duration-300 hover:-translate-y-0.5 sm:px-4",
-                groupCount === 1
-                  ? "bg-[#d0122d] text-white"
-                  : "bg-white text-[#5c3a22] ring-1 ring-[#eadfce] hover:bg-[#eadfce]"
-              )}
-            >
-              Single Group
-            </Link>
-            <Link
-              href={catalogHref({ use, group: groupCount === 2 ? undefined : "2", brand: activeBrand })}
-              className={cn(
-                "inline-flex h-9 items-center justify-center rounded-full px-3 text-center text-sm font-medium transition-all duration-300 hover:-translate-y-0.5 sm:px-4",
-                groupCount === 2
-                  ? "bg-[#d0122d] text-white"
-                  : "bg-white text-[#5c3a22] ring-1 ring-[#eadfce] hover:bg-[#eadfce]"
-              )}
-            >
-              Double Group
-            </Link>
-            </div>
-            <label htmlFor="espresso-brand" className="sr-only">
-              Category
-            </label>
-            <div className="relative min-w-0 flex-1 sm:flex-none">
-              <select
-                id="espresso-brand"
-                value={activeBrand ?? ""}
-                onChange={(event) =>
-                  router.push(catalogHref({ use, group, brand: event.target.value || undefined }))
-                }
-                className="h-9 w-full min-w-0 appearance-none rounded-full border border-[#eadfce] bg-white px-4 pr-9 text-sm text-zinc-600 outline-none focus:border-[#c4a882] sm:w-[170px]"
-              >
-                <option value="">Category</option>
-                {espressoBrandCategories.map((item) => (
-                  <option key={item.slug} value={item.slug}>
+            <fieldset className="mt-3">
+              <legend className="mb-1.5 text-[11px] font-bold text-[#3b1c17] sm:text-xs">
+                Brand
+              </legend>
+              <div className="space-y-1.5">
+                {brandFilters.map((item) => (
+                  <label key={item.slug} className="flex cursor-pointer items-center gap-2 text-[10px] text-[#645b5b] sm:text-xs">
+                    <input
+                      type="checkbox"
+                      checked={activeBrand === item.slug}
+                      onChange={() => toggleBrand(item.slug)}
+                      className="size-3 accent-[#D7192D]"
+                    />
                     {item.label}
-                  </option>
+                  </label>
                 ))}
-              </select>
-              <ChevronDown className="pointer-events-none absolute top-1/2 right-3 size-3.5 -translate-y-1/2 text-zinc-500" />
+              </div>
+            </fieldset>
+            <fieldset className="mt-4">
+              <legend className="mb-1.5 text-[11px] font-bold text-[#3b1c17] sm:text-xs">
+                Group
+              </legend>
+              <div className="space-y-1.5">
+                {[
+                  { value: "1", label: "1 Group" },
+                  { value: "2", label: "2 Groups" },
+                ].map((item) => (
+                  <label key={item.value} className="flex cursor-pointer items-center gap-2 text-[10px] text-[#645b5b] sm:text-xs">
+                    <input
+                      type="checkbox"
+                      checked={group === item.value}
+                      onChange={() => toggleGroup(item.value)}
+                      className="size-3 accent-[#D7192D]"
+                    />
+                    {item.label}
+                  </label>
+                ))}
+              </div>
+            </fieldset>
+            <button
+              type="button"
+              onClick={() => updateFilters({})}
+              className="mt-4 inline-flex w-full items-center justify-center gap-1.5 rounded-full bg-[#D7192D] px-2 py-2 text-[10px] font-semibold text-white transition hover:bg-[#b91427] sm:text-xs"
+            >
+              <RotateCcw className="size-3" />
+              Reset Filters
+            </button>
+          </aside>
+
+          <div className="min-w-0">
+            <div className="flex min-h-[38px] flex-wrap items-center justify-between gap-2 px-1">
+              <p className="text-[11px] text-[#4c3938] sm:text-xs">
+                {isLoading
+                  ? "Loading machines…"
+                  : `Showing ${items.length ? 1 : 0}–${items.length} of ${items.length} results${useLabel ? ` · ${useLabel}` : ""}`}
+              </p>
+              <div className="flex items-center gap-2">
+                <label htmlFor="espresso-sort" className="text-[10px] sm:text-xs">
+                  Sort by:
+                </label>
+                <div className="relative">
+                  <select
+                    id="espresso-sort"
+                    value={sort}
+                    onChange={(event) => setSort(event.target.value as SortKey)}
+                    className="h-8 appearance-none rounded-md border border-[#f3d4d8] bg-white px-2 pr-7 text-[10px] outline-none focus:border-[#D7192D] sm:text-xs"
+                  >
+                    <option value="default">Default</option>
+                    <option value="az">Name A–Z</option>
+                    <option value="za">Name Z–A</option>
+                  </select>
+                  <ChevronDown className="pointer-events-none absolute top-1/2 right-2 size-3 -translate-y-1/2" />
+                </div>
+                <button
+                  type="button"
+                  aria-label="Grid view"
+                  onClick={() => setView("grid")}
+                  className={cn("rounded-md p-1.5", view === "grid" ? "bg-[#D7192D] text-white" : "bg-white text-[#D7192D]")}
+                >
+                  <Grid2X2 className="size-3.5" />
+                </button>
+                <button
+                  type="button"
+                  aria-label="List view"
+                  onClick={() => setView("list")}
+                  className={cn("rounded-md p-1.5", view === "list" ? "bg-[#D7192D] text-white" : "bg-white text-[#D7192D]")}
+                >
+                  <List className="size-3.5" />
+                </button>
+              </div>
             </div>
-            <label htmlFor="espresso-sort" className="sr-only">
-              Sort by
-            </label>
-            <div className="relative min-w-0 flex-1 sm:flex-none">
-              <select
-                id="espresso-sort"
-                value={sort}
-                onChange={(event) => setSort(event.target.value as SortKey)}
-                className="h-9 w-full min-w-0 appearance-none rounded-full border border-[#eadfce] bg-white px-4 pr-9 text-sm text-zinc-600 outline-none focus:border-[#c4a882] sm:w-[170px]"
+
+            {isLoading ? (
+              <p role="status" className="rounded-xl border border-[#FCE4E7] bg-white p-5 text-sm text-[#645b5b]">
+                Loading espresso machines…
+              </p>
+            ) : loadError ? (
+              <p role="alert" className="rounded-xl border border-[#f1b8c0] bg-white p-5 text-sm text-[#8f1927]">
+                {loadError}
+              </p>
+            ) : items.length ? (
+              <div
+                className={cn(
+                  "grid gap-2",
+                  view === "grid"
+                    ? "grid-cols-2 sm:grid-cols-3 lg:grid-cols-4"
+                    : "grid-cols-1"
+                )}
               >
-                <option value="default">Featured</option>
-                <option value="az">Name A–Z</option>
-                <option value="za">Name Z–A</option>
-              </select>
-              <ChevronDown className="pointer-events-none absolute top-1/2 right-3 size-3.5 -translate-y-1/2 text-zinc-500" />
-            </div>
+                {items.map((item) => (
+                  <article
+                    key={item.path}
+                    className={cn(
+                      "group overflow-hidden rounded-xl border border-[#FCE4E7] bg-white shadow-[0_3px_12px_rgba(215,25,45,.05)] transition hover:-translate-y-0.5 hover:shadow-[0_8px_20px_rgba(215,25,45,.12)]",
+                      view === "list" && "flex items-center gap-3 p-2"
+                    )}
+                  >
+                    <Link
+                      href={catalogHref({ use, group, brand: brandSlug(item.brand) })}
+                      aria-label={`View ${item.brand} ${item.name}`}
+                      className={cn(
+                        "relative block overflow-hidden bg-[#FFF3F4]",
+                        view === "grid" ? "h-[110px] sm:h-[145px] lg:h-[170px]" : "h-[84px] w-[100px] shrink-0 rounded-lg"
+                      )}
+                    >
+                      <Image
+                        src={item.src}
+                        alt={item.name}
+                        fill
+                        className="object-contain p-2 transition-transform duration-300 group-hover:scale-105"
+                        sizes="(min-width: 1024px) 20vw, (min-width: 640px) 28vw, 45vw"
+                      />
+                    </Link>
+                    <div className={cn("p-2 text-center", view === "list" && "flex min-w-0 flex-1 items-center justify-between gap-2 text-left")}>
+                      <div className="min-w-0">
+                        <p className="text-[9px] font-bold tracking-wide text-[#D7192D] uppercase sm:text-[10px]">
+                          {item.brand}
+                        </p>
+                        <h3 className="mt-0.5 line-clamp-1 text-[11px] font-semibold text-[#30231e] sm:text-xs">
+                          {item.name}
+                        </h3>
+                        {item.groups ? (
+                          <p className="mt-0.5 text-[9px] text-[#746b6b] sm:text-[10px]">
+                            {item.groups === 1 ? "Single group" : "Double group"}
+                          </p>
+                        ) : null}
+                      </div>
+                      <Link
+                        href={catalogHref({ use, group, brand: brandSlug(item.brand) })}
+                        className="mt-1 inline-flex items-center justify-center gap-1 rounded-full bg-[#D7192D] px-3 py-1 text-[9px] font-semibold text-white transition hover:bg-[#b91427] sm:text-[10px]"
+                      >
+                        View Details <ChevronRight className="size-3" />
+                      </Link>
+                    </div>
+                  </article>
+                ))}
+              </div>
+            ) : (
+              <p className="rounded-xl border border-[#FCE4E7] bg-white p-5 text-sm text-[#645b5b]">
+                {machineProducts.length
+                  ? "No espresso machines match these filters."
+                  : "No espresso machines were found in the product library."}
+              </p>
+            )}
           </div>
         </div>
-
-        {items.length ? (
-          <>
-          <CatalogAd />
-          <div className="mt-6 grid grid-cols-2 gap-3 sm:mt-8 sm:grid-cols-3 sm:gap-5 lg:grid-cols-4">
-            {items.map((item, index) => (
-              <CatalogProductCard
-                key={item.name}
-                name={item.name}
-                src={item.src}
-                brand={item.brand}
-                detail={item.groups === 1 ? "Single group" : "Double group"}
-                preload={index < 4}
-                index={index}
-                sizes="(min-width: 1024px) 22vw, (min-width: 640px) 30vw, 45vw"
-              />
-            ))}
-          </div>
-          </>
-        ) : (
-          <p className="mt-12 text-sm text-zinc-400">
-            No espresso machines listed for this selection yet.
-          </p>
-        )}
       </section>
-      </HomeReveal>
 
-      <HomeReveal delay={80}>
-      <section className="relative mx-auto max-w-[1240px] px-4 pb-8 sm:px-5 md:px-8 md:pb-14">
-        <EspressoDirectory />
-      </section>
-      </HomeReveal>
-
-      <BrandStrip />
     </main>
   );
 }

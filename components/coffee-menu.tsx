@@ -5,7 +5,7 @@ import { coffeeCategories } from "@/lib/site";
 
 export function CoffeeMenu({ onNavigate }: { onNavigate?: () => void }) {
   return (
-    <div className="bg-[#fffaf5]">
+    <div className="bg-[#FFF3F4]">
       <div className="mx-auto grid max-w-[1440px] grid-cols-3 items-center px-8 py-10 lg:px-12 lg:py-12">
         <ul className="space-y-1">
           {coffeeCategories.map((item) => (
@@ -13,7 +13,7 @@ export function CoffeeMenu({ onNavigate }: { onNavigate?: () => void }) {
               <Link
                 href={`/coffee?category=${item.slug}`}
                 onClick={onNavigate}
-                className="block py-1 text-[15px] text-[#333333] transition-colors hover:text-[#d0122d]"
+                className="block py-1 text-[15px] text-[#333333] transition-colors hover:text-[#D7192D]"
               >
                 {item.title}
               </Link>

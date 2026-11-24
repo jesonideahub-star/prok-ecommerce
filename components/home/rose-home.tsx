@@ -206,9 +206,9 @@ export function RoseHome() {
   ];
 
   return (
-    <div className="overflow-hidden bg-[#fff6ee] text-[#2b2118]">
+    <div className="overflow-hidden bg-[#FFF3F4] text-[#2b2118]">
       <section className="mx-auto max-w-[1280px] px-4 pt-4 sm:px-6 lg:px-8">
-        <div className="relative h-[250px] overflow-hidden rounded-[10px] bg-[#8d0e1c] text-white sm:h-[340px] lg:h-[392px]">
+        <div className="relative h-[250px] overflow-hidden rounded-[10px] bg-[#D7192D] text-white sm:h-[340px] lg:h-[392px]">
           <Image
             src={slide.src}
             alt={slide.alt}
@@ -217,23 +217,23 @@ export function RoseHome() {
             className="object-cover object-center"
             sizes="(min-width: 1280px) 1216px, 100vw"
           />
-          <div className="absolute inset-0 bg-gradient-to-r from-[#8d0e1c]/95 via-[#8d0e1c]/55 to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-r from-[#D7192D]/95 via-[#D7192D]/60 to-transparent" />
           <div className="relative flex h-full items-center px-6 py-8 sm:px-12 lg:px-16">
             <div className="max-w-[520px]">
-              <p className="flex items-center text-xs font-semibold tracking-[0.18em] text-[#ffb89c] uppercase">
-                <span className="mr-3 h-px w-7 bg-[#ffb89c]" />
+              <p className="flex items-center text-xs font-semibold tracking-[0.18em] text-[#FCE4E7] uppercase">
+                <span className="mr-3 h-px w-7 bg-[#FCE4E7]" />
                 {slide.eyebrow}
               </p>
               <h1 className="mt-3 font-serif text-4xl leading-[0.9] font-semibold sm:text-5xl lg:text-[58px]">
                 {slide.title}
-                <span className="block italic text-[#d9b45b]">{slide.accent}</span>
+                <span className="block italic text-[#FCE4E7]">{slide.accent}</span>
               </h1>
               <p className="mt-4 max-w-[430px] text-sm leading-5 text-white/95 sm:text-base sm:leading-6">
                 {slide.body}
               </p>
               <Link
                 href={slide.href}
-                className="mt-5 inline-flex items-center gap-2 rounded-full bg-[#f4c36b] px-5 py-2.5 text-sm font-semibold text-[#2b2118] transition hover:bg-[#ffd783]"
+                className="mt-5 inline-flex items-center gap-2 rounded-full bg-white px-5 py-2.5 text-sm font-semibold text-[#D7192D] transition hover:bg-[#FCE4E7]"
               >
                 {slide.cta}
                 <ChevronRight className="size-4" />
@@ -258,11 +258,11 @@ export function RoseHome() {
         {categories.map((item) => {
           const Icon = item.icon;
           return (
-            <Link key={item.title} href={item.href} className="group relative h-[118px] overflow-hidden rounded-[10px] bg-[#6e171e] text-white">
+            <Link key={item.title} href={item.href} className="group relative h-[118px] overflow-hidden rounded-[10px] bg-[#D7192D] text-white">
               <Image src={item.src} alt="" fill className="object-cover transition duration-500 group-hover:scale-105" sizes="25vw" />
               <div className="absolute inset-0 bg-gradient-to-r from-black/72 via-black/38 to-black/10" />
               <div className="relative flex h-full items-start gap-3 p-4">
-                <span className="mt-2 flex size-9 shrink-0 items-center justify-center rounded-full bg-[#d0122d]">
+                <span className="mt-2 flex size-9 shrink-0 items-center justify-center rounded-full bg-[#D7192D]">
                   <Icon className="size-5" />
                 </span>
                 <span>
@@ -277,12 +277,12 @@ export function RoseHome() {
       </section>
 
       <section className="mx-auto max-w-[1280px] px-4 sm:px-6 lg:px-8">
-        <div className="grid gap-4 rounded-[10px] bg-[#fffaf5] px-4 py-5 ring-1 ring-[#eee1d5] sm:grid-cols-2 lg:grid-cols-4 lg:px-2">
+        <div className="grid gap-4 rounded-[10px] bg-white px-4 py-5 ring-1 ring-[#FCE4E7] sm:grid-cols-2 lg:grid-cols-4 lg:px-2">
           {trust.map((item) => {
             const Icon = item.icon;
             return (
-              <div key={item.title} className="flex items-center gap-3 border-[#ead8cc] px-4 lg:not-last:border-r">
-                <Icon className="size-8 shrink-0 text-[#b20f26]" strokeWidth={1.7} />
+              <div key={item.title} className="flex items-center gap-3 border-[#FCE4E7] px-4 lg:not-last:border-r">
+                <Icon className="size-8 shrink-0 text-[#D7192D]" strokeWidth={1.7} />
                 <div>
                   <p className="text-sm font-semibold">{item.title}</p>
                   <p className="mt-0.5 text-xs text-[#6f6259]">{item.body}</p>
@@ -294,12 +294,12 @@ export function RoseHome() {
       </section>
 
       <section className="mx-auto max-w-[1280px] px-4 pt-5 sm:px-6 lg:px-8">
-        <div className="relative h-[150px] overflow-hidden rounded-[10px] bg-gradient-to-r from-[#a91020] to-[#d3132f] text-white">
+        <div className="relative h-[150px] overflow-hidden rounded-[10px] bg-gradient-to-r from-[#D7192D] to-[#b91427] text-white">
           <div className="relative z-10 px-7 py-5 sm:px-10">
-            <p className="font-serif text-xl text-[#ffdc75] italic">Limited Time Offer</p>
-            <p className="mt-1 font-serif text-4xl leading-none font-semibold">Get <span className="text-[#ffd36a]">20% OFF</span></p>
+            <p className="font-serif text-xl text-[#FCE4E7] italic">Limited Time Offer</p>
+            <p className="mt-1 font-serif text-4xl leading-none font-semibold">Get <span className="text-[#FCE4E7]">20% OFF</span></p>
             <p className="mt-2 text-sm">on selected coffee products</p>
-            <Link href="/coffee" className="mt-3 inline-flex items-center gap-2 rounded-full bg-[#f4c36b] px-4 py-2 text-xs font-semibold text-[#2b2118]">
+            <Link href="/coffee" className="mt-3 inline-flex items-center gap-2 rounded-full bg-white px-4 py-2 text-xs font-semibold text-[#D7192D]">
               Shop the Deal <ChevronRight className="size-3.5" />
             </Link>
           </div>
@@ -317,23 +317,23 @@ export function RoseHome() {
       <section className="mx-auto max-w-[1280px] px-4 py-5 sm:px-6 lg:px-8">
         <div className="grid gap-5 lg:grid-cols-[260px_1fr]">
           <div className="pt-2">
-            <p className="text-xs font-semibold text-[#d0122d] uppercase">Package Deals</p>
+            <p className="text-xs font-semibold text-[#D7192D] uppercase">Package Deals</p>
             <h2 className="mt-1 font-serif text-3xl leading-[1.05] font-semibold text-[#2b2118]">More Value,<br />More Savings</h2>
             <p className="mt-3 text-sm leading-5">Get the best deals on our premium coffee bundles.</p>
-            <Link href="/espresso-machines" className="mt-4 inline-flex rounded-full bg-[#b20f26] px-5 py-2.5 text-xs font-semibold text-white">Shop Bundles <ChevronRight className="ml-1 inline size-3.5" /></Link>
+            <Link href="/espresso-machines" className="mt-4 inline-flex rounded-full bg-[#D7192D] px-5 py-2.5 text-xs font-semibold text-white">Shop Bundles <ChevronRight className="ml-1 inline size-3.5" /></Link>
           </div>
           <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
             {packageCards.map((item, imageIndex) => (
-              <article key={item.name} className="relative overflow-hidden rounded-lg bg-[#fffaf5] px-3 pb-3 pt-2 text-center ring-1 ring-[#eee1d5]">
-                <span className="absolute right-2 top-2 z-10 rounded-full bg-[#d0122d] px-2 py-1 text-[9px] font-semibold text-white">Save 21%</span>
+              <article key={item.name} className="relative overflow-hidden rounded-lg bg-white px-3 pb-3 pt-2 text-center ring-1 ring-[#FCE4E7]">
+                <span className="absolute right-2 top-2 z-10 rounded-full bg-[#D7192D] px-2 py-1 text-[9px] font-semibold text-white">Save 21%</span>
                 <div className="relative h-[108px]">
                   <Image src={packageImages[imageIndex] ?? item.src} alt={item.name} fill className="object-contain p-2" sizes="180px" />
                 </div>
                 <h3 className="text-sm font-semibold">{item.name}</h3>
                 <p className="mt-1 text-[11px] text-[#6f6259]">{item.detail}</p>
                 <p className="mt-1 text-xs">★★★★★ <span className="text-[10px]">(4.8)</span></p>
-                <p className="mt-1 text-sm font-bold text-[#a32020]">{item.price} {item.before ? <span className="text-[10px] font-normal text-[#9a8e84] line-through">{item.before}</span> : null}</p>
-                <button type="button" className="mt-2 w-full rounded-full bg-[#d0122d] py-1.5 text-[11px] font-semibold text-white">Add to Cart</button>
+                <p className="mt-1 text-sm font-bold text-[#D7192D]">{item.price} {item.before ? <span className="text-[10px] font-normal text-[#9a8e84] line-through">{item.before}</span> : null}</p>
+                <button type="button" className="mt-2 w-full rounded-full bg-[#D7192D] py-1.5 text-[11px] font-semibold text-white">Add to Cart</button>
               </article>
             ))}
           </div>
@@ -345,15 +345,15 @@ export function RoseHome() {
         ) : null}
       </section>
 
-      <section className="relative isolate overflow-hidden bg-[radial-gradient(ellipse_at_50%_25%,#fffefa_0%,#fff7ec_72%)] px-4 pb-36 pt-8 sm:px-6 lg:px-8">
+      <section className="relative isolate overflow-hidden bg-[radial-gradient(ellipse_at_50%_25%,#FFFFFF_0%,#FFF3F4_72%)] px-4 pb-36 pt-8 sm:px-6 lg:px-8">
           <div className="relative z-10 mx-auto max-w-[1280px]">
             <div className="relative mb-5 text-center">
               <div className="flex items-center justify-center gap-4">
-                <span className="hidden h-px w-24 bg-[#e6a43b] sm:block" />
+                <span className="hidden h-px w-24 bg-[#FCE4E7] sm:block" />
                 <h2 className="font-serif text-3xl font-bold tracking-wide text-[#2b2118] sm:text-4xl">
-                  TOP <span className="text-[#a91020]">SELLERS</span>
+                  TOP <span className="text-[#D7192D]">SELLERS</span>
                 </h2>
-                <span className="hidden h-px w-24 bg-[#e6a43b] sm:block" />
+                <span className="hidden h-px w-24 bg-[#FCE4E7] sm:block" />
               </div>
               <p className="mt-1 text-sm text-[#6f6259] sm:text-base">
                 Our most loved espresso machines and grinders, trusted by coffee professionals worldwide.
@@ -365,13 +365,13 @@ export function RoseHome() {
                 type="button"
                 aria-label="Previous top sellers"
                 onClick={() => moveTopSellers(-1)}
-                className="absolute top-1/2 -left-3 z-20 hidden size-11 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full bg-[#a91020] text-white shadow-md transition hover:bg-[#7f0c19] sm:flex"
+                className="absolute top-1/2 -left-3 z-20 hidden size-11 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full bg-[#D7192D] text-white shadow-md transition hover:bg-[#b91427] sm:flex"
               >
                 <ChevronLeft className="size-6" />
               </button>
               <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
                 {displayedTopEquipment.map((item) => (
-                  <article key={item.name} className="rounded-2xl border border-[#f0e5dc] bg-[#fffdfb] p-3 shadow-[0_5px_18px_rgba(80,50,20,0.10)] transition hover:-translate-y-1 hover:shadow-[0_12px_28px_rgba(80,50,20,0.14)]">
+                  <article key={item.name} className="rounded-2xl border border-[#FCE4E7] bg-white p-3 shadow-[0_5px_18px_rgba(215,25,45,0.08)] transition hover:-translate-y-1 hover:shadow-[0_12px_28px_rgba(215,25,45,0.14)]">
                     <Link href={item.href} className="group block">
                       <div className="relative h-[210px] overflow-hidden rounded-xl bg-white sm:h-[225px]">
                         <Image
@@ -385,7 +385,7 @@ export function RoseHome() {
                       <h3 className="mt-3 line-clamp-1 text-center font-serif text-lg font-semibold text-[#2b2118]">{item.name}</h3>
                       <p className="mt-1 text-center text-sm text-[#77716d]">{item.brand}</p>
                       <div className="mt-3 flex items-center justify-center gap-1.5 whitespace-nowrap text-xs">
-                        <span className="text-lg leading-none tracking-[-0.12em] text-[#f4ad00]" aria-label="Rated five stars">★★★★★</span>
+                        <span className="text-lg leading-none tracking-[-0.12em] text-[#D7192D]" aria-label="Rated five stars">★★★★★</span>
                         <span className="font-medium text-[#2b2118]">{item.rating}</span>
                         <span className="text-[#665b53]">({item.reviews} reviews)</span>
                       </div>
@@ -397,14 +397,14 @@ export function RoseHome() {
                 type="button"
                 aria-label="Next top sellers"
                 onClick={() => moveTopSellers(1)}
-                className="absolute top-1/2 -right-3 z-20 hidden size-11 translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full bg-[#a91020] text-white shadow-md transition hover:bg-[#7f0c19] sm:flex"
+                className="absolute top-1/2 -right-3 z-20 hidden size-11 translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full bg-[#D7192D] text-white shadow-md transition hover:bg-[#b91427] sm:flex"
               >
                 <ChevronRight className="size-6" />
               </button>
             </div>
 
             <div className="mt-6 text-center">
-              <Link href="/espresso-machines" className="inline-flex items-center justify-center gap-2 rounded-full bg-[#a91020] px-8 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-[#7f0c19]">
+              <Link href="/espresso-machines" className="inline-flex items-center justify-center gap-2 rounded-full bg-[#D7192D] px-8 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-[#b91427]">
                 View All Top Sellers
                 <ArrowRight className="size-4" />
               </Link>
@@ -417,9 +417,9 @@ export function RoseHome() {
             viewBox="0 0 1440 145"
             preserveAspectRatio="none"
           >
-            <path d="M0 42 C130 65 235 135 410 129 C660 120 850 82 1050 34 C1210 -4 1330 0 1440 7 L1440 145 L0 145 Z" fill="#720b18" />
-            <path d="M0 40 C130 63 235 133 410 127 C660 118 850 80 1050 32 C1210 -6 1330 -2 1440 5" fill="none" stroke="#d7a33f" strokeWidth="3" />
-            <g fill="#4a2113" stroke="#2f170f" strokeWidth="2">
+            <path d="M0 42 C130 65 235 135 410 129 C660 120 850 82 1050 34 C1210 -4 1330 0 1440 7 L1440 145 L0 145 Z" fill="#D7192D" />
+            <path d="M0 40 C130 63 235 133 410 127 C660 118 850 80 1050 32 C1210 -6 1330 -2 1440 5" fill="none" stroke="#FCE4E7" strokeWidth="3" />
+            <g fill="#b91427" stroke="#FCE4E7" strokeWidth="2">
               <ellipse cx="46" cy="82" rx="22" ry="12" transform="rotate(22 46 82)" />
               <ellipse cx="93" cy="102" rx="24" ry="13" transform="rotate(-16 93 102)" />
               <ellipse cx="145" cy="119" rx="21" ry="12" transform="rotate(28 145 119)" />
@@ -427,10 +427,10 @@ export function RoseHome() {
               <ellipse cx="238" cy="127" rx="23" ry="12" transform="rotate(12 238 127)" />
               <ellipse cx="286" cy="115" rx="20" ry="11" transform="rotate(-18 286 115)" />
             </g>
-            <g fill="none" stroke="#a66c3a" strokeWidth="2">
+            <g fill="none" stroke="#FCE4E7" strokeWidth="2">
               <path d="M32 77 Q48 80 58 89 M78 96 Q96 101 108 108 M133 113 Q146 119 156 125 M178 98 Q192 101 204 108 M220 122 Q238 127 252 132 M270 111 Q286 115 299 121" />
             </g>
-            <g fill="#31552c">
+            <g fill="#FCE4E7">
               <path d="M0 110 C28 75 58 70 88 82 C66 108 36 123 0 123Z" />
               <path d="M26 143 C48 106 79 96 111 103 C91 132 62 146 26 151Z" />
               <path d="M203 145 C224 113 254 106 283 114 C267 139 241 151 211 153Z" />
@@ -439,23 +439,23 @@ export function RoseHome() {
       </section>
 
       <section className="mx-auto grid max-w-[1280px] gap-4 px-4 pb-5 sm:px-6 lg:grid-cols-[1fr_1fr] lg:px-8">
-        <Link href="/training" className="relative min-h-[190px] overflow-hidden rounded-[10px] bg-[#71101c] text-white">
+        <Link href="/training" className="relative min-h-[190px] overflow-hidden rounded-[10px] bg-[#D7192D] text-white">
           <div className="relative z-10 p-5">
             <GraduationCap className="mb-2 size-7" />
             <h2 className="font-serif text-2xl">Barista Training</h2>
             <p className="text-xs">Learn. Practice. Master.</p>
-            <span className="mt-3 inline-block rounded-full bg-[#f4c36b] px-4 py-2 text-[11px] font-semibold text-[#2b2118]">Enroll Now</span>
+            <span className="mt-3 inline-block rounded-full bg-white px-4 py-2 text-[11px] font-semibold text-[#D7192D]">Enroll Now</span>
           </div>
           <div className="absolute right-0 top-0 h-full w-[48%]">
             <Image src="/images/training-hero.png" alt="" fill className="object-cover" sizes="340px" />
           </div>
         </Link>
-        <Link href="/coffee" className="relative min-h-[190px] overflow-hidden rounded-[10px] bg-[#fffaf5] ring-1 ring-[#eee1d5]">
+        <Link href="/coffee" className="relative min-h-[190px] overflow-hidden rounded-[10px] bg-white ring-1 ring-[#FCE4E7]">
           <div className="relative z-10 p-5">
-            <Coffee className="mb-2 size-7 text-[#d0122d]" />
+            <Coffee className="mb-2 size-7 text-[#D7192D]" />
             <h2 className="font-serif text-2xl">Marcafé</h2>
             <p className="text-xs">Premium Italian roasted<br />coffee for every cup.</p>
-            <span className="mt-3 inline-block rounded-full bg-[#f4c36b] px-4 py-2 text-[11px] font-semibold text-[#2b2118]">Explore Coffee</span>
+            <span className="mt-3 inline-block rounded-full bg-[#FCE4E7] px-4 py-2 text-[11px] font-semibold text-[#D7192D]">Explore Coffee</span>
           </div>
           <div className="absolute right-0 bottom-0 h-full w-[48%]">
             <Image src="/images/marcafe-roasted-beans.png" alt="" fill className="object-contain" sizes="320px" />
@@ -465,19 +465,19 @@ export function RoseHome() {
 
       <section id="news" className="mx-auto max-w-[1280px] px-4 pb-6 sm:px-6 lg:px-8">
         <div className="text-center">
-          <h2 className="font-serif text-2xl text-[#d0122d]">Latest News</h2>
+          <h2 className="font-serif text-2xl text-[#D7192D]">Latest News</h2>
           <p className="text-xs text-[#6f6259]">Coffee tips, industry insights, and company updates.</p>
         </div>
         <div className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-3">
           {newsItems.slice(0, 3).map((item) => (
-            <Link key={item.title} href={item.href} className="flex gap-3 rounded-lg bg-[#fffaf5] p-3 ring-1 ring-[#eee1d5]">
+            <Link key={item.title} href={item.href} className="flex gap-3 rounded-lg bg-white p-3 ring-1 ring-[#FCE4E7]">
               <div className="relative h-[92px] w-[130px] shrink-0 overflow-hidden rounded-md">
                 <Image src={item.src} alt={item.alt} fill className="object-cover" sizes="130px" />
               </div>
               <div className="min-w-0">
                 <p className="text-[10px] text-[#6f6259]">{item.date}</p>
                 <h3 className="mt-1 line-clamp-2 text-xs font-semibold leading-4">{item.title}</h3>
-                <span className="mt-2 block text-[10px] font-semibold text-[#d0122d]">Read More <ChevronRight className="inline size-3" /></span>
+                <span className="mt-2 block text-[10px] font-semibold text-[#D7192D]">Read More <ChevronRight className="inline size-3" /></span>
               </div>
             </Link>
           ))}
