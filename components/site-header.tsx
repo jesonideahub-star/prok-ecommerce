@@ -6,13 +6,10 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
   ChevronDown,
-  Headphones,
   Mail,
   Menu,
   Search,
-  ShieldCheck,
   ShoppingCart,
-  Truck,
   User,
   X,
 } from "lucide-react";
@@ -25,7 +22,6 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
   brandPageHref,
-  headerNavLayout,
   headerNavOrder,
   navDisplayLabel,
   navItems,
@@ -37,10 +33,19 @@ type NavItem = (typeof navItems)[number];
 type CatalogMega = Extract<NavItem, { mega: "catalog" }>;
 type BrandsMega = Extract<NavItem, { mega: "brands" }>;
 
-const row1Left = navItemsByLabels(headerNavLayout.row1Left);
-const row1Right = navItemsByLabels(headerNavLayout.row1Right);
-const row2Left = navItemsByLabels(headerNavLayout.row2Left);
-const row2Right = navItemsByLabels(headerNavLayout.row2Right);
+const desktopNav = navItemsByLabels([
+  "Home",
+  "About Us",
+  "Brands",
+  "Espresso Machines",
+  "Grinders",
+  "Coffee",
+  "Flavours",
+  "Puly Caff Product",
+  "Barista Training",
+  "Services",
+  "News & Events",
+]);
 const mobileNav = navItemsByLabels(headerNavOrder);
 
 function hasChildren(
@@ -89,7 +94,7 @@ function NavLink({
         href={item.href}
         aria-current={isActive ? "page" : undefined}
         className={cn(
-          "inline-flex items-center gap-1 whitespace-nowrap rounded-full px-3 py-2.5 text-[13px] font-medium transition-colors xl:px-4 xl:text-[15px] 2xl:px-5 2xl:text-[18px]",
+          "inline-flex items-center gap-1 whitespace-nowrap rounded-full px-2 py-2 text-[12px] font-medium transition-colors xl:px-1.5 xl:text-[11px] 2xl:px-2 2xl:text-[13px]",
           isActive &&
             item.label !== "Contact Us" &&
             "bg-[#D7192D] text-white hover:bg-[#b91427]",
@@ -112,34 +117,6 @@ function NavLink({
           />
         ) : null}
       </Link>
-    </div>
-  );
-}
-
-function NavCluster({
-  items,
-  mega,
-  pathname,
-  onOpen,
-}: {
-  items: NavItem[];
-  mega: string | null;
-  pathname: string;
-  onOpen: (item: NavItem) => void;
-}) {
-  if (items.length === 0) return null;
-
-  return (
-    <div className="flex flex-nowrap items-center gap-x-2 2xl:gap-x-8">
-      {items.map((item) => (
-        <NavLink
-          key={item.label}
-          item={item}
-          isOpen={mega === item.label}
-          isActive={pathMatches(pathname, item.href)}
-          onOpen={() => onOpen(item)}
-        />
-      ))}
     </div>
   );
 }
@@ -198,6 +175,7 @@ function catalogUseFromHref(href: string) {
 
 export function SiteHeader() {
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [searchOpen, setSearchOpen] = useState(false);
   const [mega, setMega] = useState<string | null>(null);
   const [catalogUse, setCatalogUse] = useState("cafe");
   const pathname = usePathname();
@@ -207,10 +185,12 @@ export function SiteHeader() {
   function close() {
     setMega(null);
     setMobileOpen(false);
+    setSearchOpen(false);
   }
 
   function openNavItem(item: NavItem) {
     setMega(hasDropdown(item) ? item.label : null);
+    setSearchOpen(false);
     if (item.label === "Espresso Machines") {
       setCatalogUse("cafe");
     }
@@ -218,33 +198,10 @@ export function SiteHeader() {
 
   return (
     <header
-      className="sticky top-0 z-50 overflow-x-clip bg-white text-[#2b2118]"
+      className="sticky top-0 z-50 overflow-x-clip bg-[#fff8f8] text-[#2b2118]"
       onMouseLeave={() => setMega(null)}
     >
-      <div className="hidden bg-[#D7192D] text-white lg:block">
-        <div className="mx-auto grid h-[46px] max-w-[1900px] grid-cols-4 items-center px-8 text-sm font-semibold">
-          <span className="inline-flex items-center gap-3">
-            <Truck className="size-6 shrink-0" />
-            Free Shipping on orders over ₱2,000
-          </span>
-          <span className="inline-flex items-center justify-center gap-3">
-            <ShieldCheck className="size-6 shrink-0" />
-            Secure Payment
-          </span>
-          <span className="inline-flex items-center justify-center gap-3">
-            <Headphones className="size-8 shrink-0" />
-            24/7 Customer Support
-          </span>
-          <div className="flex items-center justify-end gap-4 border-l border-white/60 pl-7 text-xl">
-            <a href="#contact" aria-label="Facebook" className="hover:opacity-80">f</a>
-            <a href="#contact" aria-label="Instagram" className="hover:opacity-80">⌾</a>
-            <a href="#contact" aria-label="YouTube" className="hover:opacity-80">▷</a>
-            <a href="#contact" aria-label="TikTok" className="hover:opacity-80">♪</a>
-          </div>
-        </div>
-      </div>
-
-      <div className="mx-auto flex items-center justify-between gap-4 px-4 py-3 sm:px-6 lg:hidden">
+      <div className="mx-auto flex items-center justify-between gap-4 px-4 py-3 sm:px-6 xl:hidden">
         <SiteLogo showPitcorp={false} className="min-w-0 shrink-0 [&_img]:h-10 sm:[&_img]:h-11 lg:[&_img]:h-12" />
         <button
           type="button"
@@ -257,51 +214,56 @@ export function SiteHeader() {
         </button>
       </div>
 
-      <div className="mx-auto hidden h-[90px] max-w-[1900px] items-center gap-12 px-8 lg:flex">
-        <SiteLogo showPitcorp={false} className="shrink-0 [&_img]:h-[78px]" />
-        <SearchForm className="mx-auto max-w-[1000px] flex-1" large />
-        <div className="ml-auto flex shrink-0 items-center gap-9">
-          <Link
-            href="/admin/login"
-            className="inline-flex items-center gap-3 text-[15px] font-medium text-[#2b2118] hover:text-[#D7192D]"
+      <div className="mx-auto hidden h-[88px] max-w-[1900px] items-center gap-4 px-5 xl:flex xl:px-8">
+        <SiteLogo showPitcorp={false} className="shrink-0 [&_img]:h-[58px]" />
+        <nav aria-label="Main navigation" className="min-w-0 flex-1 overflow-x-auto [scrollbar-width:none]">
+          <div className="flex w-max min-w-full items-center justify-center gap-0.5">
+            {desktopNav.map((item) => (
+              <NavLink
+                key={item.label}
+                item={item}
+                isOpen={mega === item.label}
+                isActive={pathMatches(pathname, item.href)}
+                onOpen={() => openNavItem(item)}
+              />
+            ))}
+          </div>
+        </nav>
+        <div className="ml-1 flex shrink-0 items-center gap-3">
+          <button
+            type="button"
+            aria-label={searchOpen ? "Close search" : "Open search"}
+            aria-expanded={searchOpen}
+            onClick={() => {
+              setMega(null);
+              setSearchOpen((value) => !value);
+            }}
+            className="inline-flex size-12 items-center justify-center border-r border-[#f3b9c0] pr-3 text-[#382d29] transition-colors hover:text-[#D7192D]"
           >
-            <User className="size-7 stroke-[1.6] text-[#c4161c]" />
-            Admin Login
-          </Link>
+            <Search className="size-6 stroke-[1.8]" />
+          </button>
           <Link
             href="/espresso-machines"
             aria-label="Cart"
-            className="relative inline-flex text-[#2b2118] hover:text-[#D7192D]"
+            className="relative inline-flex h-11 min-w-[78px] items-center justify-center rounded-full bg-[#ed1027] px-5 text-white shadow-sm transition-colors hover:bg-[#c70f22]"
           >
-            <ShoppingCart className="size-8 stroke-[1.6]" />
-            <span className="absolute -top-3 -right-3 flex size-7 items-center justify-center rounded-full bg-[#FCE4E7] text-xs font-semibold text-[#D7192D]">
+            <ShoppingCart className="size-6 stroke-[2]" />
+            <span className="absolute -top-1 -right-1 flex size-6 items-center justify-center rounded-full bg-[#ffb900] text-xs font-bold text-[#7b3b00]">
               0
             </span>
           </Link>
         </div>
       </div>
 
-      <div className="hidden border-b border-[#e6c6a9] lg:block">
-        <nav aria-label="Main navigation" className="overflow-x-auto">
-          <div className="mx-auto flex h-[82px] w-max min-w-full items-center gap-2 px-4 xl:gap-3 xl:px-6 2xl:gap-4 2xl:px-[74px]">
-            <NavCluster items={row1Left} mega={mega} pathname={pathname} onOpen={openNavItem} />
-            <span className="mx-1 h-6 w-px shrink-0 bg-[#ead8cc] xl:mx-2 2xl:mx-4" />
-            <NavCluster
-              items={[...row1Right, ...row2Left]}
-              mega={mega}
-              pathname={pathname}
-              onOpen={openNavItem}
-            />
-            <div className="ml-auto">
-              <NavCluster items={row2Right} mega={mega} pathname={pathname} onOpen={openNavItem} />
-            </div>
-          </div>
-        </nav>
-      </div>
-
-      <div className="border-b border-[#e6c6a9] px-4 pb-3 lg:hidden">
+      <div className="border-b border-[#e6c6a9] px-4 pb-3 xl:hidden">
         <SearchForm />
       </div>
+
+      {searchOpen ? (
+        <div className="absolute inset-x-0 top-full border-t border-[#FCE4E7] bg-[#fffafa] px-5 py-4 shadow-[0_18px_40px_rgba(215,25,45,0.12)]">
+          <SearchForm className="mx-auto max-w-[720px]" />
+        </div>
+      ) : null}
 
       {openItem && isBrandsMega(openItem) ? (
         <div className="absolute inset-x-0 top-full border-t border-[#FCE4E7] bg-[#FFF3F4] shadow-[0_18px_40px_rgba(215,25,45,0.12)]">
@@ -432,7 +394,7 @@ export function SiteHeader() {
 
       <div
         className={cn(
-          "border-t border-[#FCE4E7] bg-white lg:hidden",
+          "border-t border-[#FCE4E7] bg-white xl:hidden",
           mobileOpen ? "block" : "hidden"
         )}
       >
