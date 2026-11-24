@@ -105,7 +105,7 @@ function NavLink({
         href={item.href}
         aria-current={isActive ? "page" : undefined}
         className={cn(
-          "inline-flex items-center gap-1 whitespace-nowrap rounded-full px-2 py-2 text-[14px] font-medium transition-colors xl:px-1.5 xl:text-[12px] 2xl:px-2 2xl:text-[15px]",
+          "inline-flex items-center gap-1.5 whitespace-nowrap rounded-full px-3 py-2.5 text-[16px] font-medium transition-colors xl:px-2 xl:text-[14px] 2xl:px-3 2xl:text-[17px]",
           isActive &&
             item.label !== "Contact Us" &&
             "bg-[#D7192D] text-white hover:bg-[#b91427]",
@@ -270,9 +270,9 @@ export function SiteHeader() {
         </div>
       </div>
 
-      <div className="mx-auto hidden h-[76px] max-w-[1900px] items-center px-8 xl:flex">
+      <div className="mx-auto hidden h-[84px] max-w-[1900px] items-center px-8 xl:flex">
         <nav aria-label="Main navigation" className="min-w-0 flex-1 overflow-x-auto [scrollbar-width:none]">
-          <div className="flex w-max min-w-full items-center justify-between gap-1">
+          <div className="flex w-max min-w-full items-center justify-between gap-1.5">
             {desktopNav.map((item) => (
               <NavLink
                 key={item.label}
