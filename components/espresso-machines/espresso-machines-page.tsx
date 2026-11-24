@@ -39,12 +39,25 @@ const imageExtensions = /\.(avif|gif|jpe?g|png|webp)$/i;
 const espressoMachineBucket = "Espresso_Machines";
 const cafeBucket = "Cafe";
 const restaurantBucket = "Restaurant";
+const hotelBucket = "Hotel";
+const homeBucket = "Home";
+const officeBucket = "Office";
+const nonEspressoMachineKeywords =
+  /\b(grinder|grinding|mill|tamper|accessor(?:y|ies)|clean(?:er|ing)?|brush|knockbox|on[\s_-]*demand|atom|mignon|firenze|helios?|libra|disko)\b/i;
 const useEspressoMachineBrands = new Set([
   "Casadio",
   "Didiesse",
   "La Nuova Era",
   "Slayer",
 ]);
+
+function isEspressoMachineProduct(name: string, brand: string) {
+  return (
+    brand !== "Eureka 1920" &&
+    !nonEspressoMachineKeywords.test(name) &&
+    !normalizeFilename(name).includes("ondemand")
+  );
+}
 
 function normalizeFilename(filename: string) {
   return filename
@@ -208,9 +221,11 @@ async function loadMachineProducts(): Promise<MachineProduct[]> {
         /(?:^|[\s/_-])([123])\s*(?:groups?|gr)\b/i
       )?.[1];
       const brand = parentBrand ?? inferMachineBrand(entryPath) ?? "Other";
+      const name = productDisplayName(entry.name);
+      if (!isEspressoMachineProduct(name, brand)) continue;
 
       files.push({
-        name: productDisplayName(entry.name),
+        name,
         brand,
         path: entryPath,
         src: bucket.getPublicUrl(entryPath).data.publicUrl,
@@ -310,9 +325,11 @@ async function loadUseProducts(bucketName: string): Promise<MachineProduct[]> {
         inferMachineBrand(entryPath) ??
         (parentDirectory ? brandDisplayName(parentDirectory) : "Other");
       if (!useEspressoMachineBrands.has(brand)) continue;
+      const name = productDisplayName(entry.name);
+      if (!isEspressoMachineProduct(name, brand)) continue;
 
       products.push({
-        name: productDisplayName(entry.name),
+        name,
         brand,
         path: entryPath,
         src: bucket.getPublicUrl(entryPath).data.publicUrl,
@@ -366,7 +383,17 @@ export function EspressoMachinesPage({
   const router = useRouter();
   const groupCount = group === "1" || group === "2" ? Number(group) : undefined;
   const useBucket =
-    use === "cafe" ? cafeBucket : use === "restaurant" ? restaurantBucket : undefined;
+    use === "cafe"
+      ? cafeBucket
+      : use === "restaurant"
+        ? restaurantBucket
+        : use === "hotel"
+          ? hotelBucket
+          : use === "home"
+            ? homeBucket
+            : use === "office"
+              ? officeBucket
+          : undefined;
   const productsForFilters = useBucket ? useProducts : machineProducts;
   const brandFilters = useMemo(
     () =>
