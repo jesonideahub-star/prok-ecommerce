@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Image from "@/components/media-image";
 import Link from "next/link";
 import {
@@ -12,6 +12,7 @@ import {
 } from "lucide-react";
 
 import { CatalogAd } from "@/components/ads/catalog-ad";
+import { createClient } from "@/lib/supabase/client";
 import {
   brandCatalog,
   brandLogos,
@@ -19,9 +20,42 @@ import {
 } from "@/lib/site";
 
 type SortKey = "default" | "az" | "za";
+type BrandProduct = { name: string; brand: string; src: string };
+const imageExtensions = /\.(avif|gif|jpe?g|png|webp)$/i;
+const didiesseViewSuffix = /\s+(FR|LAT\s+(?:DX|SX)|TREQUA)$/i;
+
+function didiesseProductGroup(name: string) {
+  return name.replace(didiesseViewSuffix, "").trim();
+}
+
+function didiesseImagePriority(name: string) {
+  if (/\s+FR$/i.test(name)) return 0;
+  if (didiesseProductGroup(name) === name) return 1;
+  return 2;
+}
+
+function groupDidiesseProducts(products: BrandProduct[]) {
+  const grouped = new Map<string, BrandProduct>();
+
+  for (const product of products) {
+    const name = didiesseProductGroup(product.name);
+    const key = brandSlug(name);
+    const existing = grouped.get(key);
+
+    if (
+      !existing ||
+      didiesseImagePriority(product.name) < didiesseImagePriority(existing.name)
+    ) {
+      grouped.set(key, { ...product, name });
+    }
+  }
+
+  return [...grouped.values()];
+}
 
 function brandLabelFromSlug(slug?: string) {
   if (!slug) return undefined;
+  if (slug === "didiesse") return "Didiesse";
   return brandLogos.find((brand) => brandSlug(brand.name) === slug)?.name;
 }
 
@@ -91,10 +125,86 @@ const productCategories = [
 
 export function BrandsPage({ brand }: { brand?: string }) {
   const [sort, setSort] = useState<SortKey>("default");
+  const [didiesseProducts, setDidiesseProducts] = useState<BrandProduct[]>([]);
+  const [isLoadingDidiesse, setIsLoadingDidiesse] = useState(false);
+  const [didiesseLoadError, setDidiesseLoadError] = useState<string | null>(null);
   const selectedBrand = brandLabelFromSlug(brand);
+  const isDidiesse = brand === brandSlug("didiesse");
+
+  useEffect(() => {
+    if (!isDidiesse) return;
+
+    let active = true;
+    async function loadDidiesseProducts() {
+      setIsLoadingDidiesse(true);
+      setDidiesseLoadError(null);
+      try {
+        const bucket = createClient().storage.from("Espresso_Machines");
+
+        async function listDirectory(path: string) {
+          const entries = [];
+          const limit = 1000;
+
+          for (let offset = 0; ; offset += limit) {
+            const { data, error } = await bucket.list(path, {
+              limit,
+              offset,
+              sortBy: { column: "name", order: "asc" },
+            });
+            if (error) throw error;
+            entries.push(...(data ?? []));
+            if (!data || data.length < limit) break;
+          }
+
+          return entries;
+        }
+
+        async function walk(path: string): Promise<BrandProduct[]> {
+          const entries = await listDirectory(path);
+          const products: BrandProduct[] = [];
+
+          for (const entry of entries) {
+            const objectPath = `${path}/${entry.name}`;
+            if (entry.id === null) {
+              products.push(...(await walk(objectPath)));
+              continue;
+            }
+            if (!imageExtensions.test(entry.name)) continue;
+
+            products.push({
+              name: entry.name.replace(imageExtensions, "").replace(/[_-]+/g, " ").trim(),
+              brand: "Didiesse",
+              src: bucket.getPublicUrl(objectPath).data.publicUrl,
+            });
+          }
+
+          return products;
+        }
+
+        const products = await walk("Didiesse");
+        if (active) setDidiesseProducts(products);
+      } catch (error) {
+        console.error("Unable to load Didiesse products from the Espresso_Machines bucket.", error);
+        if (active) {
+          setDidiesseLoadError(
+            "Didiesse products could not be loaded from the Espresso_Machines bucket. Please try again later."
+          );
+        }
+      } finally {
+        if (active) setIsLoadingDidiesse(false);
+      }
+    }
+
+    void loadDidiesseProducts();
+    return () => {
+      active = false;
+    };
+  }, [isDidiesse]);
 
   const items = useMemo(() => {
-    const next = brand
+    const next: BrandProduct[] = isDidiesse
+      ? groupDidiesseProducts(didiesseProducts)
+      : brand
       ? brandCatalog.filter((item) => brandSlug(item.brand) === brand)
       : [...brandCatalog];
 
@@ -105,7 +215,7 @@ export function BrandsPage({ brand }: { brand?: string }) {
       next.sort((a, b) => b.name.localeCompare(a.name));
     }
     return next;
-  }, [brand, sort]);
+  }, [brand, didiesseProducts, isDidiesse, sort]);
 
   return (
     <main className="flex-1 overflow-hidden bg-[#fff7f5] text-[#30231e]">
@@ -212,7 +322,15 @@ export function BrandsPage({ brand }: { brand?: string }) {
             </div>
           </div>
 
-          {items.length ? (
+          {isLoadingDidiesse ? (
+            <p role="status" className="mt-8 rounded-[20px] border border-[#f2ded7] bg-white/80 p-6 text-sm text-[#5d514b]">
+              Loading all Didiesse products…
+            </p>
+          ) : didiesseLoadError ? (
+            <p role="alert" className="mt-8 rounded-[20px] border border-[#f2ded7] bg-white/80 p-6 text-sm text-[#5d514b]">
+              {didiesseLoadError}
+            </p>
+          ) : items.length ? (
             <>
               <div className="mt-6">
                 <CatalogAd />

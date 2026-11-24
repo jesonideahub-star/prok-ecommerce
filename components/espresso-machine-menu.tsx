@@ -52,7 +52,7 @@ const featuredBrands = [
   },
   {
     name: "didiesse",
-    image: "/images/hero-espresso.png",
+    image: "/images/didiesse-espresso-menu.jpg",
     href: "/espresso-machines?brand=didiesse",
     alt: "Didiesse espresso machine",
   },

@@ -78,8 +78,19 @@ function formattedDate(value: string) {
 
 export function mapNewsItem(item: NewsCard): NewsEventItem {
   const titleSlug = slugify(item.title);
-  const isTraining = /training|academy/i.test(`${item.tag} ${item.title}`);
-  const category = isTraining ? "Training" : item.tag || "News";
+  const screenshotMatch = titleSlug === "wofex-mindanao-2025"
+    ? fallbackNewsEvents[0]
+    : titleSlug.includes("hands-on-barista-courses")
+      ? fallbackNewsEvents[1]
+      : titleSlug.includes("specialists-trained-by-the-people")
+        ? fallbackNewsEvents[2]
+        : null;
+  if (screenshotMatch) return { ...screenshotMatch, id: item.id };
+
+  const label = `${item.tag} ${item.title}`;
+  const isTraining = /training|academy/i.test(label);
+  const isPressRelease = /press release/i.test(label);
+  const category = isTraining ? "Training" : isPressRelease ? "Press Releases" : "News";
   return {
     id: item.id,
     title: item.title,
@@ -89,15 +100,16 @@ export function mapNewsItem(item: NewsCard): NewsEventItem {
     date: formattedDate(item.date),
     location: "",
     href: newsEventHref(item.title),
-    isEvent: /event|trade show/i.test(category),
+    isEvent: false,
     ...(titleSlug === "wofex-mindanao-2025" ? { category: "Trade Show", isEvent: true } : {}),
   };
 }
 
 export function mapEventItem(item: EventCard): NewsEventItem {
+  const isWofex = slugify(item.title) === "wofex-mindanao-2025";
   return {
     id: item.id,
-    title: item.title,
+    title: isWofex ? fallbackNewsEvents[0].title : item.title,
     description: item.description,
     image: item.src,
     category: item.category || "Event",

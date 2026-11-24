@@ -33,21 +33,23 @@ export function EventDetailPage({ slug }: { slug: string }) {
 
   useEffect(() => {
     const supabase = createClient();
-    void withSupabaseFallback(async () => {
-      const [newsQuery, eventQuery] = await Promise.all([
-        supabase.from("news").select("*").order("sort_order"),
-        supabase.from("events").select("*").order("sort_order"),
-      ]);
-      const newsRows = ((newsQuery.data ?? []) as Record<string, unknown>[]).filter(isPublished);
-      const eventRows = ((eventQuery.data ?? []) as Record<string, unknown>[]).filter(isPublished);
-      const items = uniqueNewsEvents([
-        ...mapEventRows(eventRows),
-        ...(newsRows.length ? mapNewsRows(newsRows) : fallbackNewsOnly),
-        ...fallbackNewsEvents,
-      ]);
-      setItem(items.find((entry) => entry.href.split("/").pop() === slug) ?? null);
+    void (async () => {
+      await withSupabaseFallback(async () => {
+        const [newsQuery, eventQuery] = await Promise.all([
+          supabase.from("news").select("*").order("sort_order"),
+          supabase.from("events").select("*").order("sort_order"),
+        ]);
+        const newsRows = ((newsQuery.data ?? []) as Record<string, unknown>[]).filter(isPublished);
+        const eventRows = ((eventQuery.data ?? []) as Record<string, unknown>[]).filter(isPublished);
+        const items = uniqueNewsEvents([
+          ...mapEventRows(eventRows),
+          ...(newsRows.length ? mapNewsRows(newsRows) : fallbackNewsOnly),
+          ...fallbackNewsEvents,
+        ]);
+        setItem(items.find((entry) => entry.href.split("/").pop() === slug) ?? null);
+      });
       setLoaded(true);
-    });
+    })();
   }, [slug]);
 
   if (!item && !loaded) {
