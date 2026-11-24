@@ -27,14 +27,14 @@ const categories = [
 
 const heroGrinders = [
   {
-    src: "/images/product-mignon-specialita.png",
-    alt: "Eureka Mignon Specialita grinder",
-    className: "bottom-0 left-[4%] h-[82%] w-[48%]",
+    src: "/images/hero-grinder-silenzio.png",
+    alt: "Eureka Mignon Silenzio grinder",
+    className: "bottom-0 left-[8%] h-[90%] w-[42%]",
   },
   {
-    src: "/images/product-helios-75.png",
-    alt: "Eureka Helios 75 grinder",
-    className: "bottom-0 right-[1%] h-[92%] w-[49%]",
+    src: "/images/hero-grinder-firenze.png",
+    alt: "Eureka Firenze 75 grinder",
+    className: "bottom-0 right-[2%] h-full w-[42%]",
   },
 ] as const;
 
@@ -48,7 +48,7 @@ export function GrinderMenu({
   return (
     <div className="bg-[#FCE4E7] px-3 py-3 sm:px-5">
       <div className="mx-auto max-w-[2000px] overflow-hidden rounded-[30px] border border-[#f5b5c0] bg-[linear-gradient(110deg,#fffafa_0%,#fff5f6_45%,#FCE4E7_100%)] shadow-[0_18px_40px_rgba(215,25,45,.16)]">
-        <div className="grid min-h-[390px] grid-cols-1 gap-5 p-5 sm:p-7 lg:grid-cols-[minmax(280px,22%)_minmax(0,1fr)] lg:gap-0 lg:px-9 lg:py-7">
+        <div className="grid min-h-[390px] grid-cols-1 gap-5 p-5 sm:p-7 lg:grid-cols-[300px_minmax(0,1fr)] lg:gap-0 lg:px-9 lg:py-7">
           <section className="lg:border-r lg:border-[#f3b9c0] lg:pr-8">
             <h2 className="border-b border-[#e44352] pb-2 text-[18px] font-bold text-[#D7192D] sm:text-[20px]">
               CATEGORIES
@@ -78,21 +78,24 @@ export function GrinderMenu({
           </section>
 
           <section className="relative isolate flex min-h-[330px] items-center overflow-hidden rounded-2xl bg-[linear-gradient(130deg,#fff7f8_0%,#fde7eb_58%,#f8c5ce_100%)] lg:ml-8 lg:min-h-0 lg:rounded-none">
-            <div className="absolute inset-0 -z-10 bg-[radial-gradient(ellipse_at_76%_56%,rgba(255,255,255,.92),rgba(252,228,231,.12)_68%),linear-gradient(150deg,transparent_63%,rgba(240,110,136,.2)_63.5%,transparent_80%)]" />
-            <div className="pointer-events-none absolute inset-y-0 right-0 -z-0 flex w-[55%] items-end">
+            <div className="absolute inset-0 z-0 bg-[radial-gradient(ellipse_at_76%_56%,rgba(255,255,255,.92),rgba(252,228,231,.12)_68%),linear-gradient(150deg,transparent_63%,rgba(240,110,136,.2)_63.5%,transparent_80%)]" />
+            <div className="pointer-events-none absolute inset-y-0 right-0 z-10 flex w-[55%] items-end">
               {heroGrinders.map((grinder) => (
-                <span key={grinder.src} className={`absolute ${grinder.className}`}>
+                <span
+                  key={grinder.src}
+                  className={`absolute mix-blend-multiply ${grinder.className}`}
+                >
                   <Image
                     src={grinder.src}
                     alt={grinder.alt}
                     fill
                     sizes="(min-width: 1024px) 20vw, 42vw"
-                    className="object-contain object-bottom mix-blend-multiply"
+                    className="object-contain object-bottom drop-shadow-[0_8px_10px_rgba(47,24,24,.12)]"
                   />
                 </span>
               ))}
             </div>
-            <div className="relative z-10 max-w-[560px] px-6 py-8 lg:pl-8">
+            <div className="relative z-20 max-w-[560px] px-6 py-8 lg:pl-8">
               <h2 className="font-serif text-[48px] leading-[.96] font-bold tracking-tight text-[#3b1c17] sm:text-[62px]">
                 Coffee
                 <br />

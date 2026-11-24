@@ -931,6 +931,13 @@ export const cleaningProducts = [
     detail: "Coffee machine cleaner",
     src: "/images/puly-caff-plus-370-cutout.png",
   },
+  {
+    name: "Puly Caff Spazzolino Brush",
+    brand: "Puly Caff Product",
+    category: "accessories",
+    detail: "Coffee machine cleaning brush",
+    src: "/images/puly-brush.png",
+  },
 ] as const;
 
 export const trainingCourses = [
