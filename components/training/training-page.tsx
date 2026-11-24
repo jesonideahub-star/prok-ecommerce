@@ -1,6 +1,5 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import Image from "@/components/media-image";
 import Link from "next/link";
 import {
@@ -11,27 +10,6 @@ import {
   Trophy,
   UsersRound,
 } from "lucide-react";
-
-import {
-  isPublished,
-  mapTrainingRow,
-  type TrainingCard,
-  uniqueByTitle,
-} from "@/lib/cms/public";
-import { trainingCourses } from "@/lib/site";
-import { createClient } from "@/lib/supabase/client";
-import { withSupabaseFallback } from "@/lib/supabase/safe";
-
-const curriculumCourses: TrainingCard[] = trainingCourses.map((course, index) => ({
-  id: `fallback-training-${index}`,
-  title: course.title,
-  description: course.description,
-  src: course.src,
-  learning_outcomes:
-    index === 0
-    ? "Coffee History, Introduction to Coffee, Coffee Theory, Specialty Coffee, Cupping & Sensory Skills, Alternative Brewing Method, Cafe Management, Espresso Making"
-      : "Milk Steaming & Science Behind It (Latte Art), Preparation of Drinks, Cafe Management, Exploring Coffee Origins, Espresso Prep, Role of Water Brewing, Machine Calibration, Sensory and Brewing",
-}));
 
 const courseHighlights = [
   {
@@ -66,20 +44,6 @@ const courseHighlights = [
     ],
     href: "/#contact",
   },
-  {
-    title: "Professional Barista Certification",
-    description: "Get certified and stand out in the coffee industry.",
-    image: "/images/hero-training.png",
-    outcomes: ["Hands-on training", "Certification", "Career support"],
-    href: "/#contact",
-  },
-  {
-    title: "Customized Training for Businesses",
-    description: "Tailored training programs for your team's needs.",
-    image: "/images/feature_-_Main_hall_1.jpg",
-    outcomes: ["On-site training", "Flexible modules", "Staff skill development"],
-    href: "/#contact",
-  },
 ] as const;
 
 const benefits = [
@@ -89,35 +53,7 @@ const benefits = [
   { icon: UsersRound, title: "Career Support", description: "Grow your coffee career." },
 ] as const;
 
-function getOutcomes(course: TrainingCard) {
-  const outcomes = course.learning_outcomes
-    ?.split(/[,;\n•]+/)
-    .map((item) => item.trim())
-    .filter(Boolean);
-
-  if (outcomes?.length) return outcomes;
-
-  const fallback = curriculumCourses.find(
-    (item) => item.title.trim().toLowerCase() === course.title.trim().toLowerCase()
-  );
-  return fallback?.learning_outcomes
-    ?.split(/[,;\n•]+/)
-    .map((item) => item.trim())
-    .filter(Boolean);
-}
-
 export function TrainingPage() {
-  const [courses, setCourses] = useState<TrainingCard[]>(curriculumCourses);
-
-  useEffect(() => {
-    const supabase = createClient();
-    void withSupabaseFallback(async () => {
-      const { data } = await supabase.from("training_courses").select("*").order("sort_order");
-      const rows = ((data ?? []) as Record<string, unknown>[]).filter(isPublished);
-      if (rows.length) setCourses(uniqueByTitle(rows.map(mapTrainingRow)));
-    });
-  }, []);
-
   return (
     <main className="flex-1 bg-[#fff7f7] text-[#292226]">
       <section className="relative isolate min-h-[245px] overflow-hidden border-y border-[#f2b2ba] bg-[linear-gradient(105deg,#fff8f8_0%,#ffe8eb_45%,#f7b7c1_100%)] sm:min-h-[280px]">
@@ -181,138 +117,51 @@ export function TrainingPage() {
               Professional training for coffee enthusiasts and business owners.
             </p>
           </div>
-          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 md:grid-cols-4">
+          <div className="mx-auto grid max-w-[1120px] grid-cols-1 gap-5 sm:grid-cols-2">
             {courseHighlights.map((course) => (
               <article
                 key={course.title}
-                className="flex min-w-0 flex-col overflow-hidden rounded-[12px] border border-[#f2d6d7] bg-white/75 shadow-[0_3px_12px_rgba(115,38,44,.04)]"
+                className="flex min-w-0 flex-col overflow-hidden rounded-[18px] border border-[#f2d6d7] bg-white/75 shadow-[0_3px_12px_rgba(115,38,44,.04)]"
               >
-                <div className="relative aspect-[1.48] overflow-hidden bg-[#eee8e4]">
+                <div className="relative aspect-[1.5] overflow-hidden bg-[#eee8e4]">
                   <Image
                     src={course.image}
                     alt={course.title}
                     fill
-                    sizes="(min-width: 1280px) 25vw, (min-width: 640px) 50vw, 100vw"
+                    sizes="(min-width: 1120px) 560px, (min-width: 640px) 50vw, 100vw"
                     className="object-cover"
                   />
                 </div>
-                <div className="flex flex-1 flex-col p-3">
-                  <h3 className="font-serif text-[15px] leading-[1.05] font-bold text-[#432725]">
+                <div className="flex flex-1 flex-col p-4 sm:p-5">
+                  <h3 className="font-serif text-[21px] leading-[1.05] font-bold text-[#432725] sm:text-[26px]">
                     {course.title}
                   </h3>
-                  <p className="mt-1.5 text-[10px] leading-snug text-[#5e5553]">
+                  <p className="mt-2 text-[13px] leading-snug text-[#5e5553] sm:text-[16px]">
                     {course.description}
                   </p>
-                  <ul className="mt-2 space-y-1">
+                  <ul className="mt-3 space-y-1.5">
                     {course.outcomes.map((outcome) => (
                       <li
                         key={outcome}
-                        className="flex items-start gap-1.5 text-[9px] leading-tight text-[#51494a]"
+                        className="flex items-start gap-2 text-[12px] leading-snug text-[#51494a] sm:text-[15px]"
                       >
-                        <Check className="mt-px size-[10px] shrink-0 rounded-full bg-[#e50925] p-[2px] text-white" />
+                        <Check className="mt-0.5 size-4 shrink-0 rounded-full bg-[#e50925] p-[3px] text-white" />
                         {outcome}
                       </li>
                     ))}
                   </ul>
-                  <div className="mt-auto flex justify-center pt-3">
+                  <div className="mt-auto flex justify-center pt-5">
                     <Link
                       href={course.href}
-                      className="inline-flex min-w-[98px] items-center justify-center gap-1.5 rounded-full bg-[#e50925] px-3 py-1.5 text-[10px] font-semibold text-white transition-colors hover:bg-[#bd1024]"
+                      className="inline-flex min-w-[155px] items-center justify-center gap-2 rounded-full bg-[#e50925] px-5 py-3 text-[14px] font-semibold text-white transition-colors hover:bg-[#bd1024]"
                     >
                       {course.title.startsWith("Customized") ? "Contact Us" : "Enroll Now"}
-                      <ArrowRight className="size-3" />
+                      <ArrowRight className="size-4" />
                     </Link>
                   </div>
                 </div>
               </article>
             ))}
-          </div>
-        </div>
-      </section>
-
-      <section className="px-4 pt-1 pb-5 sm:px-6 lg:px-8">
-        <div className="mx-auto max-w-[1440px]">
-          <div className="mb-2 flex items-center gap-3">
-            <h2 className="shrink-0 font-serif text-[20px] font-bold text-[#492829] sm:text-[23px]">
-              Course Curriculum
-            </h2>
-            <span className="h-px flex-1 bg-[#ef8e98]" />
-          </div>
-          <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
-            {courses.map((course) => {
-              const outcomes = getOutcomes(course) ?? [];
-              const details = [
-                course.overview,
-                course.requirements,
-                course.schedule,
-                course.instructor,
-                course.location,
-                course.price != null ? `₱ ${course.price.toLocaleString("en-PH")}` : undefined,
-                course.contact_info,
-              ].filter(Boolean);
-
-              return (
-                <article
-                  key={course.id}
-                  className="flex flex-col rounded-[12px] border border-[#f1d7d8] bg-white/60 p-3 sm:p-4"
-                >
-                  <div className="flex items-start gap-3">
-                    <div className="relative h-[70px] w-[145px] shrink-0 overflow-hidden rounded-md bg-[#eee] shadow-sm sm:h-[82px] sm:w-[185px]">
-                      <Image
-                        src={course.src}
-                        alt={course.title}
-                        fill
-                        sizes="(min-width: 640px) 185px, 145px"
-                        className="object-contain"
-                      />
-                    </div>
-                    <div className="min-w-0 pt-1">
-                      <h3 className="font-serif text-[16px] font-bold text-[#d7192d] sm:text-[18px]">
-                        {course.title}
-                      </h3>
-                      <p className="mt-1 text-[9px] text-[#62595a]">{course.description}</p>
-                      {course.duration || course.price != null ? (
-                        <p className="mt-1 text-[9px] text-[#62595a]">
-                          {[course.duration, course.price != null ? `₱ ${course.price.toLocaleString("en-PH")}` : null]
-                            .filter(Boolean)
-                            .join(" · ")}
-                        </p>
-                      ) : null}
-                    </div>
-                  </div>
-                  {outcomes.length ? (
-                    <ul className="mt-2 grid grid-cols-1 gap-x-4 gap-y-1 pl-4 text-[9px] leading-tight text-[#554d4c] sm:grid-cols-2">
-                      {outcomes.map((outcome) => (
-                        <li key={outcome} className="list-disc">
-                          {outcome}
-                        </li>
-                      ))}
-                    </ul>
-                  ) : null}
-                  {details.length ? (
-                    <details className="mt-2 text-[9px] text-[#62595a]">
-                      <summary className="cursor-pointer font-semibold text-[#9b4b28]">
-                        Additional course details
-                      </summary>
-                      <div className="mt-1 space-y-0.5">
-                        {course.overview ? <p>{course.overview}</p> : null}
-                        {course.requirements ? <p>Requirements: {course.requirements}</p> : null}
-                        {course.schedule ? <p>Schedule: {course.schedule}</p> : null}
-                        {course.instructor ? <p>Instructor: {course.instructor}</p> : null}
-                        {course.location ? <p>Location: {course.location}</p> : null}
-                        {course.contact_info ? <p>{course.contact_info}</p> : null}
-                      </div>
-                    </details>
-                  ) : null}
-                  <Link
-                    href={course.enrollment_href || "/#contact"}
-                    className="mt-3 inline-flex items-center justify-center rounded-md bg-[#8b4a27] px-3 py-1.5 text-[10px] font-medium text-white transition-colors hover:bg-[#6e371d]"
-                  >
-                    View Course Details
-                  </Link>
-                </article>
-              );
-            })}
           </div>
         </div>
       </section>
