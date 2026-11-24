@@ -4,7 +4,14 @@ import { useEffect, useMemo, useState } from "react";
 import Image from "@/components/media-image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { ChevronDown, ChevronRight, Grid2X2, List, RotateCcw } from "lucide-react";
+import {
+  ArrowRight,
+  ChevronDown,
+  ChevronRight,
+  Grid2X2,
+  List,
+  RotateCcw,
+} from "lucide-react";
 
 import { createClient } from "@/lib/supabase/client";
 import {
@@ -458,15 +465,36 @@ export function EspressoMachinesPage({
 
   return (
     <main className="flex-1 overflow-hidden bg-[#FFF3F4] text-[#30231e]">
-      <section className="relative isolate h-[215px] overflow-hidden border-b border-[#f4b7c0] bg-[#FCE4E7] sm:h-[245px] lg:h-[275px]">
+      <section className="relative isolate h-[300px] overflow-hidden border-b border-[#f4b7c0] bg-[#FCE4E7] sm:h-[340px] lg:h-[380px]">
         <Image
-          src="/images/espresso-machines-hero.png"
+          src="/images/espresso-machines-hero-modern.png"
           alt="Professional espresso machine"
           fill
           priority
-          className="z-0 object-cover object-center"
+          className="z-0 object-cover object-[70%_center] sm:object-center"
           sizes="100vw"
         />
+        <div className="absolute inset-0 z-10 bg-[linear-gradient(90deg,rgba(255,235,239,.5)_0%,rgba(255,235,239,.32)_38%,transparent_68%)]" />
+        <div className="relative z-20 mx-auto flex h-full max-w-[1440px] items-center px-5 sm:px-8 lg:px-12">
+          <div className="max-w-[620px]">
+            <h1 className="font-serif text-[32px] leading-[1.05] font-bold tracking-tight text-[#3b1c17] sm:text-[42px] lg:text-[54px]">
+              Precision. Performance.
+              <span className="block font-semibold italic text-[#d0122d]">
+                Exceptional Coffee.
+              </span>
+            </h1>
+            <p className="mt-4 max-w-[490px] text-sm leading-relaxed text-[#30231e] sm:text-base">
+              Discover our premium range of espresso machines from world-renowned
+              brands, designed for cafés, restaurants, and coffee businesses.
+            </p>
+            <Link
+              href="#machine-products"
+              className="mt-5 inline-flex items-center gap-2 rounded-full bg-[#d0122d] px-6 py-3 text-sm font-semibold text-white shadow-[0_6px_18px_rgba(208,18,45,.2)] transition hover:bg-[#a91020]"
+            >
+              Explore Our Machines <ArrowRight className="size-4" />
+            </Link>
+          </div>
+        </div>
       </section>
 
       <section className="relative mx-auto max-w-[1440px] px-4 py-4 sm:px-6 sm:py-5 lg:px-8">
@@ -519,7 +547,10 @@ export function EspressoMachinesPage({
         </div>
       </section>
 
-      <section className="mx-auto max-w-[1440px] px-3 pb-5 sm:px-5 lg:px-8">
+      <section
+        id="machine-products"
+        className="mx-auto max-w-[1440px] px-3 pb-5 sm:px-5 lg:px-8"
+      >
         <div className="grid items-start gap-3 md:grid-cols-[150px_minmax(0,1fr)] lg:grid-cols-[210px_minmax(0,1fr)] lg:gap-4">
           <aside className="rounded-xl border border-[#f8d5d9] bg-[linear-gradient(145deg,#FCE4E7,#FFF3F4)] p-3 shadow-[0_4px_14px_rgba(215,25,45,.06)] sm:p-4">
             <h2 className="border-b border-[#efc5cb] pb-2 font-serif text-sm font-bold text-[#3b1c17] sm:text-base">
