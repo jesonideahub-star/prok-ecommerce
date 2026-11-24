@@ -34,7 +34,7 @@ export function PartnerCta() {
         </div>
         <div className="hidden items-center justify-center border-l border-[#c68884] pl-5 sm:flex">
           <div className="flex flex-col items-center">
-            <SiteLogo showPitcorp className="[&_img]:h-12" />
+            <SiteLogo className="[&_img]:h-12" />
             <p className="mt-1 text-[9px] font-bold tracking-[0.2em] text-[#30231e] uppercase">
               Good coffee. Greater possibilities.
             </p>

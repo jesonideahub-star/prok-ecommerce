@@ -35,6 +35,7 @@ type GrinderProduct = {
   uses: readonly string[];
   src: string;
   detail?: string;
+  imageName?: string;
 };
 
 const grinderBucket = "Grinders";
@@ -57,6 +58,20 @@ function grinderDisplayName(filename: string) {
     .replace(/\s+/g, " ")
     .trim()
     .replace(/\b[a-z]/g, (letter) => letter.toUpperCase());
+}
+
+function grinderProductName(filename: string) {
+  return grinderDisplayName(filename)
+    .replace(/\s+(?:front(?:\s+(?:left|right))?|back(?:\s+(?:left|right))?|left|right|side|detail|fr|lat\s+(?:dx|sx)|trequa)$/i, "")
+    .trim();
+}
+
+function grinderImagePriority(filename?: string) {
+  if (!filename) return 1;
+  const name = grinderDisplayName(filename);
+  if (/\bfront(?:\s+(?:left|right))?\b/i.test(name) || /\bfr$/i.test(name)) return 0;
+  if (/\b(?:back|left|right|side|detail|lat\s+(?:dx|sx)|trequa)$/i.test(name)) return 2;
+  return 1;
 }
 
 const knownGrinders = new Map(
@@ -82,6 +97,25 @@ function grinderType(filename: string): GrinderType {
   if (/automatic|auto/i.test(filename)) return "automatic";
   if (/traditional|manual/i.test(filename)) return "traditional";
   return "on-demand";
+}
+
+function groupGrinderImages(products: GrinderProduct[]) {
+  const grouped = new Map<string, GrinderProduct>();
+
+  for (const product of products) {
+    const name = product.name || grinderProductName(product.imageName ?? "");
+    const key = `${normalizeFilename(product.brand)}:${normalizeFilename(name)}`;
+    const existing = grouped.get(key);
+
+    if (
+      !existing ||
+      grinderImagePriority(product.imageName) < grinderImagePriority(existing.imageName)
+    ) {
+      grouped.set(key, { ...product, name });
+    }
+  }
+
+  return [...grouped.values()];
 }
 
 async function loadGrinders(): Promise<GrinderProduct[]> {
@@ -128,7 +162,7 @@ async function loadGrinders(): Promise<GrinderProduct[]> {
         )?.[1];
       const series = knownProduct?.series ?? grinderSeries(entry.name);
       products.push({
-        name: knownProduct?.name ?? grinderDisplayName(entry.name),
+        name: knownProduct?.name ?? grinderProductName(entry.name),
         brand: knownProduct?.brand ?? grinderBrand(parentBrand),
         series,
         type: grinderType(entry.name),
@@ -139,13 +173,14 @@ async function loadGrinders(): Promise<GrinderProduct[]> {
             : ["cafe", "restaurant", "hotel", "office"]),
         src: bucket.getPublicUrl(entryPath).data.publicUrl,
         detail: knownProduct && "detail" in knownProduct ? knownProduct.detail : undefined,
+        imageName: entry.name,
       });
     }
 
     return products;
   }
 
-  return (await walk("")).sort(
+  return groupGrinderImages(await walk("")).sort(
     (a, b) => a.brand.localeCompare(b.brand) || a.name.localeCompare(b.name)
   );
 }

@@ -5,10 +5,13 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
   ChevronDown,
+  Gift,
+  Headset,
+  House,
   Mail,
   Menu,
   Search,
-  ShoppingCart,
+  ShieldCheck,
   User,
   X,
 } from "lucide-react";
@@ -46,6 +49,7 @@ const desktopNav = navItemsByLabels([
   "Barista Training",
   "Services",
   "News & Events",
+  "Contact Us",
 ]);
 const mobileNav = navItemsByLabels(headerNavOrder);
 
@@ -90,12 +94,18 @@ function NavLink({
   const highlighted = isOpen || isActive;
 
   return (
-    <div onMouseEnter={onOpen} className="shrink-0">
+    <div
+      onMouseEnter={onOpen}
+      className={cn(
+        "shrink-0",
+        item.label === "Puly Caff Product" && "ml-2 border-l border-[#D7192D] pl-2"
+      )}
+    >
       <Link
         href={item.href}
         aria-current={isActive ? "page" : undefined}
         className={cn(
-          "inline-flex items-center gap-1 whitespace-nowrap rounded-full px-2 py-2 text-[12px] font-medium transition-colors xl:px-1.5 xl:text-[11px] 2xl:px-2 2xl:text-[13px]",
+          "inline-flex items-center gap-1 whitespace-nowrap rounded-full px-2 py-2 text-[14px] font-medium transition-colors xl:px-1.5 xl:text-[12px] 2xl:px-2 2xl:text-[15px]",
           isActive &&
             item.label !== "Contact Us" &&
             "bg-[#D7192D] text-white hover:bg-[#b91427]",
@@ -107,6 +117,7 @@ function NavLink({
           !isActive && item.label === "Contact Us" && "text-[#2b2118]"
         )}
       >
+        {item.label === "Home" ? <House className="size-4 fill-current" /> : null}
         {item.label === "Contact Us" ? <Mail className="size-4" /> : null}
         {navDisplayLabel(item.label)}
         {dropdown ? (
@@ -129,28 +140,24 @@ function SearchForm({
   className?: string;
   large?: boolean;
 }) {
-  const [query, setQuery] = useState("");
-
   return (
     <form
-      className={cn("flex min-w-0 items-center overflow-hidden rounded-full border border-[#ead8cc] bg-white pr-1", className)}
-      onSubmit={(event) => {
-        event.preventDefault();
-        document.getElementById("espresso-machines")?.scrollIntoView({
-          behavior: "smooth",
-        });
-      }}
+      action="/search"
+      method="get"
+      className={cn(
+        "flex min-w-0 items-center overflow-hidden rounded-full border border-[#f0e2d7] bg-white pr-1 shadow-[0_1px_3px_rgba(80,40,20,0.06)]",
+        className
+      )}
     >
       <label className="flex min-w-0 flex-1">
         <span className="sr-only">Search</span>
         <Input
           type="search"
-          value={query}
-          onChange={(event) => setQuery(event.target.value)}
+          name="q"
           placeholder="What are you looking for?"
           className={cn(
-            "min-w-0 flex-1 rounded-none border-0 bg-white px-4 text-[15px] shadow-none placeholder:text-neutral-400 focus-visible:border-transparent focus-visible:ring-0",
-            large ? "h-[58px]" : "h-11"
+            "min-w-0 flex-1 rounded-none border-0 bg-white px-4 text-[15px] shadow-none placeholder:text-neutral-400 focus-visible:border-transparent focus-visible:ring-0 2xl:text-[17px]",
+            large ? "h-[72px]" : "h-11"
           )}
         />
       </label>
@@ -159,10 +166,10 @@ function SearchForm({
         aria-label="Search"
         className={cn(
           "shrink-0 rounded-full border-0 bg-[#D7192D] text-white hover:bg-[#b91427]",
-          large ? "size-[58px]" : "size-11"
+          large ? "size-[76px]" : "size-11"
         )}
       >
-        <Search className="size-5" />
+        <Search className={cn(large ? "size-7" : "size-5")} />
       </Button>
     </form>
   );
@@ -170,7 +177,6 @@ function SearchForm({
 
 export function SiteHeader() {
   const [mobileOpen, setMobileOpen] = useState(false);
-  const [searchOpen, setSearchOpen] = useState(false);
   const [mega, setMega] = useState<string | null>(null);
   const pathname = usePathname();
 
@@ -179,21 +185,66 @@ export function SiteHeader() {
   function close() {
     setMega(null);
     setMobileOpen(false);
-    setSearchOpen(false);
   }
 
   function openNavItem(item: NavItem) {
     setMega(hasDropdown(item) ? item.label : null);
-    setSearchOpen(false);
   }
 
   return (
     <header
-      className="sticky top-0 z-50 overflow-x-clip bg-[#fff8f8] text-[#2b2118]"
+      className="sticky top-0 z-50 overflow-x-clip bg-[#fffaf6] text-[#2b2118]"
       onMouseLeave={() => setMega(null)}
     >
+      <div className="hidden bg-[#b00016] text-white xl:block">
+        <div className="mx-auto flex h-[50px] max-w-[1900px] items-center px-8">
+          <div className="grid min-w-0 flex-1 grid-cols-3">
+            <div className="flex items-center justify-center gap-3 border-r border-white/80 text-[16px] 2xl:text-[18px]">
+              <Gift className="size-6 shrink-0 stroke-[2.4]" />
+              <span>Ship you Order now</span>
+            </div>
+            <div className="flex items-center justify-center gap-3 border-r border-white/80 text-[16px] 2xl:text-[18px]">
+              <ShieldCheck className="size-7 shrink-0 stroke-[2.2]" />
+              <span>Secure Payment</span>
+            </div>
+            <div className="flex items-center justify-center gap-3 text-[16px] 2xl:text-[18px]">
+              <Headset className="size-7 shrink-0 stroke-[2.2]" />
+              <span>24/7 Customer Support</span>
+            </div>
+          </div>
+          <div
+            aria-label="Social media"
+            className="ml-12 flex shrink-0 items-center gap-7"
+          >
+            <span aria-label="Facebook">
+              <svg viewBox="0 0 24 24" className="size-5 fill-current" aria-hidden="true">
+                <path d="M13.5 21v-8h2.7l.4-3h-3.1V8.1c0-.9.3-1.5 1.6-1.5h1.7V3.9c-.8-.1-1.6-.2-2.5-.2-2.5 0-4.2 1.5-4.2 4.3V10H7.3v3h2.8v8z" />
+              </svg>
+            </span>
+            <span aria-label="Instagram">
+              <svg viewBox="0 0 24 24" className="size-5" aria-hidden="true">
+                <rect x="3.5" y="3.5" width="17" height="17" rx="5" fill="none" stroke="currentColor" strokeWidth="2.5" />
+                <circle cx="12" cy="12" r="4" fill="none" stroke="currentColor" strokeWidth="2.5" />
+                <circle cx="17.5" cy="6.8" r="1.3" fill="currentColor" />
+              </svg>
+            </span>
+            <span aria-label="YouTube">
+              <svg viewBox="0 0 24 24" className="size-5 fill-current" aria-hidden="true">
+                <rect x="2.5" y="5" width="19" height="14" rx="4" />
+                <path d="m10 9 5 3-5 3z" fill="#b00016" />
+              </svg>
+            </span>
+            <span aria-label="TikTok">
+              <svg viewBox="0 0 24 24" className="size-5 fill-current" aria-hidden="true">
+                <path d="M15.8 3h3c.2 2 1.3 3.2 3.2 3.4v3a8 8 0 0 1-3.2-.9v6.2a6.1 6.1 0 1 1-6.1-6.1c.4 0 .8 0 1.2.1v3.2a3.1 3.1 0 1 0 1.9 2.8z" />
+              </svg>
+            </span>
+          </div>
+        </div>
+      </div>
+
       <div className="mx-auto flex items-center justify-between gap-4 px-4 py-3 sm:px-6 xl:hidden">
-        <SiteLogo showPitcorp={false} className="min-w-0 shrink-0 [&_img]:h-10 sm:[&_img]:h-11 lg:[&_img]:h-12" />
+        <SiteLogo className="min-w-0 shrink-0 [&_img]:h-10 sm:[&_img]:h-11 lg:[&_img]:h-12" />
         <button
           type="button"
           className="inline-flex size-10 items-center justify-center text-[#3a2a22] hover:text-[#D7192D]"
@@ -205,10 +256,23 @@ export function SiteHeader() {
         </button>
       </div>
 
-      <div className="mx-auto hidden h-[88px] max-w-[1900px] items-center gap-4 px-5 xl:flex xl:px-8">
-        <SiteLogo showPitcorp={false} className="shrink-0 [&_img]:h-[58px]" />
+      <div className="mx-auto hidden h-[112px] max-w-[1900px] items-center justify-between gap-8 px-8 xl:flex">
+        <SiteLogo className="w-[300px] shrink-0 [&_img]:h-[76px]" />
+        <SearchForm large className="flex-1 max-w-[1000px]" />
+        <div className="flex shrink-0 items-center gap-6">
+          <Link
+            href="/admin/login"
+            className="inline-flex items-center gap-2 whitespace-nowrap text-[15px] font-medium text-[#181818] transition-colors hover:text-[#D7192D] 2xl:text-[17px]"
+          >
+            <User className="size-8 stroke-[1.8] text-[#D7192D]" />
+            Admin Login
+          </Link>
+        </div>
+      </div>
+
+      <div className="mx-auto hidden h-[76px] max-w-[1900px] items-center px-8 xl:flex">
         <nav aria-label="Main navigation" className="min-w-0 flex-1 overflow-x-auto [scrollbar-width:none]">
-          <div className="flex w-max min-w-full items-center justify-center gap-0.5">
+          <div className="flex w-max min-w-full items-center justify-between gap-1">
             {desktopNav.map((item) => (
               <NavLink
                 key={item.label}
@@ -220,41 +284,11 @@ export function SiteHeader() {
             ))}
           </div>
         </nav>
-        <div className="ml-1 flex shrink-0 items-center gap-3">
-          <button
-            type="button"
-            aria-label={searchOpen ? "Close search" : "Open search"}
-            aria-expanded={searchOpen}
-            onClick={() => {
-              setMega(null);
-              setSearchOpen((value) => !value);
-            }}
-            className="inline-flex size-12 items-center justify-center border-r border-[#f3b9c0] pr-3 text-[#382d29] transition-colors hover:text-[#D7192D]"
-          >
-            <Search className="size-6 stroke-[1.8]" />
-          </button>
-          <Link
-            href="/espresso-machines"
-            aria-label="Cart"
-            className="relative inline-flex h-11 min-w-[78px] items-center justify-center rounded-full bg-[#ed1027] px-5 text-white shadow-sm transition-colors hover:bg-[#c70f22]"
-          >
-            <ShoppingCart className="size-6 stroke-[2]" />
-            <span className="absolute -top-1 -right-1 flex size-6 items-center justify-center rounded-full bg-[#ffb900] text-xs font-bold text-[#7b3b00]">
-              0
-            </span>
-          </Link>
-        </div>
       </div>
 
       <div className="border-b border-[#e6c6a9] px-4 pb-3 xl:hidden">
         <SearchForm />
       </div>
-
-      {searchOpen ? (
-        <div className="absolute inset-x-0 top-full border-t border-[#FCE4E7] bg-[#fffafa] px-5 py-4 shadow-[0_18px_40px_rgba(215,25,45,0.12)]">
-          <SearchForm className="mx-auto max-w-[720px]" />
-        </div>
-      ) : null}
 
       {openItem && isBrandsMega(openItem) ? (
         <div className="absolute inset-x-0 top-full border-t border-[#FCE4E7] shadow-[0_18px_40px_rgba(215,25,45,0.12)]">

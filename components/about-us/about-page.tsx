@@ -158,7 +158,7 @@ export function AboutPage() {
       <section className="relative isolate overflow-hidden border-t border-[#e4a0a4] bg-[linear-gradient(100deg,#fff7ef,#fff0eb_47%,#ffe4e4)]">
         <div className="pointer-events-none absolute inset-x-0 top-0 h-5 bg-[linear-gradient(176deg,transparent_38%,#e55563_40%,#f7b2b4_45%,transparent_47%)]" />
         <div className="relative mx-auto flex max-w-[1280px] flex-col items-center justify-between gap-2 px-5 py-4 sm:flex-row sm:px-8">
-          <SiteLogo showPitcorp={false} className="[&_img]:h-10 sm:[&_img]:h-11" />
+          <SiteLogo className="[&_img]:h-10 sm:[&_img]:h-11" />
           <p className="font-serif text-lg italic text-[#a91020] sm:text-xl">
             Exceptional Coffee Experiences. Anytime. Anywhere.
           </p>
