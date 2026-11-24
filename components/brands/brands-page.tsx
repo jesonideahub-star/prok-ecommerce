@@ -2,28 +2,93 @@
 
 import { useMemo, useState } from "react";
 import Image from "@/components/media-image";
-import { ChevronDown } from "lucide-react";
+import Link from "next/link";
+import {
+  ArrowRight,
+  ChevronDown,
+  Coffee,
+  Utensils,
+  Wrench,
+} from "lucide-react";
 
 import { CatalogAd } from "@/components/ads/catalog-ad";
-import { CollectionBanner } from "@/components/collection-banner";
+import { SiteLogo } from "@/components/site-logo";
 import {
   brandCatalog,
-  brandCatalogCopy,
+  brandLogos,
   brandSlug,
-  navItems,
 } from "@/lib/site";
 
 type SortKey = "default" | "az" | "za";
 
-const brandNames = navItems.find(
-  (item): item is Extract<(typeof navItems)[number], { mega: "brands" }> =>
-    "mega" in item && item.mega === "brands"
-)?.brands ?? [];
-
 function brandLabelFromSlug(slug?: string) {
   if (!slug) return undefined;
-  return brandNames.find((name) => brandSlug(name) === slug);
+  return brandLogos.find((brand) => brandSlug(brand.name) === slug)?.name;
 }
+
+const brandBoardLogos = [
+  { name: "Catcher Gourmet", src: "/images/brand-catcher-official.png", width: 1164, height: 437 },
+  { name: "Casadio", src: "/images/brand-casadio-official.png", width: 1405, height: 688 },
+  { name: "Eureka 1920", src: "/images/brand-eureka-official.png", width: 782, height: 768 },
+  { name: "Slayer", src: "/images/brand-slayer-official.png", width: 2000, height: 450 },
+  { name: "La Nuova Era", src: "/images/brand-lanuovaera-official.png", width: 2558, height: 768 },
+  { name: "Marcafé", src: "/images/brand-marcafe.png", width: 105, height: 129 },
+  { name: "puly CAFF", src: "/images/brand-pulycaff-official.png", width: 354, height: 236 },
+  { name: "didiesse", src: "/images/brand-didiesse-official.png", width: 602, height: 212 },
+] as const;
+
+const productCategories = [
+  {
+    title: "Espresso Machines",
+    description: "Performance in every cup.",
+    label: "View Machines",
+    href: "/espresso-machines",
+    src: "/images/product-la-nuova-era-altea-root.png",
+    alt: "La Nuova Era espresso machine",
+    imageClass: "object-contain p-1",
+    icon: Coffee,
+  },
+  {
+    title: "Grinders",
+    description: "Precision grinding for superior taste.",
+    label: "View Grinders",
+    href: "/grinders",
+    src: "/images/product-eureka-bravo.png",
+    alt: "Eureka coffee grinder",
+    imageClass: "object-contain p-1",
+    icon: Wrench,
+  },
+  {
+    title: "Coffee",
+    description: "Exceptional beans for extraordinary coffee.",
+    label: "View Coffee",
+    href: "/coffee",
+    src: "/images/product-marcafe-classico.png",
+    alt: "Marcafé coffee beans",
+    imageClass: "object-contain p-1",
+    icon: Coffee,
+  },
+  {
+    title: "Flavours & Sauces",
+    description: "Add flavour to your creations.",
+    label: "View Flavours",
+    href: "/flavours",
+    src: "/images/syrup-irish-cream.png",
+    alt: "Catcher Gourmet flavour syrup",
+    imageClass: "object-contain p-1",
+    icon: Utensils,
+  },
+  {
+    title: "Pulycaff",
+    description: "Professional coffee equipment cleaning solutions.",
+    label: "View Pulycaff",
+    href: "/cleaning-solution",
+    src: "/images/puly-caff-plus-nsf.png",
+    alt: "Puly Caff coffee equipment cleaner",
+    imageClass: "object-contain p-1",
+    icon: Wrench,
+  },
+] as const;
 
 export function BrandsPage({ brand }: { brand?: string }) {
   const [sort, setSort] = useState<SortKey>("default");
@@ -44,67 +109,225 @@ export function BrandsPage({ brand }: { brand?: string }) {
   }, [brand, sort]);
 
   return (
-    <main className="flex-1 overflow-hidden bg-[#fff6ee]">
-      <CollectionBanner
-        title={selectedBrand ?? brandCatalogCopy.title}
-        description={
-          selectedBrand
-            ? `All ${selectedBrand} products in the Prokrate catalog.`
-            : brandCatalogCopy.description
-        }
-        eyebrow="Prokrate Collection"
-      />
-
-      <section className="mx-auto max-w-[1180px] px-5 pb-10 md:px-8 md:pb-12">
-
-        <div className="mt-8 flex flex-wrap items-center gap-3">
-          <label htmlFor="brand-sort" className="text-sm text-zinc-700">
-            Sort by:
-          </label>
-          <div className="relative">
-            <select
-              id="brand-sort"
-              value={sort}
-              onChange={(event) => setSort(event.target.value as SortKey)}
-              className="h-10 w-full min-w-0 appearance-none rounded-md border border-zinc-300 bg-white px-3 pr-9 text-sm text-zinc-500 outline-none focus:border-zinc-400 sm:w-[220px]"
+    <main className="flex-1 overflow-hidden bg-[#fff7f5] text-[#30231e]">
+      <section className="relative isolate min-h-[245px] overflow-hidden border-b border-[#f2b9bc] sm:min-h-[270px]">
+        <Image
+          src="/images/hero-slayer-steam.png"
+          alt="A Slayer espresso machine showcased for café professionals"
+          fill
+          priority
+          className="object-cover object-[75%_52%]"
+          sizes="100vw"
+        />
+        <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(255,244,245,.99)_0%,rgba(255,244,245,.98)_42%,rgba(255,244,245,.9)_56%,rgba(255,244,245,.38)_75%,rgba(255,244,245,.04)_92%)]" />
+        <div className="absolute -left-16 top-1/2 size-[340px] -translate-y-1/2 rounded-full border-[34px] border-[#ed1740]/10" />
+        <div className="relative mx-auto flex min-h-[245px] max-w-[1280px] items-center px-5 py-7 sm:min-h-[270px] sm:px-8 lg:px-10">
+          <div className="max-w-[570px]">
+            <p className="flex items-center gap-3 text-xs font-bold tracking-[0.16em] text-[#b20f26] uppercase">
+              Our Brands <span className="h-px w-32 bg-[#d68b82]" />
+            </p>
+            <h1 className="mt-1 font-serif text-[40px] leading-[0.92] font-bold tracking-tight sm:text-[46px]">
+              Trusted Brands.
+              <span className="block text-[40px] font-semibold italic text-[#d0122d] sm:text-[46px]">
+                Exceptional Quality.
+              </span>
+            </h1>
+            <p className="mt-3 max-w-[390px] text-[13px] leading-[1.35] text-[#392d28]">
+              At Prokrate Trading Corporation, we partner with the world’s most
+              respected brands to bring you premium coffee solutions for homes,
+              businesses, and coffee professionals.
+            </p>
+            <Link
+              href="#our-brands"
+              className="mt-3 inline-flex items-center gap-2 rounded-full bg-[#d0122d] px-5 py-2 text-xs font-semibold text-white transition hover:bg-[#a91020]"
             >
-              <option value="default">Choose an option...</option>
-              <option value="az">Name A–Z</option>
-              <option value="za">Name Z–A</option>
-            </select>
-            <ChevronDown className="pointer-events-none absolute top-1/2 right-3 size-3.5 -translate-y-1/2 text-zinc-500" />
+              Explore Our Brands <ArrowRight className="size-3.5" />
+            </Link>
           </div>
         </div>
+      </section>
 
-        {items.length ? (
-          <>
-          <CatalogAd />
-          <div className="mt-8 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-5">
-            {items.map((item, index) => (
-              <article
-                key={`${item.brand}-${item.name}`}
-                className="flex aspect-[3/4] flex-col overflow-hidden rounded-xl border border-zinc-200 bg-white"
+      <section id="our-brands" className="px-4 pt-2 sm:px-6 lg:px-8">
+        <div className="mx-auto grid max-w-[1280px] grid-cols-2 overflow-hidden rounded-[20px] border border-[#f2ded7] bg-white/90 shadow-[0_8px_24px_rgba(114,39,35,.06)] sm:grid-cols-4 lg:grid-cols-8">
+          {brandBoardLogos.map((logo, index) => {
+            const brandLink = brandLogos.find((item) => item.name === logo.name);
+            if (!brandLink) return null;
+
+            return (
+              <Link
+                key={logo.name}
+                href={brandLink.href}
+                aria-label={`View ${logo.name} products`}
+                className={`flex h-[78px] items-center justify-center px-3 py-2 transition hover:bg-[#fff1f1] sm:h-[88px] ${
+                  index % 2 === 1 ? "border-l border-[#d5c7bf]" : ""
+                } ${
+                  index % 4 === 0 ? "sm:border-l-0" : "sm:border-l sm:border-[#d5c7bf]"
+                } ${
+                  index === 0 ? "lg:border-l-0" : "lg:border-l lg:border-[#d5c7bf]"
+                } lg:h-[92px]`}
               >
-                <div className="relative min-h-0 flex-1">
+                <Image
+                  src={logo.src}
+                  alt={logo.name}
+                  width={logo.width}
+                  height={logo.height}
+                  className="h-full max-h-[58px] w-full object-contain"
+                  sizes="(min-width: 1024px) 140px, (min-width: 640px) 25vw, 45vw"
+                />
+              </Link>
+            );
+          })}
+        </div>
+      </section>
+
+      <section className="mx-auto max-w-[1280px] px-4 pt-4 pb-5 sm:px-6 lg:px-8">
+        <div className="mb-2 flex items-center justify-center gap-3 sm:gap-4">
+          <span className="h-px flex-1 bg-[#e55563]" />
+          <h2 className="text-center text-base font-bold tracking-[0.08em] text-[#d0122d] uppercase sm:text-lg">
+            Our Products
+          </h2>
+          <span className="h-px flex-1 bg-[#e55563]" />
+        </div>
+        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
+          {productCategories.map((category) => {
+            const Icon = category.icon;
+            return (
+              <Link
+                key={category.title}
+                href={category.href}
+                className="group relative flex h-[142px] overflow-hidden rounded-[16px] border border-[#f2d8d6] bg-[#ffe8e8] transition hover:-translate-y-0.5 hover:shadow-[0_10px_24px_rgba(114,39,35,.12)]"
+              >
+                <div className="relative h-full w-[48%] shrink-0">
                   <Image
-                    src={item.src}
-                    alt={`${item.name} from ${item.brand}`}
+                    src={category.src}
+                    alt={category.alt}
                     fill
-                    preload={index < 5}
-                    className="object-contain p-3 pt-6"
-                    sizes="(min-width: 1024px) 18vw, (min-width: 640px) 30vw, 45vw"
+                    className={`${category.imageClass} transition-transform duration-300 group-hover:scale-105`}
+                    sizes="(min-width: 1280px) 115px, 45vw"
                   />
                 </div>
-                <p className="px-4 pb-5 text-[15px] text-[#b08968]">{item.name}</p>
-              </article>
-            ))}
+                <div className="flex min-w-0 flex-1 flex-col items-start justify-center p-2.5">
+                  <Icon className="mb-1 size-4 text-[#d0122d]" />
+                  <h3 className="font-serif text-[15px] leading-tight font-bold text-[#30231e]">
+                    {category.title}
+                  </h3>
+                  <p className="mt-1 text-[10px] leading-tight text-[#463b35]">
+                    {category.description}
+                  </p>
+                  <span className="mt-2 inline-flex items-center gap-1 rounded-full bg-[#d0122d] px-2.5 py-1 text-[9px] font-semibold text-white">
+                    {category.label} <ArrowRight className="size-3" />
+                  </span>
+                </div>
+              </Link>
+            );
+          })}
+        </div>
+      </section>
+
+      <section className="relative isolate overflow-hidden border-y border-[#ed9ca5] bg-[linear-gradient(105deg,#fff1ed_0%,#ffe4e7_48%,#fff5ed_100%)]">
+        <div className="pointer-events-none absolute inset-x-0 top-0 h-5 bg-[linear-gradient(176deg,transparent_38%,#e55563_40%,#f7b2b4_45%,transparent_47%)]" />
+        <div className="relative mx-auto grid max-w-[1280px] items-center gap-4 px-5 py-5 sm:grid-cols-[150px_1fr_auto] sm:px-8 lg:grid-cols-[220px_1fr_300px]">
+          <div className="relative mx-auto hidden h-[125px] w-full sm:block">
+            <Image
+              src="/images/about-latte.png"
+              alt="Freshly poured latte"
+              fill
+              className="object-contain drop-shadow-[0_10px_14px_rgba(114,39,35,.18)]"
+              sizes="220px"
+            />
           </div>
-          </>
-        ) : (
-          <p className="mt-12 text-sm text-zinc-400">
-            No products listed for {selectedBrand ?? "this brand"} yet.
-          </p>
-        )}
+          <div className="text-center">
+            <h2 className="font-serif text-2xl font-bold text-[#4c211f] sm:text-[30px]">
+              Partner with Prokrate
+            </h2>
+            <p className="mt-1 text-xs text-[#463b35] sm:text-sm">
+              Experience the difference of working with the leading brands in the coffee industry.
+            </p>
+            <Link
+              href="/services"
+              className="mt-3 inline-flex items-center gap-2 rounded-full bg-[#d0122d] px-6 py-2 text-xs font-semibold text-white transition hover:bg-[#a91020]"
+            >
+              Contact Us <ArrowRight className="size-3.5" />
+            </Link>
+          </div>
+          <div className="hidden items-center justify-center border-l border-[#c68884] pl-5 sm:flex">
+            <div className="flex flex-col items-center">
+              <SiteLogo showPitcorp className="[&_img]:h-12" />
+              <p className="mt-1 text-[9px] font-bold tracking-[0.2em] text-[#30231e] uppercase">
+                Good coffee. Greater possibilities.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section
+        id="brand-products"
+        className="mx-auto max-w-[1280px] px-4 pt-7 pb-10 sm:px-6 md:pb-12 lg:px-8"
+      >
+          <div className="flex flex-col justify-between gap-4 border-t border-[#e6a1a0] pt-5 sm:flex-row sm:items-end">
+            <div>
+              <p className="text-xs font-bold tracking-[0.12em] text-[#b20f26] uppercase">
+                {selectedBrand ? `${selectedBrand} Collection` : "Full Collection"}
+              </p>
+              <h2 className="mt-2 font-serif text-2xl font-bold text-[#30231e] sm:text-3xl">
+                {selectedBrand ? `${selectedBrand} Products` : "All Products"}
+              </h2>
+            </div>
+            <div className="flex flex-wrap items-center gap-3">
+              <label htmlFor="brand-sort" className="text-sm text-[#463b35]">
+                Sort by:
+              </label>
+              <div className="relative">
+                <select
+                  id="brand-sort"
+                  value={sort}
+                  onChange={(event) => setSort(event.target.value as SortKey)}
+                  className="h-10 w-full min-w-0 appearance-none rounded-md border border-[#ead8cc] bg-white px-3 pr-9 text-sm text-[#5d514b] outline-none focus:border-[#d0122d] sm:w-[220px]"
+                >
+                  <option value="default">Choose an option...</option>
+                  <option value="az">Name A–Z</option>
+                  <option value="za">Name Z–A</option>
+                </select>
+                <ChevronDown className="pointer-events-none absolute top-1/2 right-3 size-3.5 -translate-y-1/2 text-[#8b7b72]" />
+              </div>
+            </div>
+          </div>
+
+          {items.length ? (
+            <>
+              <div className="mt-6">
+                <CatalogAd />
+              </div>
+              <div className="mt-6 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-5">
+                {items.map((item, index) => (
+                  <article
+                    key={`${item.brand}-${item.name}`}
+                    className="flex aspect-[3/4] flex-col overflow-hidden rounded-[18px] border border-[#f0dfd7] bg-white shadow-[0_8px_24px_rgba(114,39,35,.05)]"
+                  >
+                    <div className="relative min-h-0 flex-1">
+                      <Image
+                        src={item.src}
+                        alt={`${item.name} from ${item.brand}`}
+                        fill
+                        preload={index < 5}
+                        className="object-contain p-3 pt-6"
+                        sizes="(min-width: 1024px) 18vw, (min-width: 640px) 30vw, 45vw"
+                      />
+                    </div>
+                    <p className="px-4 pb-2 text-[10px] font-semibold tracking-[0.12em] text-[#b20f26] uppercase">
+                      {item.brand}
+                    </p>
+                    <p className="px-4 pb-5 text-[15px] text-[#463b35]">{item.name}</p>
+                  </article>
+                ))}
+              </div>
+            </>
+          ) : (
+            <p className="mt-8 rounded-[20px] border border-[#f2ded7] bg-white/80 p-6 text-sm text-[#5d514b]">
+              No products listed for {selectedBrand ?? "this collection"} yet.
+            </p>
+          )}
       </section>
     </main>
   );

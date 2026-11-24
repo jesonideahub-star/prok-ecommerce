@@ -192,7 +192,7 @@ export function SiteHeader() {
     }
   }
 
-  if (pathname === "/about-us") {
+  if (pathname === "/about-us" || pathname === "/brands") {
     const aboutNav = [...row1Left, ...row2Left];
 
     return (
