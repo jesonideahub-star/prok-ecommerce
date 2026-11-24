@@ -31,6 +31,7 @@ type MachineProduct = {
 const imageExtensions = /\.(avif|gif|jpe?g|png|webp)$/i;
 const nonMachineKeywords = /\b(grinder|grinding|mill|tamper|accessor(?:y|ies)|clean(?:er|ing)?|brush|knockbox)\b/i;
 const espressoMachineBucket = "Espresso_Machines";
+const cafeBucket = "Cafe";
 
 function normalizeFilename(filename: string) {
   return filename
@@ -78,6 +79,7 @@ function inferMachineBrand(path: string) {
   if (/\bslayer\b|\bsteam\s*(?:lp|ep|single)\b|\bespresso\s*v3\b/.test(normalizedPath)) {
     return "Slayer";
   }
+  if (/\beureka\b/.test(normalizedPath)) return "Eureka 1920";
   return undefined;
 }
 
@@ -87,6 +89,60 @@ function productDisplayName(filename: string) {
     .replace(/[_-]+/g, " ")
     .replace(/\s+/g, " ")
     .trim();
+}
+
+const machineViewTokens = new Set([
+  "back",
+  "backleft",
+  "backright",
+  "detail",
+  "fr",
+  "front",
+  "frontleft",
+  "frontright",
+  "left",
+  "rear",
+  "right",
+  "side",
+]);
+
+function machineProductName(name: string) {
+  const withoutViewSuffix = name
+    .replace(/\s+(?:LAT\s+(?:DX|SX)|TREQUA|FR)\s*$/i, "")
+    .trim();
+
+  return withoutViewSuffix
+    .split(/\s+/)
+    .filter((token) => !machineViewTokens.has(token.toLowerCase()))
+    .join(" ");
+}
+
+function machineViewPriority(name: string) {
+  const tokens = name.toLowerCase().split(/\s+/);
+  if (tokens.includes("front") || tokens.includes("fr")) return 0;
+  if (tokens.includes("frontleft") || tokens.includes("frontright")) return 1;
+  if (/\s+(?:lat\s+(?:dx|sx)|trequa)$/i.test(name)) return 3;
+  if (!tokens.some((token) => machineViewTokens.has(token))) return 2;
+  return 3;
+}
+
+function groupMachineViews(products: MachineProduct[]) {
+  const grouped = new Map<string, MachineProduct>();
+
+  for (const product of products) {
+    const name = machineProductName(product.name);
+    const key = `${normalizeFilename(product.brand)}:${normalizeFilename(name)}`;
+    const existing = grouped.get(key);
+
+    if (
+      !existing ||
+      machineViewPriority(product.name) < machineViewPriority(existing.name)
+    ) {
+      grouped.set(key, { ...product, name });
+    }
+  }
+
+  return [...grouped.values()];
 }
 
 async function loadMachineProducts(): Promise<MachineProduct[]> {
@@ -194,7 +250,68 @@ async function loadMachineProducts(): Promise<MachineProduct[]> {
     }
   }
 
-  return [...uniqueProducts.values()].sort(
+  return groupMachineViews([...uniqueProducts.values()]).sort(
+    (a, b) => a.brand.localeCompare(b.brand) || a.name.localeCompare(b.name)
+  );
+}
+
+async function loadCafeProducts(): Promise<MachineProduct[]> {
+  const bucket = createClient().storage.from(cafeBucket);
+
+  async function listDirectory(path: string) {
+    const entries = [];
+    const limit = 1000;
+
+    for (let offset = 0; ; offset += limit) {
+      const { data, error } = await bucket.list(path, {
+        limit,
+        offset,
+        sortBy: { column: "name", order: "asc" },
+      });
+
+      if (error) throw error;
+      entries.push(...(data ?? []));
+      if (!data || data.length < limit) break;
+    }
+
+    return entries;
+  }
+
+  async function walk(path: string): Promise<MachineProduct[]> {
+    const entries = await listDirectory(path);
+    const products: MachineProduct[] = [];
+
+    for (const entry of entries) {
+      const entryPath = path ? `${path}/${entry.name}` : entry.name;
+      if (entry.id === null) {
+        products.push(...(await walk(entryPath)));
+        continue;
+      }
+
+      if (!imageExtensions.test(entry.name)) continue;
+
+      const nameGroup = `${entryPath} ${entry.name}`.match(
+        /(?:^|[\s/_-])([123])\s*(?:groups?|gr)\b/i
+      )?.[1];
+      const parentDirectory = path.split("/").filter(Boolean).at(-1);
+      const brand =
+        inferMachineBrand(entryPath) ??
+        (parentDirectory ? brandDisplayName(parentDirectory) : "Other");
+
+      products.push({
+        name: productDisplayName(entry.name),
+        brand,
+        path: entryPath,
+        src: bucket.getPublicUrl(entryPath).data.publicUrl,
+        contentTag: normalizeContentTag(entry.metadata?.eTag),
+        groups: groupCountFromPath(entryPath) ?? (nameGroup ? Number(nameGroup) : undefined),
+      });
+    }
+
+    return products;
+  }
+
+  return groupMachineViews(await walk("")).sort(
     (a, b) => a.brand.localeCompare(b.brand) || a.name.localeCompare(b.name)
   );
 }
@@ -228,16 +345,20 @@ export function EspressoMachinesPage({
   const [sort, setSort] = useState<SortKey>("default");
   const [view, setView] = useState<ViewMode>("grid");
   const [machineProducts, setMachineProducts] = useState<MachineProduct[]>([]);
+  const [cafeProducts, setCafeProducts] = useState<MachineProduct[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [loadError, setLoadError] = useState<string | null>(null);
+  const [isLoadingCafe, setIsLoadingCafe] = useState(false);
+  const [cafeLoadError, setCafeLoadError] = useState<string | null>(null);
   const router = useRouter();
   const groupCount = group === "1" || group === "2" ? Number(group) : undefined;
+  const productsForFilters = use === "cafe" ? cafeProducts : machineProducts;
   const brandFilters = useMemo(
     () =>
-      [...new Set(machineProducts.map((item) => item.brand))]
+      [...new Set(productsForFilters.map((item) => item.brand))]
         .sort((a, b) => a.localeCompare(b))
         .map((label) => ({ label, slug: brandSlug(label) })),
-    [machineProducts]
+    [productsForFilters]
   );
   const activeBrand = brandFilters.find((item) => item.slug === brand)?.slug;
   const useLabel = use ? espressoUseLabels[use] : undefined;
@@ -269,9 +390,39 @@ export function EspressoMachinesPage({
     };
   }, []);
 
+  useEffect(() => {
+    if (use !== "cafe") return;
+
+    let active = true;
+
+    async function loadCafe() {
+      try {
+        setIsLoadingCafe(true);
+        setCafeLoadError(null);
+        const products = await loadCafeProducts();
+        if (active) setCafeProducts(products);
+      } catch (error) {
+        console.error(`Unable to load cafe machines from the ${cafeBucket} bucket.`, error);
+        if (active) {
+          setCafeLoadError(
+            "Cafe machines could not be loaded from the Cafe product library. Please try again later."
+          );
+        }
+      } finally {
+        if (active) setIsLoadingCafe(false);
+      }
+    }
+
+    void loadCafe();
+    return () => {
+      active = false;
+    };
+  }, [use]);
+
   const items = useMemo(() => {
-    const next = machineProducts.filter((item) => {
-      if (use && item.uses && !item.uses.includes(use)) return false;
+    const products = use === "cafe" ? cafeProducts : machineProducts;
+    const next = products.filter((item) => {
+      if (use !== "cafe" && use && item.uses && !item.uses.includes(use)) return false;
       if (groupCount && item.groups !== groupCount) return false;
       if (activeBrand && brandSlug(item.brand) !== activeBrand) return false;
       return true;
@@ -280,7 +431,10 @@ export function EspressoMachinesPage({
     if (sort === "az") next.sort((a, b) => a.name.localeCompare(b.name));
     if (sort === "za") next.sort((a, b) => b.name.localeCompare(a.name));
     return next;
-  }, [activeBrand, groupCount, machineProducts, sort, use]);
+  }, [activeBrand, cafeProducts, groupCount, machineProducts, sort, use]);
+
+  const currentIsLoading = use === "cafe" ? isLoadingCafe : isLoading;
+  const currentLoadError = use === "cafe" ? cafeLoadError : loadError;
 
   function updateFilters(next: { use?: string; group?: string; brand?: string }) {
     router.push(catalogHref(next));
@@ -304,27 +458,15 @@ export function EspressoMachinesPage({
 
   return (
     <main className="flex-1 overflow-hidden bg-[#FFF3F4] text-[#30231e]">
-      <section className="relative isolate h-[190px] overflow-hidden border-b border-[#f4b7c0] bg-[#FCE4E7] sm:h-[220px] lg:h-[250px]">
+      <section className="relative isolate h-[215px] overflow-hidden border-b border-[#f4b7c0] bg-[#FCE4E7] sm:h-[245px] lg:h-[275px]">
         <Image
-          src="/images/hero-espresso.png"
+          src="/images/espresso-machines-hero.png"
           alt="Professional espresso machine"
           fill
           priority
-          className="z-0 object-cover object-[72%_52%]"
+          className="z-0 object-cover object-center"
           sizes="100vw"
         />
-        <div className="absolute inset-0 z-10 bg-[linear-gradient(90deg,rgba(255,243,244,.98)_0%,rgba(255,243,244,.94)_30%,rgba(252,228,231,.7)_48%,rgba(252,228,231,.04)_80%)]" />
-        <div className="absolute -left-20 top-1/2 z-10 size-[330px] -translate-y-1/2 rounded-full border-[24px] border-[#D7192D]/10 sm:size-[420px]" />
-        <div className="relative z-20 mx-auto flex h-full max-w-[1440px] items-center px-5 sm:px-8 lg:px-12">
-          <div className="max-w-[530px]">
-            <h1 className="font-serif text-[32px] leading-none font-bold tracking-tight text-[#3b1c17] sm:text-[40px] lg:text-[48px]">
-              Espresso Machines
-            </h1>
-            <p className="mt-2 text-sm font-medium text-[#3b1c17] sm:text-base">
-              Precision. Performance. Exceptional Coffee.
-            </p>
-          </div>
-        </div>
       </section>
 
       <section className="relative mx-auto max-w-[1440px] px-4 py-4 sm:px-6 sm:py-5 lg:px-8">
@@ -435,7 +577,7 @@ export function EspressoMachinesPage({
           <div className="min-w-0">
             <div className="flex min-h-[38px] flex-wrap items-center justify-between gap-2 px-1">
               <p className="text-[11px] text-[#4c3938] sm:text-xs">
-                {isLoading
+                {currentIsLoading
                   ? "Loading machines…"
                   : `Showing ${items.length ? 1 : 0}–${items.length} of ${items.length} results${useLabel ? ` · ${useLabel}` : ""}`}
               </p>
@@ -475,13 +617,13 @@ export function EspressoMachinesPage({
               </div>
             </div>
 
-            {isLoading ? (
+            {currentIsLoading ? (
               <p role="status" className="rounded-xl border border-[#FCE4E7] bg-white p-5 text-sm text-[#645b5b]">
-                Loading espresso machines…
+                {use === "cafe" ? "Loading cafe machines…" : "Loading espresso machines…"}
               </p>
-            ) : loadError ? (
+            ) : currentLoadError ? (
               <p role="alert" className="rounded-xl border border-[#f1b8c0] bg-white p-5 text-sm text-[#8f1927]">
-                {loadError}
+                {currentLoadError}
               </p>
             ) : items.length ? (
               <div
@@ -542,9 +684,11 @@ export function EspressoMachinesPage({
               </div>
             ) : (
               <p className="rounded-xl border border-[#FCE4E7] bg-white p-5 text-sm text-[#645b5b]">
-                {machineProducts.length
+                {(use === "cafe" ? cafeProducts : machineProducts).length
                   ? "No espresso machines match these filters."
-                  : "No espresso machines were found in the product library."}
+                  : use === "cafe"
+                    ? "No image files were found in the Cafe product library."
+                    : "No espresso machines were found in the product library."}
               </p>
             )}
           </div>

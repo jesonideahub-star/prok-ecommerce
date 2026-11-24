@@ -297,3 +297,11 @@
     @apply font-sans overflow-x-clip;
   }
 }
+
+.public-site-content {
+  background-color: #fff3f4;
+}
+
+.public-site-content > main {
+  background-color: #fff3f4;
+}
