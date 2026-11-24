@@ -13,7 +13,7 @@ import {
   X,
 } from "lucide-react";
 
-import { BrandMark } from "@/components/brand-mark";
+import { BrandsMenu } from "@/components/brands-menu";
 import { CoffeeMenu } from "@/components/coffee-menu";
 import { EspressoMachineMenu } from "@/components/espresso-machine-menu";
 import { FlavourMenu } from "@/components/flavour-menu";
@@ -257,19 +257,8 @@ export function SiteHeader() {
       ) : null}
 
       {openItem && isBrandsMega(openItem) ? (
-        <div className="absolute inset-x-0 top-full border-t border-[#FCE4E7] bg-[#FFF3F4] shadow-[0_18px_40px_rgba(215,25,45,0.12)]">
-          <div className="mx-auto flex max-w-[1440px] items-stretch gap-2 overflow-visible px-3 py-6 sm:gap-3 sm:px-6 lg:px-10 lg:py-7">
-            {openItem.brands.map((name) => (
-              <Link
-                key={name}
-                href={brandPageHref(name)}
-                onClick={close}
-                className="flex min-h-[140px] min-w-0 flex-1 items-center justify-center rounded-xl bg-white px-1.5 py-4 ring-1 ring-[#FCE4E7] transition-all duration-300 ease-out hover:z-10 hover:-translate-y-1.5 hover:scale-[1.04] hover:shadow-[0_12px_24px_rgba(215,25,45,0.12)] sm:min-h-[160px] sm:px-2"
-              >
-                <BrandMark name={name} size="lg" />
-              </Link>
-            ))}
-          </div>
+        <div className="absolute inset-x-0 top-full border-t border-[#FCE4E7] shadow-[0_18px_40px_rgba(215,25,45,0.12)]">
+          <BrandsMenu brands={openItem.brands} onNavigate={close} />
         </div>
       ) : null}
 

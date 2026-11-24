@@ -180,87 +180,6 @@ export function BrandsPage({ brand }: { brand?: string }) {
         </div>
       </section>
 
-      <section className="mx-auto max-w-[1280px] px-4 pt-4 pb-5 sm:px-6 lg:px-8">
-        <div className="mb-2 flex items-center justify-center gap-3 sm:gap-4">
-          <span className="h-px flex-1 bg-[#e55563]" />
-          <h2 className="text-center text-base font-bold tracking-[0.08em] text-[#d0122d] uppercase sm:text-lg">
-            Our Products
-          </h2>
-          <span className="h-px flex-1 bg-[#e55563]" />
-        </div>
-        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
-          {productCategories.map((category) => {
-            const Icon = category.icon;
-            return (
-              <Link
-                key={category.title}
-                href={category.href}
-                className="group relative flex h-[142px] overflow-hidden rounded-[16px] border border-[#f2d8d6] bg-[#ffe8e8] transition hover:-translate-y-0.5 hover:shadow-[0_10px_24px_rgba(114,39,35,.12)]"
-              >
-                <div className="relative h-full w-[48%] shrink-0">
-                  <Image
-                    src={category.src}
-                    alt={category.alt}
-                    fill
-                    className={`${category.imageClass} transition-transform duration-300 group-hover:scale-105`}
-                    sizes="(min-width: 1280px) 115px, 45vw"
-                  />
-                </div>
-                <div className="flex min-w-0 flex-1 flex-col items-start justify-center p-2.5">
-                  <Icon className="mb-1 size-4 text-[#d0122d]" />
-                  <h3 className="font-serif text-[15px] leading-tight font-bold text-[#30231e]">
-                    {category.title}
-                  </h3>
-                  <p className="mt-1 text-[10px] leading-tight text-[#463b35]">
-                    {category.description}
-                  </p>
-                  <span className="mt-2 inline-flex items-center gap-1 rounded-full bg-[#d0122d] px-2.5 py-1 text-[9px] font-semibold text-white">
-                    {category.label} <ArrowRight className="size-3" />
-                  </span>
-                </div>
-              </Link>
-            );
-          })}
-        </div>
-      </section>
-
-      <section className="relative isolate overflow-hidden border-y border-[#ed9ca5] bg-[linear-gradient(105deg,#fff1ed_0%,#ffe4e7_48%,#fff5ed_100%)]">
-        <div className="pointer-events-none absolute inset-x-0 top-0 h-5 bg-[linear-gradient(176deg,transparent_38%,#e55563_40%,#f7b2b4_45%,transparent_47%)]" />
-        <div className="relative mx-auto grid max-w-[1280px] items-center gap-4 px-5 py-5 sm:grid-cols-[150px_1fr_auto] sm:px-8 lg:grid-cols-[220px_1fr_300px]">
-          <div className="relative mx-auto hidden h-[125px] w-full sm:block">
-            <Image
-              src="/images/about-latte.png"
-              alt="Freshly poured latte"
-              fill
-              className="object-contain drop-shadow-[0_10px_14px_rgba(114,39,35,.18)]"
-              sizes="220px"
-            />
-          </div>
-          <div className="text-center">
-            <h2 className="font-serif text-2xl font-bold text-[#4c211f] sm:text-[30px]">
-              Partner with Prokrate
-            </h2>
-            <p className="mt-1 text-xs text-[#463b35] sm:text-sm">
-              Experience the difference of working with the leading brands in the coffee industry.
-            </p>
-            <Link
-              href="/services"
-              className="mt-3 inline-flex items-center gap-2 rounded-full bg-[#d0122d] px-6 py-2 text-xs font-semibold text-white transition hover:bg-[#a91020]"
-            >
-              Contact Us <ArrowRight className="size-3.5" />
-            </Link>
-          </div>
-          <div className="hidden items-center justify-center border-l border-[#c68884] pl-5 sm:flex">
-            <div className="flex flex-col items-center">
-              <SiteLogo showPitcorp className="[&_img]:h-12" />
-              <p className="mt-1 text-[9px] font-bold tracking-[0.2em] text-[#30231e] uppercase">
-                Good coffee. Greater possibilities.
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
-
       <section
         id="brand-products"
         className="mx-auto max-w-[1280px] px-4 pt-7 pb-10 sm:px-6 md:pb-12 lg:px-8"
@@ -328,6 +247,87 @@ export function BrandsPage({ brand }: { brand?: string }) {
               No products listed for {selectedBrand ?? "this collection"} yet.
             </p>
           )}
+      </section>
+
+      <section className="relative isolate overflow-hidden border-y border-[#ed9ca5] bg-[linear-gradient(105deg,#fff1ed_0%,#ffe4e7_48%,#fff5ed_100%)]">
+        <div className="pointer-events-none absolute inset-x-0 top-0 h-5 bg-[linear-gradient(176deg,transparent_38%,#e55563_40%,#f7b2b4_45%,transparent_47%)]" />
+        <div className="relative mx-auto grid max-w-[1280px] items-center gap-4 px-5 py-5 sm:grid-cols-[150px_1fr_auto] sm:px-8 lg:grid-cols-[220px_1fr_300px]">
+          <div className="relative mx-auto hidden h-[125px] w-full sm:block">
+            <Image
+              src="/images/about-latte.png"
+              alt="Freshly poured latte"
+              fill
+              className="object-contain drop-shadow-[0_10px_14px_rgba(114,39,35,.18)]"
+              sizes="220px"
+            />
+          </div>
+          <div className="text-center">
+            <h2 className="font-serif text-2xl font-bold text-[#4c211f] sm:text-[30px]">
+              Partner with Prokrate
+            </h2>
+            <p className="mt-1 text-xs text-[#463b35] sm:text-sm">
+              Experience the difference of working with the leading brands in the coffee industry.
+            </p>
+            <Link
+              href="/services"
+              className="mt-3 inline-flex items-center gap-2 rounded-full bg-[#d0122d] px-6 py-2 text-xs font-semibold text-white transition hover:bg-[#a91020]"
+            >
+              Contact Us <ArrowRight className="size-3.5" />
+            </Link>
+          </div>
+          <div className="hidden items-center justify-center border-l border-[#c68884] pl-5 sm:flex">
+            <div className="flex flex-col items-center">
+              <SiteLogo showPitcorp className="[&_img]:h-12" />
+              <p className="mt-1 text-[9px] font-bold tracking-[0.2em] text-[#30231e] uppercase">
+                Good coffee. Greater possibilities.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section className="mx-auto max-w-[1280px] px-4 pt-5 pb-8 sm:px-6 lg:px-8">
+        <div className="mb-2 flex items-center justify-center gap-3 sm:gap-4">
+          <span className="h-px flex-1 bg-[#e55563]" />
+          <h2 className="text-center text-base font-bold tracking-[0.08em] text-[#d0122d] uppercase sm:text-lg">
+            Our Products
+          </h2>
+          <span className="h-px flex-1 bg-[#e55563]" />
+        </div>
+        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
+          {productCategories.map((category) => {
+            const Icon = category.icon;
+            return (
+              <Link
+                key={category.title}
+                href={category.href}
+                className="group relative flex h-[142px] overflow-hidden rounded-[16px] border border-[#f2d8d6] bg-[#ffe8e8] transition hover:-translate-y-0.5 hover:shadow-[0_10px_24px_rgba(114,39,35,.12)]"
+              >
+                <div className="relative h-full w-[48%] shrink-0">
+                  <Image
+                    src={category.src}
+                    alt={category.alt}
+                    fill
+                    className={`${category.imageClass} transition-transform duration-300 group-hover:scale-105`}
+                    sizes="(min-width: 1280px) 115px, 45vw"
+                  />
+                </div>
+                <div className="flex min-w-0 flex-1 flex-col items-start justify-center p-2.5">
+                  <Icon className="mb-1 size-4 text-[#d0122d]" />
+                  <h3 className="font-serif text-[15px] leading-tight font-bold text-[#30231e]">
+                    {category.title}
+                  </h3>
+                  <p className="mt-1 text-[10px] leading-tight text-[#463b35]">
+                    {category.description}
+                  </p>
+                  <span className="mt-2 inline-flex items-center gap-1 rounded-full bg-[#d0122d] px-2.5 py-1 text-[9px] font-semibold text-white">
+                    {category.label} <ArrowRight className="size-3" />
+                  </span>
+                </div>
+              </Link>
+            );
+          })}
+        </div>
       </section>
     </main>
   );

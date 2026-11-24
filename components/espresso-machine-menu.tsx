@@ -29,9 +29,6 @@ const uses = [
 const machineTypes = [
   { label: "Single Group", href: "/espresso-machines?group=1" },
   { label: "Double Group", href: "/espresso-machines?group=2" },
-  { label: "Traditional Machines", href: "/espresso-machines" },
-  { label: "Automatic Machines", href: "/espresso-machines" },
-  { label: "Semi-Automatic Machines", href: "/espresso-machines" },
 ] as const;
 
 const featuredBrands = [
