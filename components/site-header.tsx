@@ -4,7 +4,18 @@ import { useState } from "react";
 import Image from "@/components/media-image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { ChevronDown, Headphones, Mail, Menu, Search, ShieldCheck, ShoppingCart, Truck, User, X } from "lucide-react";
+import {
+  ChevronDown,
+  Headphones,
+  Mail,
+  Menu,
+  Search,
+  ShieldCheck,
+  ShoppingCart,
+  Truck,
+  User,
+  X,
+} from "lucide-react";
 
 import { BrandMark } from "@/components/brand-mark";
 import { CoffeeMenu } from "@/components/coffee-menu";
@@ -78,17 +89,17 @@ function NavLink({
         href={item.href}
         aria-current={isActive ? "page" : undefined}
         className={cn(
-          "inline-flex items-center gap-1 whitespace-nowrap text-sm font-medium transition-colors",
-          item.label === "Home" &&
-            "rounded-full bg-[#d0122d] px-3.5 py-1.5 text-white hover:bg-[#b10f26]",
+          "inline-flex items-center gap-1 whitespace-nowrap rounded-full px-3 py-2.5 text-[13px] font-medium transition-colors xl:px-4 xl:text-[15px] 2xl:px-5 2xl:text-[18px]",
+          isActive &&
+            "bg-[#d0122d] text-white hover:bg-[#b10f26]",
           item.label === "Contact Us" &&
-            "rounded-full bg-[#f5c400] px-3.5 py-1.5 font-semibold text-[#2b2118] hover:bg-[#ffd24a]",
-          item.label !== "Home" &&
+            "rounded-full bg-[#f5c400] px-4 py-2.5 font-semibold text-[#2b2118] hover:bg-[#ffd24a] 2xl:px-6 2xl:py-3",
+          !isActive &&
             item.label !== "Contact Us" &&
-            (highlighted ? "text-[#d0122d]" : "text-[#3a2a22] hover:text-[#d0122d]")
+            (highlighted ? "text-[#d0122d]" : "text-[#3a2a22] hover:text-[#d0122d]"),
+          !isActive && item.label === "Contact Us" && "text-[#2b2118]"
         )}
       >
-        {item.label === "Home" ? <span aria-hidden="true">⌂</span> : null}
         {item.label === "Contact Us" ? <Mail className="size-3.5" /> : null}
         {navDisplayLabel(item.label)}
         {dropdown ? (
@@ -118,7 +129,7 @@ function NavCluster({
   if (items.length === 0) return null;
 
   return (
-    <div className="flex flex-nowrap items-center gap-x-2">
+    <div className="flex flex-nowrap items-center gap-x-2 2xl:gap-x-8">
       {items.map((item) => (
         <NavLink
           key={item.label}
@@ -132,7 +143,13 @@ function NavCluster({
   );
 }
 
-function SearchForm({ className }: { className?: string }) {
+function SearchForm({
+  className,
+  large = false,
+}: {
+  className?: string;
+  large?: boolean;
+}) {
   const [query, setQuery] = useState("");
 
   return (
@@ -152,13 +169,19 @@ function SearchForm({ className }: { className?: string }) {
           value={query}
           onChange={(event) => setQuery(event.target.value)}
           placeholder="What are you looking for?"
-          className="h-11 min-w-0 flex-1 rounded-none border-0 bg-white px-4 text-[15px] shadow-none placeholder:text-neutral-400 focus-visible:border-transparent focus-visible:ring-0"
+          className={cn(
+            "min-w-0 flex-1 rounded-none border-0 bg-white px-4 text-[15px] shadow-none placeholder:text-neutral-400 focus-visible:border-transparent focus-visible:ring-0",
+            large ? "h-[58px]" : "h-11"
+          )}
         />
       </label>
       <Button
         type="submit"
         aria-label="Search"
-        className="size-11 shrink-0 rounded-full border-0 bg-[#d0122d] text-white hover:bg-[#b10f26]"
+        className={cn(
+          "shrink-0 rounded-full border-0 bg-[#d0122d] text-white hover:bg-[#b10f26]",
+          large ? "size-[58px]" : "size-11"
+        )}
       >
         <Search className="size-5" />
       </Button>
@@ -166,7 +189,7 @@ function SearchForm({ className }: { className?: string }) {
   );
 }
 
-function useFromHref(href: string) {
+function catalogUseFromHref(href: string) {
   const query = href.split("?")[1];
   if (!query) return null;
   return new URLSearchParams(query).get("use");
@@ -192,76 +215,26 @@ export function SiteHeader() {
     }
   }
 
-  if (pathname === "/about-us" || pathname === "/brands") {
-    const aboutNav = [...row1Left, ...row2Left];
-
-    return (
-      <header className="sticky top-0 z-50 border-b border-[#f1e7df] bg-white shadow-sm">
-        <div className="mx-auto flex h-14 max-w-[1440px] items-center gap-5 px-4 sm:px-6 lg:gap-8 lg:px-10">
-          <SiteLogo showPitcorp={false} className="shrink-0 [&_img]:h-9" />
-          <nav aria-label="Main navigation" className="min-w-0 flex-1 overflow-x-auto">
-            <div className="flex min-w-max items-center justify-center gap-3 lg:gap-5">
-              {aboutNav.map((item) => {
-                const active = pathMatches(pathname, item.href);
-                return (
-                  <Link
-                    key={item.label}
-                    href={item.href}
-                    aria-current={active ? "page" : undefined}
-                    className={cn(
-                      "relative flex h-14 items-center whitespace-nowrap px-0.5 text-[11px] font-medium text-[#2b2118] transition-colors hover:text-[#d0122d] lg:text-xs",
-                      active && "font-semibold text-[#d0122d] after:absolute after:right-0 after:bottom-2 after:left-0 after:h-0.5 after:bg-[#d0122d]"
-                    )}
-                  >
-                    {navDisplayLabel(item.label)}
-                  </Link>
-                );
-              })}
-            </div>
-          </nav>
-          <div className="flex shrink-0 items-center gap-3">
-            <Link href="/coffee" aria-label="Search coffee products" className="text-[#2b2118] hover:text-[#d0122d]">
-              <Search className="size-4" />
-            </Link>
-            <span className="h-6 w-px bg-[#d9cfc8]" />
-            <Link
-              href="/espresso-machines"
-              aria-label="Shopping cart"
-              className="relative flex size-10 items-center justify-center rounded-full bg-[#d0122d] text-white"
-            >
-              <ShoppingCart className="size-5" />
-              <span className="absolute -top-1 -right-1 flex size-4 items-center justify-center rounded-full bg-[#f5c400] text-[9px] font-bold text-[#2b2118]">
-                0
-              </span>
-            </Link>
-          </div>
-        </div>
-      </header>
-    );
-  }
-
   return (
     <header
-      className="sticky top-0 z-50 overflow-x-clip bg-white text-[#2b2118] shadow-[0_8px_24px_rgba(155,16,32,0.06)]"
+      className="sticky top-0 z-50 overflow-x-clip bg-white text-[#2b2118]"
       onMouseLeave={() => setMega(null)}
     >
-      <div className="bg-[#c4161c] text-white">
-        <div className="mx-auto flex max-w-[1440px] items-center justify-between gap-4 px-4 py-1.5 text-[11px] sm:px-6 sm:text-xs lg:px-10">
-          <div className="flex min-w-0 items-center gap-4 sm:gap-6">
-            <span className="inline-flex items-center gap-1.5">
-              <Truck className="size-3.5 shrink-0" />
-              <span className="truncate">Free Shipping on orders over ₱2,000</span>
-            </span>
-            <span className="hidden items-center gap-1.5 md:inline-flex">
-              <ShieldCheck className="size-3.5" />
-              Secure Payment
-            </span>
-            <span className="hidden items-center gap-1.5 lg:inline-flex">
-              <Headphones className="size-3.5" />
-              24/7 Customer Support
-            </span>
-          </div>
-          <div className="flex items-center gap-2.5">
+      <div className="hidden bg-[linear-gradient(100deg,#a9141d_0%,#bd2228_52%,#a9141d_100%)] text-white lg:block">
+        <div className="mx-auto grid h-[46px] max-w-[1900px] grid-cols-4 items-center px-8 text-sm font-semibold">
+          <span className="inline-flex items-center gap-3">
+            <Truck className="size-6 shrink-0" />
+            Free Shipping on orders over ₱2,000
+          </span>
+          <span className="inline-flex items-center justify-center gap-3">
+            <ShieldCheck className="size-6 shrink-0" />
+            Secure Payment
+          </span>
+          <span className="inline-flex items-center justify-center gap-3">
+            <Headphones className="size-8 shrink-0" />
+            24/7 Customer Support
+          </span>
+          <div className="flex items-center justify-end gap-4 border-l border-white/60 pl-7 text-xl">
             <a href="#contact" aria-label="Facebook" className="hover:opacity-80">f</a>
             <a href="#contact" aria-label="Instagram" className="hover:opacity-80">⌾</a>
             <a href="#contact" aria-label="YouTube" className="hover:opacity-80">▷</a>
@@ -269,51 +242,65 @@ export function SiteHeader() {
           </div>
         </div>
       </div>
-      <div className="mx-auto flex max-w-[1440px] items-center gap-4 px-4 py-3 sm:px-6 lg:gap-8 lg:px-10 lg:py-4">
-        <SiteLogo className="min-w-0 shrink-0 [&_img]:h-10 sm:[&_img]:h-11 lg:[&_img]:h-12" />
 
-        <SearchForm className="hidden max-w-[760px] flex-1 md:flex" />
+      <div className="mx-auto flex items-center justify-between gap-4 px-4 py-3 sm:px-6 lg:hidden">
+        <SiteLogo showPitcorp={false} className="min-w-0 shrink-0 [&_img]:h-10 sm:[&_img]:h-11 lg:[&_img]:h-12" />
+        <button
+          type="button"
+          className="inline-flex size-10 items-center justify-center text-[#3a2a22] hover:text-[#d0122d]"
+          onClick={() => setMobileOpen((value) => !value)}
+          aria-expanded={mobileOpen}
+          aria-label={mobileOpen ? "Close menu" : "Open menu"}
+        >
+          {mobileOpen ? <X className="size-5" /> : <Menu className="size-5" />}
+        </button>
+      </div>
 
-        <div className="ml-auto flex items-center gap-4">
+      <div className="mx-auto hidden h-[90px] max-w-[1900px] items-center gap-12 px-8 lg:flex">
+        <SiteLogo showPitcorp={false} className="shrink-0 [&_img]:h-[78px]" />
+        <SearchForm className="mx-auto max-w-[1000px] flex-1" large />
+        <div className="ml-auto flex shrink-0 items-center gap-9">
           <Link
             href="/admin/login"
-            className="hidden items-center gap-2 text-[13px] font-medium text-[#3a2a22] hover:text-[#d0122d] md:inline-flex"
+            className="inline-flex items-center gap-3 text-[15px] font-medium text-[#2b2118] hover:text-[#d0122d]"
           >
-            <User className="size-[22px] stroke-[1.6]" />
+            <User className="size-7 stroke-[1.6] text-[#c4161c]" />
             Admin Login
           </Link>
-          <Link href="/espresso-machines" aria-label="Cart" className="relative hidden text-[#3a2a22] hover:text-[#d0122d] md:inline-flex">
-            <ShoppingCart className="size-[22px] stroke-[1.6]" />
-            <span className="absolute -top-2 -right-2 flex size-4 items-center justify-center rounded-full bg-[#d0122d] text-[10px] font-semibold text-white">
+          <Link
+            href="/espresso-machines"
+            aria-label="Cart"
+            className="relative inline-flex text-[#2b2118] hover:text-[#d0122d]"
+          >
+            <ShoppingCart className="size-8 stroke-[1.6]" />
+            <span className="absolute -top-3 -right-3 flex size-7 items-center justify-center rounded-full bg-[#f5c45b] text-xs font-semibold text-[#2b2118]">
               0
             </span>
           </Link>
-          <button
-            type="button"
-            className="inline-flex size-10 items-center justify-center text-[#3a2a22] hover:text-[#d0122d] lg:hidden"
-            onClick={() => setMobileOpen((value) => !value)}
-            aria-expanded={mobileOpen}
-            aria-label={mobileOpen ? "Close menu" : "Open menu"}
-          >
-            {mobileOpen ? <X className="size-5" /> : <Menu className="size-5" />}
-          </button>
         </div>
       </div>
 
-      <div className="px-4 pb-3 md:hidden">
+      <div className="hidden border-b border-[#e6c6a9] lg:block">
+        <nav aria-label="Main navigation" className="overflow-x-auto">
+          <div className="mx-auto flex h-[82px] w-max min-w-full items-center gap-2 px-4 xl:gap-3 xl:px-6 2xl:gap-4 2xl:px-[74px]">
+            <NavCluster items={row1Left} mega={mega} pathname={pathname} onOpen={openNavItem} />
+            <span className="mx-1 h-6 w-px shrink-0 bg-[#ead8cc] xl:mx-2 2xl:mx-4" />
+            <NavCluster
+              items={[...row1Right, ...row2Left]}
+              mega={mega}
+              pathname={pathname}
+              onOpen={openNavItem}
+            />
+            <div className="ml-auto">
+              <NavCluster items={row2Right} mega={mega} pathname={pathname} onOpen={openNavItem} />
+            </div>
+          </div>
+        </nav>
+      </div>
+
+      <div className="border-b border-[#e6c6a9] px-4 pb-3 lg:hidden">
         <SearchForm />
       </div>
-
-      <nav className="hidden lg:block">
-        <div className="mx-auto max-w-[1440px] px-4 pb-4 sm:px-6 lg:px-10">
-          <div className="flex items-center gap-5">
-            <NavCluster items={row1Left} mega={mega} pathname={pathname} onOpen={openNavItem} />
-            <span className="h-4 w-px bg-[#ead8cc]" />
-            <NavCluster items={[...row1Right, ...row2Left]} mega={mega} pathname={pathname} onOpen={openNavItem} />
-            <NavCluster items={row2Right} mega={mega} pathname={pathname} onOpen={openNavItem} />
-          </div>
-        </div>
-      </nav>
 
       {openItem && isBrandsMega(openItem) ? (
         <div className="absolute inset-x-0 top-full border-t border-[#cbb392] bg-[#fffaf5] shadow-[0_18px_40px_rgba(80,50,20,0.12)]">
@@ -353,7 +340,7 @@ export function SiteHeader() {
             <div className="flex flex-wrap gap-16 lg:gap-28">
               <ul className="space-y-1">
                 {openItem.children.map((child) => {
-                  const childUse = useFromHref(child.href);
+                  const childUse = catalogUseFromHref(child.href);
                   const active = Boolean(childUse && childUse === catalogUse);
 
                   return (
@@ -466,7 +453,7 @@ export function SiteHeader() {
                 aria-current={pathMatches(pathname, item.href) ? "page" : undefined}
                 className={cn(
                   "flex items-center justify-between rounded-full border px-4 py-2.5 text-sm font-medium",
-                  pathMatches(pathname, item.href) || item.label === "Home"
+                  pathMatches(pathname, item.href)
                     ? "border-[#d0122d] bg-[#d0122d] text-white"
                     : item.label === "Contact Us"
                       ? "border-[#f5c400] bg-[#f5c400] text-[#2b2118]"

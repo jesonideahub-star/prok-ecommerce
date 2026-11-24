@@ -136,7 +136,7 @@ export const headerNavLayout = {
 } as const;
 
 export function navDisplayLabel(label: string) {
-  return label;
+  return label === "Puly Caff Product" ? "Clean solution" : label;
 }
 
 export function navItemsByLabels(labels: readonly string[]) {

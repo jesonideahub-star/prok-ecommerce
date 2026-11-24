@@ -32,16 +32,16 @@ export function EspressoMachineMenu({
 }) {
   return (
     <div className={cn("bg-[#fffaf5]", className)}>
-      <div className="mx-auto max-w-[1280px] px-6 py-8 md:px-10 md:py-10">
-        <div className="flex flex-wrap gap-16 lg:gap-28">
-          <ul className="space-y-1">
+      <div className="mx-auto max-w-[1800px] px-6 py-9 md:px-10 md:py-12 2xl:px-0 2xl:py-16">
+        <div className="grid grid-cols-1 gap-5 sm:grid-cols-3 sm:gap-6 lg:grid-cols-[260px_285px_1fr] lg:gap-4">
+          <ul className="space-y-2">
             {uses.map((item) => (
               <li key={item.slug}>
                 <Link
                   href={item.href}
                   onClick={onNavigate}
                   className={cn(
-                    "block rounded-md py-1.5 text-[15px] transition-colors hover:text-[#d0122d]",
+                    "block rounded-md py-1.5 text-lg transition-colors hover:text-[#d0122d] 2xl:text-[22px]",
                     use === item.slug
                       ? "font-medium text-[#d0122d]"
                       : "text-zinc-700"
@@ -52,14 +52,14 @@ export function EspressoMachineMenu({
               </li>
             ))}
           </ul>
-          <ul className="space-y-1">
+          <ul className="space-y-2">
             {groups.map((item) => (
               <li key={item.value}>
                 <Link
                   href={item.href}
                   onClick={onNavigate}
                   className={cn(
-                    "block rounded-md py-1.5 text-[15px] transition-colors hover:text-[#d0122d]",
+                    "block rounded-md py-1.5 text-lg transition-colors hover:text-[#d0122d] 2xl:text-[22px]",
                     group === item.value
                       ? "font-medium text-[#d0122d]"
                       : "text-zinc-700"
@@ -70,12 +70,12 @@ export function EspressoMachineMenu({
               </li>
             ))}
           </ul>
-          <ul className="space-y-1">
+          <ul className="space-y-2">
             <li>
               <Link
                 href="/#packages"
                 onClick={onNavigate}
-                className="block rounded-md py-1.5 text-[15px] font-medium text-[#d0122d] transition-colors hover:text-[#124c2e]"
+                className="block rounded-md py-1.5 text-lg font-medium text-[#d0122d] transition-colors hover:text-[#124c2e] 2xl:text-[22px]"
               >
                 Package Deals
               </Link>
@@ -83,13 +83,13 @@ export function EspressoMachineMenu({
           </ul>
         </div>
 
-        <div className="mt-10 grid grid-cols-2 gap-2 sm:flex sm:items-stretch sm:gap-3">
+        <div className="mt-10 grid grid-cols-2 gap-3 sm:flex sm:items-stretch sm:gap-4 lg:mt-[72px]">
           {brands.map((name) => (
             <Link
               key={name}
               href={`/espresso-machines?brand=${brandSlug(name)}`}
               onClick={onNavigate}
-              className="flex h-[100px] min-w-0 flex-1 items-center justify-center rounded-xl bg-white px-2 ring-1 ring-[#eadfce] transition-all duration-300 ease-out hover:z-10 hover:-translate-y-1 hover:scale-[1.04] hover:shadow-[0_10px_20px_rgba(80,50,20,0.12)]"
+              className="flex h-[120px] min-w-0 flex-1 items-center justify-center rounded-[20px] bg-white px-3 ring-1 ring-[#eadfce] transition-all duration-300 ease-out hover:z-10 hover:-translate-y-1 hover:scale-[1.04] hover:shadow-[0_10px_20px_rgba(80,50,20,0.12)] sm:h-[140px]"
             >
               <BrandMark name={name} size="lg" />
             </Link>
