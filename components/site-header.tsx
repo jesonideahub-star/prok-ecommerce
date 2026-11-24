@@ -22,7 +22,6 @@ import { EspressoMachineMenu } from "@/components/espresso-machine-menu";
 import { FlavourMenu } from "@/components/flavour-menu";
 import { GrinderMenu } from "@/components/grinder-menu";
 import { SiteLogo } from "@/components/site-logo";
-import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
   brandPageHref,
@@ -157,20 +156,17 @@ function SearchForm({
           placeholder="What are you looking for?"
           className={cn(
             "min-w-0 flex-1 rounded-none border-0 bg-white px-4 text-[15px] shadow-none placeholder:text-neutral-400 focus-visible:border-transparent focus-visible:ring-0 2xl:text-[17px]",
-            large ? "h-[72px]" : "h-11"
+            large ? "h-11" : "h-11"
           )}
         />
       </label>
-      <Button
+      <button
         type="submit"
         aria-label="Search"
-        className={cn(
-          "shrink-0 rounded-full border-0 bg-[#D7192D] text-white hover:bg-[#b91427]",
-          large ? "size-[76px]" : "size-11"
-        )}
+        className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full border-0 bg-[#D7192D] text-white transition-colors hover:bg-[#b91427]"
       >
-        <Search className={cn(large ? "size-7" : "size-5")} />
-      </Button>
+        <Search className="size-5" />
+      </button>
     </form>
   );
 }

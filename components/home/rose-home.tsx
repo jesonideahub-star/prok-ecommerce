@@ -21,7 +21,18 @@ import { newsItems } from "@/lib/site";
 import { createClient } from "@/lib/supabase/client";
 import { cn } from "@/lib/utils";
 
-const slides = [
+type HomeSlide = {
+  src: string;
+  alt: string;
+  eyebrow: string;
+  title: string;
+  accent: string;
+  body: string;
+  href: string;
+  cta: string;
+};
+
+const fallbackSlides: HomeSlide[] = [
   {
     src: "/images/hero-beans.png",
     alt: "Premium roasted coffee and professional coffee equipment",
@@ -143,11 +154,91 @@ const topEquipment = [
 ] as const;
 
 export function RoseHome() {
+  const [slides, setSlides] = useState(fallbackSlides);
   const [index, setIndex] = useState(0);
   const [topSellerOffset, setTopSellerOffset] = useState(0);
   const [packageImages, setPackageImages] = useState<string[]>([]);
   const [packageImageError, setPackageImageError] = useState(false);
-  const slide = slides[index];
+  const slide = slides[index] ?? slides[0];
+
+  useEffect(() => {
+    let active = true;
+
+    async function loadHomeScreenImages() {
+      try {
+        const supabase = createClient();
+        const bucket = supabase.storage.from("Home_Screen");
+
+        async function listDirectory(path: string) {
+          const entries = [];
+          const limit = 1000;
+
+          for (let offset = 0; ; offset += limit) {
+            const { data, error } = await bucket.list(path, {
+              limit,
+              offset,
+              sortBy: { column: "name", order: "asc" },
+            });
+
+            if (error) throw error;
+            entries.push(...(data ?? []));
+            if (!data || data.length < limit) break;
+          }
+
+          return entries;
+        }
+
+        async function walk(path: string): Promise<string[]> {
+          const entries = await listDirectory(path);
+          const imagePaths: string[] = [];
+
+          for (const entry of entries) {
+            const entryPath = path ? `${path}/${entry.name}` : entry.name;
+
+            if (entry.id === null) {
+              imagePaths.push(...(await walk(entryPath)));
+            } else if (/\.(avif|gif|jpe?g|png|webp)$/i.test(entry.name)) {
+              imagePaths.push(entryPath);
+            }
+          }
+
+          return imagePaths;
+        }
+
+        const imagePaths = await walk("");
+        if (!active || imagePaths.length === 0) return;
+
+        const homeSlides = imagePaths.map((path, slideIndex) => {
+          const fallback = fallbackSlides[slideIndex % fallbackSlides.length];
+          return {
+            ...fallback,
+            src: bucket.getPublicUrl(path).data.publicUrl,
+            alt: path.split("/").at(-1)?.replace(/\.[^.]+$/, "").replace(/[_-]+/g, " ") ?? fallback.alt,
+          };
+        });
+
+        setSlides(homeSlides);
+        setIndex(0);
+      } catch (error) {
+        console.error("Unable to load homepage slides from the Home_Screen bucket.", error);
+      }
+    }
+
+    void loadHomeScreenImages();
+    return () => {
+      active = false;
+    };
+  }, []);
+
+  useEffect(() => {
+    if (slides.length < 2) return;
+
+    const timer = window.setInterval(() => {
+      setIndex((current) => (current + 1) % slides.length);
+    }, 5000);
+
+    return () => window.clearInterval(timer);
+  }, [slides.length]);
 
   useEffect(() => {
     let active = true;
@@ -217,7 +308,7 @@ export function RoseHome() {
             className="object-cover object-center"
             sizes="(min-width: 1280px) 1216px, 100vw"
           />
-          <div className="absolute inset-0 bg-gradient-to-r from-[#D7192D]/95 via-[#D7192D]/60 to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-r from-[#D7192D]/75 via-[#D7192D]/40 to-transparent" />
           <div className="relative flex h-full items-center px-6 py-8 sm:px-12 lg:px-16">
             <div className="max-w-[520px]">
               <p className="flex items-center text-xs font-semibold tracking-[0.18em] text-[#FCE4E7] uppercase">
@@ -248,7 +339,7 @@ export function RoseHome() {
           </button>
           <div className="absolute bottom-3 left-1/2 flex -translate-x-1/2 gap-1.5">
             {slides.map((item, dot) => (
-              <button key={item.title} type="button" aria-label={`Show ${item.title}`} onClick={() => setIndex(dot)} className={cn("h-2 rounded-full transition-all", dot === index ? "w-6 bg-white" : "w-2 bg-white/60")} />
+              <button key={`${item.src}-${dot}`} type="button" aria-label={`Show ${item.title}`} onClick={() => setIndex(dot)} className={cn("h-2 rounded-full transition-all", dot === index ? "w-6 bg-white" : "w-2 bg-white/60")} />
             ))}
           </div>
         </div>
