@@ -192,6 +192,54 @@ export function SiteHeader() {
     }
   }
 
+  if (pathname === "/about-us") {
+    const aboutNav = [...row1Left, ...row2Left];
+
+    return (
+      <header className="sticky top-0 z-50 border-b border-[#f1e7df] bg-white shadow-sm">
+        <div className="mx-auto flex h-14 max-w-[1440px] items-center gap-5 px-4 sm:px-6 lg:gap-8 lg:px-10">
+          <SiteLogo showPitcorp={false} className="shrink-0 [&_img]:h-9" />
+          <nav aria-label="Main navigation" className="min-w-0 flex-1 overflow-x-auto">
+            <div className="flex min-w-max items-center justify-center gap-3 lg:gap-5">
+              {aboutNav.map((item) => {
+                const active = pathMatches(pathname, item.href);
+                return (
+                  <Link
+                    key={item.label}
+                    href={item.href}
+                    aria-current={active ? "page" : undefined}
+                    className={cn(
+                      "relative flex h-14 items-center whitespace-nowrap px-0.5 text-[11px] font-medium text-[#2b2118] transition-colors hover:text-[#d0122d] lg:text-xs",
+                      active && "font-semibold text-[#d0122d] after:absolute after:right-0 after:bottom-2 after:left-0 after:h-0.5 after:bg-[#d0122d]"
+                    )}
+                  >
+                    {navDisplayLabel(item.label)}
+                  </Link>
+                );
+              })}
+            </div>
+          </nav>
+          <div className="flex shrink-0 items-center gap-3">
+            <Link href="/coffee" aria-label="Search coffee products" className="text-[#2b2118] hover:text-[#d0122d]">
+              <Search className="size-4" />
+            </Link>
+            <span className="h-6 w-px bg-[#d9cfc8]" />
+            <Link
+              href="/espresso-machines"
+              aria-label="Shopping cart"
+              className="relative flex size-10 items-center justify-center rounded-full bg-[#d0122d] text-white"
+            >
+              <ShoppingCart className="size-5" />
+              <span className="absolute -top-1 -right-1 flex size-4 items-center justify-center rounded-full bg-[#f5c400] text-[9px] font-bold text-[#2b2118]">
+                0
+              </span>
+            </Link>
+          </div>
+        </div>
+      </header>
+    );
+  }
+
   return (
     <header
       className="sticky top-0 z-50 overflow-x-clip bg-white text-[#2b2118] shadow-[0_8px_24px_rgba(155,16,32,0.06)]"
