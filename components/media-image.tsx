@@ -10,20 +10,26 @@ function localSrc(src: string) {
   return src.startsWith("/") ? src : `/${src}`;
 }
 
-export default function MediaImage({ src, onError, ...props }: ImageProps) {
+export default function MediaImage({ src, alt, onError, ...props }: ImageProps) {
   const remote = typeof src === "string" ? mediaUrl(src) : src;
   const local = typeof src === "string" ? localSrc(src) : null;
   const initial = local ?? remote;
-  const [current, setCurrent] = useState(initial);
+  const [failedSource, setFailedSource] = useState<{
+    source: ImageProps["src"];
+    fallback: ImageProps["src"];
+  } | null>(null);
+  const current =
+    failedSource?.source === initial ? failedSource.fallback : initial;
 
   return (
     <Image
       src={current}
+      alt={alt ?? ""}
       {...props}
       onError={(event) => {
         onError?.(event);
         if (typeof remote === "string" && current !== remote) {
-          setCurrent(remote);
+          setFailedSource({ source: initial, fallback: remote });
         }
       }}
     />

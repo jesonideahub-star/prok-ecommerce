@@ -1,161 +1,150 @@
-import Link from "next/link";
+"use client";
 
-import { SiteLogo } from "@/components/site-logo";
+import Link from "next/link";
+import { Mail } from "lucide-react";
+
 import { siteContact } from "@/lib/site";
 
-const footerColumns = [
-  {
-    title: "Shop",
-    links: [
-      { label: "Espresso Machines", href: "/espresso-machines" },
-      { label: "Grinders", href: "/grinders" },
-      { label: "Coffee", href: "/coffee" },
-      { label: "Flavours", href: "/flavours" },
-    ],
-  },
-  {
-    title: "Support",
-    links: [
-      { label: "Help Center", href: "/services" },
-      { label: "Training", href: "/training" },
-      { label: "Contact Us", href: "#contact" },
-    ],
-  },
-  {
-    title: "Company",
-    links: [
-      { label: "About Us", href: "/about-us" },
-      { label: "News & Events", href: "/news-events" },
-      { label: "Brands", href: "/brands" },
-    ],
-  },
-] as const;
+type SocialName = "Facebook" | "Instagram" | "YouTube" | "TikTok";
 
 const legalLinks = [
   { label: "Privacy Policy", href: "/privacy-policy" },
-  { label: "Terms of Service", href: "/terms-of-service" },
-  { label: "Cookie Policy", href: "/cookie-policy" },
+  { label: "Terms & Conditions", href: "/terms-of-service" },
+  { label: "Contact Us", href: "#contact" },
 ] as const;
-
-function FacebookIcon() {
-  return (
-    <svg viewBox="0 0 24 24" className="size-8" aria-hidden="true">
-      <circle cx="12" cy="12" r="12" fill="#1877F2" />
-      <path
-        fill="#fff"
-        d="M13.4 12.8h2.1l.3-2.4h-2.4V8.9c0-.7.2-1.2 1.2-1.2h1.3V5.6c-.2 0-1-.1-1.9-.1-1.9 0-3.2 1.2-3.2 3.3v1.6H8.5v2.4h2.3V19h2.6v-6.2z"
-      />
-    </svg>
-  );
-}
-
-function InstagramIcon() {
-  return (
-    <svg viewBox="0 0 24 24" className="size-8" aria-hidden="true">
-      <rect width="24" height="24" rx="6" fill="#E4405F" />
-      <rect
-        x="6.5"
-        y="6.5"
-        width="11"
-        height="11"
-        rx="3.2"
-        fill="none"
-        stroke="#fff"
-        strokeWidth="1.6"
-      />
-      <circle cx="12" cy="12" r="2.6" fill="none" stroke="#fff" strokeWidth="1.6" />
-      <circle cx="16.2" cy="7.8" r="0.9" fill="#fff" />
-    </svg>
-  );
-}
-
-function TwitterIcon() {
-  return (
-    <svg viewBox="0 0 24 24" className="size-8" aria-hidden="true">
-      <circle cx="12" cy="12" r="12" fill="#1DA1F2" />
-      <path
-        fill="#fff"
-        d="M18.1 8.4c-.4.2-.9.3-1.4.4.5-.3.9-.8 1.1-1.4-.5.3-1 .5-1.6.6A2.4 2.4 0 0 0 12 10.4c0 .2 0 .4.1.5-2-.1-3.8-1.1-5-2.5-.2.4-.3.8-.3 1.2 0 .8.4 1.6 1.1 2-.4 0-.8-.1-1.1-.3v.1c0 1.2.8 2.1 1.9 2.4-.2.1-.4.1-.7.1-.2 0-.3 0-.5-.1.3 1 1.2 1.7 2.3 1.7A4.8 4.8 0 0 1 6 16.1a6.8 6.8 0 0 0 3.7 1.1c4.4 0 6.8-3.7 6.8-6.8v-.3c.5-.3.9-.8 1.2-1.3z"
-      />
-    </svg>
-  );
-}
 
 const socials = [
-  { label: "Facebook", href: "#contact", icon: FacebookIcon },
-  { label: "Instagram", href: "#contact", icon: InstagramIcon },
-  { label: "Twitter", href: "#contact", icon: TwitterIcon },
+  { label: "Facebook", href: "#contact" },
+  { label: "Instagram", href: "#contact" },
+  { label: "YouTube", href: "#contact" },
+  { label: "TikTok", href: "#contact" },
 ] as const;
+
+function SocialGlyph({ name }: { name: SocialName }) {
+  if (name === "Facebook") {
+    return (
+      <svg viewBox="0 0 24 24" className="size-4" aria-hidden="true">
+        <path fill="currentColor" d="M13.5 21v-8h2.7l.4-3h-3.1V8.1c0-.9.3-1.5 1.6-1.5h1.7V3.9c-.8-.1-1.6-.2-2.5-.2-2.5 0-4.2 1.5-4.2 4.3V10H7.3v3h2.8v8z" />
+      </svg>
+    );
+  }
+
+  if (name === "Instagram") {
+    return (
+      <svg viewBox="0 0 24 24" className="size-4" aria-hidden="true">
+        <rect x="3.5" y="3.5" width="17" height="17" rx="5" fill="none" stroke="currentColor" strokeWidth="2" />
+        <circle cx="12" cy="12" r="4" fill="none" stroke="currentColor" strokeWidth="2" />
+        <circle cx="17.5" cy="6.8" r="1.2" fill="currentColor" />
+      </svg>
+    );
+  }
+
+  if (name === "YouTube") {
+    return (
+      <svg viewBox="0 0 24 24" className="size-4" aria-hidden="true">
+        <rect x="2.5" y="5" width="19" height="14" rx="4" fill="currentColor" />
+        <path d="m10 9 5 3-5 3z" fill="#a8101c" />
+      </svg>
+    );
+  }
+
+  return (
+    <svg viewBox="0 0 24 24" className="size-4" aria-hidden="true">
+      <path fill="currentColor" d="M15.8 3h3c.2 2 1.3 3.2 3.2 3.4v3a8 8 0 0 1-3.2-.9v6.2a6.1 6.1 0 1 1-6.1-6.1c.4 0 .8 0 1.2.1v3.2a3.1 3.1 0 1 0 1.9 2.8z" />
+    </svg>
+  );
+}
+
+function FooterDecor() {
+  return (
+    <svg
+      aria-hidden="true"
+      viewBox="0 0 220 180"
+      className="pointer-events-none absolute bottom-0 h-36 w-44 text-[#31552c] sm:h-44 sm:w-56"
+      fill="none"
+    >
+      <path d="M2 163C37 127 72 82 110 17M39 128C18 116 6 96 10 76c23 3 39 17 42 39M74 89c-2-26 8-47 29-59 13 19 14 42 1 61M106 47c15-20 37-30 61-26-2 23-16 41-39 49" stroke="currentColor" strokeWidth="8" strokeLinecap="round" />
+      <path d="M0 180c33-37 52-55 86-75" stroke="#67401f" strokeWidth="8" strokeLinecap="round" />
+      <circle cx="30" cy="145" r="13" fill="#c51d2d" />
+      <circle cx="53" cy="155" r="14" fill="#e12a35" />
+      <circle cx="74" cy="138" r="12" fill="#a90e22" />
+      <path d="M30 132c4 7 9 10 16 11m0 0c-1-8 1-13 6-17m-6 17c7-4 13-4 19-1" stroke="#31552c" strokeWidth="3" strokeLinecap="round" />
+      <ellipse cx="101" cy="153" rx="17" ry="9" transform="rotate(-32 101 153)" fill="#5a2916" />
+      <path d="m88 162 25-18" stroke="#a66c3a" strokeWidth="2" />
+      <ellipse cx="132" cy="166" rx="17" ry="9" transform="rotate(22 132 166)" fill="#5a2916" />
+      <path d="m116 159 32 13" stroke="#a66c3a" strokeWidth="2" />
+    </svg>
+  );
+}
 
 export function SiteFooter() {
   return (
-    <footer id="contact" className="bg-[#fff6ee] text-[#2b2118]">
-      <div className="mx-auto flex max-w-[1180px] flex-col gap-12 px-6 py-14 md:flex-row md:items-start md:justify-between md:py-16">
-        <div className="max-w-sm">
-          <SiteLogo className="inline-flex" showPitcorp={false} />
-          <p className="mt-4 text-sm leading-relaxed text-zinc-600">
-            Premium specialty coffee and equipment for coffee enthusiasts and
-            professionals. Discover the perfect balance of quality and convenience.
-          </p>
-          <p className="mt-4 text-sm leading-relaxed text-zinc-600">
-            {siteContact.address}
-            <br />
-            Tel. {siteContact.phones.join(" · ")}
-          </p>
-          <div className="mt-5 flex items-center gap-3">
-            {socials.map((social) => {
-              const Icon = social.icon;
-              return (
-                <a
-                  key={social.label}
-                  href={social.href}
-                  aria-label={social.label}
-                  className="transition-opacity hover:opacity-80"
-                >
-                  <Icon />
-                </a>
-              );
-            })}
-          </div>
-        </div>
-
-        <div className="flex flex-wrap gap-12 sm:gap-16 lg:gap-20">
-          {footerColumns.map((column) => (
-            <div
-              key={column.title}
-              id={
-                column.title === "Shop"
-                  ? "marcafe"
-                  : column.title === "Support"
-                    ? "training"
-                    : "brand"
-              }
-            >
-              <p className="text-sm font-semibold text-zinc-800">{column.title}</p>
-              <ul className="mt-3 space-y-2">
-                {column.links.map((link) => (
-                  <li key={link.label} id={link.label === "News & Events" ? "news" : undefined}>
-                    <Link href={link.href} className="text-sm text-[#d0122d] hover:underline">
-                      {link.label}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          ))}
-        </div>
+    <footer
+      id="contact"
+      className="relative isolate overflow-hidden bg-[linear-gradient(110deg,#8e1018_0%,#a8101c_48%,#760b16_100%)] text-white"
+    >
+      <FooterDecor />
+      <div className="absolute right-0 bottom-0 -scale-x-100">
+        <FooterDecor />
       </div>
-
-      <div className="border-t border-[#f3e0d2]">
-        <div className="mx-auto flex max-w-[1180px] flex-col gap-3 px-6 py-5 text-xs text-zinc-500 sm:flex-row sm:items-center sm:justify-between">
-          <p>© 2026 {siteContact.legalName}. All rights reserved.</p>
-          <div className="flex flex-wrap gap-x-6 gap-y-1">
-            {legalLinks.map((link) => (
-              <Link key={link.label} href={link.href} className="hover:text-zinc-700">
-                {link.label}
-              </Link>
+      <div className="relative z-10 mx-auto max-w-[1280px] px-4 sm:px-6 lg:px-8">
+        <div className="grid items-center gap-4 border-b border-[#e7b453]/55 py-5 sm:grid-cols-[250px_1fr_auto] sm:gap-6 sm:py-6">
+          <div className="flex items-center gap-3">
+            <Mail className="size-9 shrink-0 stroke-[1.5]" />
+            <div>
+              <p className="font-serif text-lg font-semibold">Stay in the Loop</p>
+              <p className="text-[11px] text-white/85">
+                Get the latest offers, coffee tips, and more!
+              </p>
+            </div>
+          </div>
+          <form
+            className="flex min-w-0 items-center gap-2"
+            onSubmit={(event) => event.preventDefault()}
+          >
+            <label className="sr-only" htmlFor="footer-email">
+              Email address
+            </label>
+            <input
+              id="footer-email"
+              type="email"
+              placeholder="Enter your email address"
+              className="h-10 min-w-0 flex-1 rounded-full bg-white px-4 text-xs text-[#2b2118] outline-none placeholder:text-[#817873] focus-visible:ring-2 focus-visible:ring-[#f4c36b]"
+            />
+            <button
+              type="submit"
+              className="h-10 shrink-0 rounded-full bg-[#f4c36b] px-5 text-xs font-semibold text-[#2b2118] transition hover:bg-[#ffd783]"
+            >
+              Subscribe <span aria-hidden="true">→</span>
+            </button>
+          </form>
+          <div className="flex items-center gap-2 border-white/35 sm:border-l sm:pl-5">
+            <span className="mr-1 text-xs font-medium">Follow Us</span>
+            {socials.map(({ label, href }) => (
+              <a
+                key={label}
+                href={href}
+                aria-label={label}
+                className="flex size-7 items-center justify-center rounded-full bg-white text-[#8e1018] transition hover:bg-[#f4c36b]"
+              >
+                <SocialGlyph name={label} />
+              </a>
             ))}
           </div>
+        </div>
+
+        <div className="flex flex-col items-center gap-3 py-5 text-center text-[11px] text-white/90 sm:py-6">
+          <p>© 2026 {siteContact.legalName}. All rights reserved.</p>
+          <nav aria-label="Legal" className="flex flex-wrap items-center justify-center gap-x-3 gap-y-1">
+            {legalLinks.map((link, index) => (
+              <span key={link.label} className="inline-flex items-center gap-3">
+                {index > 0 ? <span aria-hidden="true" className="text-white/60">|</span> : null}
+                <Link href={link.href} className="transition hover:text-[#f4c36b]">
+                  {link.label}
+                </Link>
+              </span>
+            ))}
+          </nav>
         </div>
       </div>
     </footer>
