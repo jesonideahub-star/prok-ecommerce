@@ -22,7 +22,7 @@ type TrainingVideo = {
 
 type TrainingCourseImages = Record<string, string>;
 
-const trainingBucket = "Barista_Training";
+const trainingBucket = "Barista_training";
 const videoExtensions = /\.(mp4|webm|mov|m4v|ogv)$/i;
 const courseImageNames = ["website2.png", "website10.png"];
 
@@ -177,6 +177,8 @@ export function TrainingPage() {
   const [videos, setVideos] = useState<TrainingVideo[]>([]);
   const [courseImages, setCourseImages] = useState<TrainingCourseImages>({});
   const [videosError, setVideosError] = useState(false);
+  const trainingHeroImage =
+    courseImages["website10.png"] ?? "/images/training-hero.png";
 
   useEffect(() => {
     let active = true;
@@ -262,7 +264,7 @@ export function TrainingPage() {
                 preload="metadata"
                 width={720}
                 height={1280}
-                poster="/images/training-hero.png"
+                poster={trainingHeroImage}
                 aria-label={videos[0].name}
                 className="absolute inset-0 size-full object-contain"
               >
@@ -270,7 +272,7 @@ export function TrainingPage() {
               </video>
             ) : (
               <Image
-                src="/images/training-hero.png"
+                src={trainingHeroImage}
                 alt="Barista instructor demonstrating latte art to a training class"
                 fill
                 preload

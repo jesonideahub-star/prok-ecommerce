@@ -1,3 +1,6 @@
+"use client";
+
+import { useEffect, useState } from "react";
 import Image from "@/components/media-image";
 import NextImage from "next/image";
 import Link from "next/link";
@@ -5,34 +8,38 @@ import {
   ArrowRight,
   Check,
   Cog,
-  GraduationCap,
   Headset,
   Sparkles,
-  Truck,
   Wrench,
 } from "lucide-react";
 
 import { HomeReveal } from "@/components/home-reveal";
 import { diyCleaningProducts } from "@/lib/site";
+import { createClient } from "@/lib/supabase/client";
+
+const servicesBucket = "Services";
+const servicesHeroFallback = "/images/services-banner.png";
 
 const services = [
   {
-    title: "Machine Maintenance & Repair",
-    body: "Professional maintenance and repair services to keep your equipment in peak condition.",
-    bullets: ["Preventive maintenance", "Diagnostics & troubleshooting", "Parts replacement"],
-    image: "/images/service-maintenance.png",
-    alt: "Espresso machine maintenance and repair",
-    icon: Wrench,
+    title: "Diagnostics & Troubleshooting",
+    body: "Comprehensive diagnostics and systematic troubleshooting for reported machine issues.",
+    bullets: ["Systematic fault diagnosis", "Machine troubleshooting", "Repair recommendations"],
+    image: "/images/service-diagnostics.png",
+    imageName: "Screenshot_9.png",
+    alt: "Espresso machine components inspected for troubleshooting",
+    icon: Cog,
     href: "#contact",
   },
   {
-    title: "Barista Training",
-    body: "Hands-on training for you and your team—from basic skills to advanced techniques.",
-    bullets: ["Basic to advanced courses", "Brewing & latte art", "Café operations"],
-    image: "/images/training-hero.png",
-    alt: "Barista training at a coffee machine",
-    icon: GraduationCap,
-    href: "/training",
+    title: "Boiler Reconditioning",
+    body: "Thorough cleaning and complete overhaul of boilers, including all related components and fittings.",
+    bullets: ["Thorough boiler cleaning", "Complete component and fitting overhaul"],
+    image: "/images/service-maintenance.png",
+    imageName: "685847946_2666894757029907_1940736683891233570_n.jpg",
+    alt: "Espresso machine components disassembled for boiler reconditioning",
+    icon: Wrench,
+    href: "#contact",
   },
   {
     title: "Clean Solution Support",
@@ -44,21 +51,23 @@ const services = [
     href: "/cleaning-solution",
   },
   {
-    title: "Genuine Parts & Accessories",
-    body: "High-quality, original parts and accessories for long-lasting performance.",
-    bullets: ["Original spare parts", "Grinders & accessories", "Reliable & durable"],
-    image: "/images/service-diagnostics.png",
-    alt: "Espresso machine components and service parts",
-    icon: Cog,
+    title: "Water Softener Regeneration",
+    body: "Inspection and testing of water hardness, vessel cleaning, and application of regeneration agents to restore optimal water quality for espresso machines.",
+    bullets: ["Water hardness inspection and testing", "Vessel cleaning", "Regeneration for optimal water quality"],
+    image: "/images/machine-services-hero.jpg",
+    imageName: "684295376_1339860344675084_2577765504456336764_n.jpg",
+    alt: "Espresso machine service technician inspecting equipment",
+    icon: Wrench,
     href: "#contact",
   },
   {
-    title: "Delivery & Installation",
-    body: "Reliable delivery and professional installation for a seamless setup.",
-    bullets: ["Safe & on-time delivery", "Machine installation", "On-site testing & briefing"],
-    image: "/images/hero-warehouse.png",
-    alt: "Coffee equipment ready for delivery and installation",
-    icon: Truck,
+    title: "Total Overhauling",
+    body: "Complete machine restoration including descaling of calcium buildup, rust removal, chassis repainting, and polishing of stainless-steel body panels.",
+    bullets: ["Calcium descaling and rust removal", "Chassis repainting", "Stainless-steel panel polishing"],
+    image: "/images/machine-services-hero.png",
+    imageName: "Screenshot_10.png",
+    alt: "Espresso machine undergoing complete restoration",
+    icon: Wrench,
     href: "#contact",
   },
   {
@@ -74,38 +83,92 @@ const services = [
 
 const moreServices = [
   {
-    title: "Diagnostics and Troubleshooting",
-    description: "Rapid diagnostics and troubleshooting for reported machine trouble.",
+    title: "Diagnostics & Troubleshooting",
+    description:
+      "Comprehensive diagnostics and systematic troubleshooting for reported machine issues.",
     image: "/images/service-diagnostics.png",
-    href: "#contact",
-  },
-  {
-    title: "Boiler Reconditioning",
-    description: "Cleaning and overhaul of boiler and related parts and fittings.",
-    image: "/images/service-maintenance.png",
-    href: "#contact",
-  },
-  {
-    title: "Water Softener Regeneration",
-    description: "Inspect and test water hardness, clean vessel, and apply treatment to restore proper water hardness.",
-    image: "/images/machine-services-hero.jpg",
+    imageName: "Screenshot_9.png",
     href: "#contact",
   },
   {
     title: "Total Overhauling",
     description: "Descaling, component rebuild, and full machine refurbishment.",
     image: "/images/machine-services-hero.png",
+    imageName: "Screenshot_10.png",
     href: "#contact",
   },
 ] as const;
 
 export function ServicesPage() {
+  const [servicesImages, setServicesImages] = useState<Record<string, string>>({});
+
+  useEffect(() => {
+    let active = true;
+
+    async function loadServicesImages() {
+      try {
+        const bucket = createClient().storage.from(servicesBucket);
+        const { data, error } = await bucket.list("", {
+          limit: 1000,
+        });
+
+        if (error) throw error;
+
+        const images = Object.fromEntries(
+          [
+            "Screenshot_9.png",
+            "Screenshot_10.png",
+            "684295376_1339860344675084_2577765504456336764_n.jpg",
+            "685847946_2666894757029907_1940736683891233570_n.jpg",
+          ].flatMap((imageName) => {
+            const image = data?.find(
+              (file) =>
+                file.id !== null &&
+                file.name.toLowerCase() === imageName.toLowerCase()
+            );
+
+            if (!image) {
+              console.error(
+                `"${imageName}" was not found in the ${servicesBucket} bucket.`
+              );
+              return [];
+            }
+
+            const publicUrl = bucket.getPublicUrl(image.name).data.publicUrl;
+            const cacheVersion = image.updated_at ?? image.created_at;
+
+            return [
+              [
+                imageName,
+                cacheVersion
+                  ? `${publicUrl}?v=${encodeURIComponent(cacheVersion)}`
+                  : publicUrl,
+              ],
+            ];
+          })
+        );
+
+        if (active) setServicesImages(images);
+      } catch (error) {
+        console.error(
+          `Unable to load service images from the ${servicesBucket} bucket.`,
+          error
+        );
+      }
+    }
+
+    void loadServicesImages();
+    return () => {
+      active = false;
+    };
+  }, []);
+
   return (
     <main className="flex-1 overflow-hidden bg-[#fff5f4] text-[#292226]">
       <section className="relative isolate min-h-[230px] overflow-hidden border-y border-[#f3c9c4] bg-[linear-gradient(100deg,#fffdfa_0%,#fff9f5_43%,#f8e6df_60%,#321e19_100%)] sm:min-h-[250px]">
         <div className="absolute inset-y-0 right-0 w-[64%]">
           <Image
-            src="/images/training-hero.png"
+            src={servicesImages["Screenshot_10.png"] ?? servicesHeroFallback}
             alt="A barista demonstrating coffee preparation in a professional cafe"
             fill
             preload
@@ -161,7 +224,12 @@ export function ServicesPage() {
               >
                 <div className="relative min-h-full w-[37%] shrink-0 overflow-hidden rounded-[10px] bg-[#f7eee9]">
                   <Image
-                    src={service.image}
+                    src={
+                      ("imageName" in service &&
+                        service.imageName &&
+                        servicesImages[service.imageName]) ||
+                      service.image
+                    }
                     alt={service.alt}
                     fill
                     sizes="(min-width: 1024px) 15vw, (min-width: 640px) 25vw, 40vw"
@@ -222,7 +290,11 @@ export function ServicesPage() {
                 className="group relative isolate flex min-h-[130px] items-end overflow-hidden rounded-xl border border-white shadow-[0_4px_12px_rgba(80,40,30,.1)] sm:min-h-[150px]"
               >
                 <Image
-                  src={service.image}
+                  src={
+                    (service.imageName &&
+                      servicesImages[service.imageName]) ||
+                    service.image
+                  }
                   alt=""
                   fill
                   sizes="(min-width: 1024px) 25vw, (min-width: 640px) 50vw, 100vw"
