@@ -266,7 +266,7 @@ export function RoseHome() {
 
     const timer = window.setInterval(() => {
       packageCarousel.scrollNext();
-    }, 4000);
+    }, 6000);
 
     return () => window.clearInterval(timer);
   }, [packageCarousel]);
