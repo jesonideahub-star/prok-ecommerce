@@ -435,7 +435,7 @@ export function RoseHome() {
             <Link href="/espresso-machines" className="mt-4 inline-flex rounded-full bg-[#D7192D] px-5 py-2.5 text-xs font-semibold text-white">Shop Bundles <ChevronRight className="ml-1 inline size-3.5" /></Link>
           </div>
           <Carousel
-            opts={{ align: "start", loop: true, slidesToScroll: 1, duration: 40 }}
+            opts={{ align: "start", loop: true, slidesToScroll: 1, duration: 60 }}
             setApi={setPackageCarousel}
             className="min-w-0"
           >
