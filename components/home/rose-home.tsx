@@ -170,7 +170,52 @@ export function RoseHome() {
   const [packageCarousel, setPackageCarousel] = useState<CarouselApi | null>(null);
   const [packageImages, setPackageImages] = useState<string[]>([]);
   const [packageImageError, setPackageImageError] = useState(false);
+  const [trainingCardImage, setTrainingCardImage] = useState<string | null>(null);
   const slide = slides[index] ?? slides[0];
+
+  useEffect(() => {
+    let active = true;
+
+    async function loadTrainingCardImage() {
+      try {
+        const bucket = createClient().storage.from("Barista_Training");
+        const { data, error } = await bucket.list("", {
+          limit: 1000,
+          search: "website10.png",
+        });
+
+        if (error) throw error;
+
+        const image = data?.find(
+          (file) => file.id !== null && file.name.toLowerCase() === "website10.png"
+        );
+
+        if (!image) {
+          throw new Error('The "website10.png" image was not found in the Barista_Training bucket.');
+        }
+
+        if (!active) return;
+
+        const publicUrl = bucket.getPublicUrl(image.name).data.publicUrl;
+        const cacheVersion = image.updated_at ?? image.created_at;
+        setTrainingCardImage(
+          cacheVersion
+            ? `${publicUrl}?v=${encodeURIComponent(cacheVersion)}`
+            : publicUrl
+        );
+      } catch (error) {
+        console.error(
+          'Unable to load "website10.png" from the Barista_Training bucket.',
+          error
+        );
+      }
+    }
+
+    void loadTrainingCardImage();
+    return () => {
+      active = false;
+    };
+  }, []);
 
   useEffect(() => {
     let active = true;
@@ -579,7 +624,13 @@ export function RoseHome() {
             <span className="mt-3 inline-block rounded-full bg-white px-4 py-2 text-[11px] font-semibold text-[#D7192D]">Enroll Now</span>
           </div>
           <div className="absolute right-0 top-0 h-full w-[48%]">
-            <Image src="/images/training-hero.png" alt="" fill className="object-cover" sizes="340px" />
+            <Image
+              src={trainingCardImage ?? "/images/training-hero.png"}
+              alt="Barista training session"
+              fill
+              className="object-cover"
+              sizes="340px"
+            />
           </div>
         </Link>
         <Link href="/coffee" className="relative min-h-[190px] overflow-hidden rounded-[10px] bg-white ring-1 ring-[#FCE4E7]">
