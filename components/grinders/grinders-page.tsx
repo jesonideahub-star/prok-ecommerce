@@ -18,172 +18,19 @@ import {
   brandSlug,
   grinderShopUses,
   grinderUseLabels,
-  grinders,
 } from "@/lib/site";
-import { createClient } from "@/lib/supabase/client";
+import {
+  grinderBucket,
+  grinderDetail,
+  grinderProductSlug,
+  loadGrinders,
+  type GrinderProduct,
+} from "@/lib/grinders";
 import { cn } from "@/lib/utils";
 
 type SortKey = "default" | "az" | "za";
 type SeriesKey = "default" | "mignon" | "commercial";
 type GrinderType = "on-demand" | "traditional" | "automatic";
-
-type GrinderProduct = {
-  name: string;
-  brand: string;
-  series: Exclude<SeriesKey, "default">;
-  type: GrinderType;
-  uses: readonly string[];
-  src: string;
-  detail?: string;
-  imageName?: string;
-};
-
-const grinderBucket = "Grinders";
-const imageExtensions = /\.(avif|gif|jpe?g|png|webp)$/i;
-
-function normalizeFilename(filename: string) {
-  return filename
-    .replace(imageExtensions, "")
-    .replace(/^product-/i, "")
-    .toLowerCase()
-    .normalize("NFD")
-    .replace(/[\u0300-\u036f]/g, "")
-    .replace(/[^a-z0-9]/g, "");
-}
-
-function grinderDisplayName(filename: string) {
-  return filename
-    .replace(imageExtensions, "")
-    .replace(/[_-]+/g, " ")
-    .replace(/\s+/g, " ")
-    .trim()
-    .replace(/\b[a-z]/g, (letter) => letter.toUpperCase());
-}
-
-function grinderProductName(filename: string) {
-  return grinderDisplayName(filename)
-    .replace(/\s+(?:front(?:\s+(?:left|right))?|back(?:\s+(?:left|right))?|left|right|side|detail|fr|lat\s+(?:dx|sx)|trequa)$/i, "")
-    .trim();
-}
-
-function grinderImagePriority(filename?: string) {
-  if (!filename) return 1;
-  const name = grinderDisplayName(filename);
-  if (/\bfront(?:\s+(?:left|right))?\b/i.test(name) || /\bfr$/i.test(name)) return 0;
-  if (/\b(?:back|left|right|side|detail|lat\s+(?:dx|sx)|trequa)$/i.test(name)) return 2;
-  return 1;
-}
-
-const knownGrinders = new Map(
-  grinders.map((item) => [normalizeFilename(item.src.split("/").at(-1) ?? ""), item])
-);
-
-function grinderBrand(folder?: string) {
-  if (!folder) return "Other";
-  if (/^eureka grinder$/i.test(folder.trim())) return "Eureka 1920";
-  if (/^casadio grinder$/i.test(folder.trim())) return "Casadio";
-  return folder
-    .replace(/[_-]+/g, " ")
-    .replace(/\s+/g, " ")
-    .trim()
-    .replace(/\b[a-z]/g, (letter) => letter.toUpperCase());
-}
-
-function grinderSeries(filename: string): Exclude<SeriesKey, "default"> {
-  return /mignon|libra|silenzio/i.test(filename) ? "mignon" : "commercial";
-}
-
-function grinderType(filename: string): GrinderType {
-  if (/automatic|auto/i.test(filename)) return "automatic";
-  if (/traditional|manual/i.test(filename)) return "traditional";
-  return "on-demand";
-}
-
-function groupGrinderImages(products: GrinderProduct[]) {
-  const grouped = new Map<string, GrinderProduct>();
-
-  for (const product of products) {
-    const name = product.name || grinderProductName(product.imageName ?? "");
-    const key = `${normalizeFilename(product.brand)}:${normalizeFilename(name)}`;
-    const existing = grouped.get(key);
-
-    if (
-      !existing ||
-      grinderImagePriority(product.imageName) < grinderImagePriority(existing.imageName)
-    ) {
-      grouped.set(key, { ...product, name });
-    }
-  }
-
-  return [...grouped.values()];
-}
-
-async function loadGrinders(): Promise<GrinderProduct[]> {
-  const supabase = createClient();
-  const bucket = supabase.storage.from(grinderBucket);
-
-  async function listDirectory(path: string) {
-    const entries = [];
-    const limit = 1000;
-
-    for (let offset = 0; ; offset += limit) {
-      const { data, error } = await bucket.list(path, {
-        limit,
-        offset,
-        sortBy: { column: "name", order: "asc" },
-      });
-
-      if (error) throw error;
-      entries.push(...(data ?? []));
-      if (!data || data.length < limit) break;
-    }
-
-    return entries;
-  }
-
-  async function walk(path: string, parentBrand?: string): Promise<GrinderProduct[]> {
-    const entries = await listDirectory(path);
-    const products: GrinderProduct[] = [];
-
-    for (const entry of entries) {
-      const entryPath = path ? `${path}/${entry.name}` : entry.name;
-      if (entry.id === null) {
-        products.push(...(await walk(entryPath, parentBrand ?? entry.name)));
-        continue;
-      }
-
-      if (!imageExtensions.test(entry.name)) continue;
-
-      const normalizedName = normalizeFilename(entry.name);
-      const knownProduct =
-        knownGrinders.get(normalizedName) ??
-        [...knownGrinders.entries()].find(([filename]) =>
-          normalizedName.endsWith(filename)
-        )?.[1];
-      const series = knownProduct?.series ?? grinderSeries(entry.name);
-      products.push({
-        name: knownProduct?.name ?? grinderProductName(entry.name),
-        brand: knownProduct?.brand ?? grinderBrand(parentBrand),
-        series,
-        type: grinderType(entry.name),
-        uses:
-          knownProduct?.uses ??
-          (series === "mignon"
-            ? ["home", "office", "cafe"]
-            : ["cafe", "restaurant", "hotel", "office"]),
-        src: bucket.getPublicUrl(entryPath).data.publicUrl,
-        detail: knownProduct && "detail" in knownProduct ? knownProduct.detail : undefined,
-        imageName: entry.name,
-      });
-    }
-
-    return products;
-  }
-
-  return groupGrinderImages(await walk("")).sort(
-    (a, b) => a.brand.localeCompare(b.brand) || a.name.localeCompare(b.name)
-  );
-}
 
 const grinderTypes: { label: string; value: GrinderType }[] = [
   { label: "On-Demand", value: "on-demand" },
@@ -193,13 +40,6 @@ const grinderTypes: { label: string; value: GrinderType }[] = [
 
 function hrefForUse(slug: string) {
   return `/grinders?use=${slug}`;
-}
-
-function grinderDetail(item: GrinderProduct) {
-  if ("detail" in item && item.detail) {
-    return item.detail;
-  }
-  return item.series === "mignon" ? "Mignon Series" : "Commercial Series";
 }
 
 export function GrindersPage({
@@ -519,10 +359,12 @@ export function GrindersPage({
                   )}
                 >
                   {items.map((item, index) => (
-                    <article
+                    <Link
                       key={item.src}
+                      href={`/products/${grinderProductSlug(item)}`}
+                      aria-label={`View ${item.name} product details`}
                       className={cn(
-                        "group overflow-hidden rounded-[14px] border border-[#f1d5da] bg-white/80 shadow-[0_3px_10px_rgba(94,35,43,.05)] transition-all hover:-translate-y-1 hover:shadow-[0_10px_20px_rgba(94,35,43,.12)]",
+                        "group overflow-hidden rounded-[14px] border border-[#f1d5da] bg-white/80 shadow-[0_3px_10px_rgba(94,35,43,.05)] transition-all hover:-translate-y-1 hover:shadow-[0_10px_20px_rgba(94,35,43,.12)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#e50925]",
                         listView ? "flex h-[145px] flex-row" : "flex h-[256px] flex-col"
                       )}
                     >
@@ -551,15 +393,12 @@ export function GrindersPage({
                         <p className="mt-0.5 line-clamp-1 text-[10px] text-[#70676b]">
                           {grinderDetail(item)}
                         </p>
-                        <Link
-                          href={`/grinders?brand=${brandSlug(item.brand)}`}
-                          className="mt-auto inline-flex items-center justify-center gap-2 rounded-full bg-[#e50925] px-3 py-1 text-[10px] font-semibold text-white transition-colors hover:bg-[#bd1024] sm:text-[11px]"
-                        >
+                        <span className="mt-auto inline-flex items-center justify-center gap-2 rounded-full bg-[#e50925] px-3 py-1 text-[10px] font-semibold text-white transition-colors group-hover:bg-[#bd1024] sm:text-[11px]">
                           View Details
                           <ArrowRight className="size-3" />
-                        </Link>
+                        </span>
                       </div>
-                    </article>
+                    </Link>
                   ))}
                 </div>
               </>

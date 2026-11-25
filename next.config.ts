@@ -12,6 +12,11 @@ const nextConfig: NextConfig = {
         hostname: supabaseHost,
         pathname: "/storage/v1/object/public/**",
       },
+      {
+        protocol: "https",
+        hostname: "4068dc750de934e76d59a995e3cce54d.cdn.bubble.io",
+        pathname: "/**",
+      },
     ],
   },
 };

@@ -363,6 +363,20 @@ function catalogHref({
   return query ? `/espresso-machines?${query}` : "/espresso-machines";
 }
 
+function machineProductHref(
+  item: MachineProduct,
+  filters: { use?: string; group?: string; brand?: string }
+) {
+  if (
+    brandSlug(item.brand) === "casadio" &&
+    normalizeFilename(item.name).endsWith("nettunoa1")
+  ) {
+    return "/products/nettuno-a1";
+  }
+
+  return catalogHref({ ...filters, brand: brandSlug(item.brand) });
+}
+
 export function EspressoMachinesPage({
   use,
   group,
@@ -712,7 +726,7 @@ export function EspressoMachinesPage({
                     )}
                   >
                     <Link
-                      href={catalogHref({ use, group, brand: brandSlug(item.brand) })}
+                      href={machineProductHref(item, { use, group })}
                       aria-label={`View ${item.brand} ${item.name}`}
                       className={cn(
                         "relative block overflow-hidden bg-[#FFF3F4]",
@@ -742,7 +756,7 @@ export function EspressoMachinesPage({
                         ) : null}
                       </div>
                       <Link
-                        href={catalogHref({ use, group, brand: brandSlug(item.brand) })}
+                        href={machineProductHref(item, { use, group })}
                         className="mt-1 inline-flex items-center justify-center gap-1 rounded-full bg-[#D7192D] px-3 py-1 text-[9px] font-semibold text-white transition hover:bg-[#b91427] sm:text-[10px]"
                       >
                         View Details <ChevronRight className="size-3" />
