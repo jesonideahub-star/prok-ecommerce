@@ -19,6 +19,12 @@ import {
 
 import { newsItems } from "@/lib/site";
 import { createClient } from "@/lib/supabase/client";
+import {
+  type CarouselApi,
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+} from "@/components/ui/carousel";
 import { cn } from "@/lib/utils";
 
 type HomeSlide = {
@@ -110,6 +116,8 @@ const packageCards = [
   },
 ] as const;
 
+const packageCardSlides = [...packageCards, ...packageCards, ...packageCards];
+
 const topEquipment = [
   {
     name: "Altea Root",
@@ -153,10 +161,13 @@ const topEquipment = [
   },
 ] as const;
 
+const topEquipmentSlides = [...topEquipment, ...topEquipment];
+
 export function RoseHome() {
   const [slides, setSlides] = useState(fallbackSlides);
   const [index, setIndex] = useState(0);
-  const [topSellerOffset, setTopSellerOffset] = useState(0);
+  const [topSellerCarousel, setTopSellerCarousel] = useState<CarouselApi | null>(null);
+  const [packageCarousel, setPackageCarousel] = useState<CarouselApi | null>(null);
   const [packageImages, setPackageImages] = useState<string[]>([]);
   const [packageImageError, setPackageImageError] = useState(false);
   const slide = slides[index] ?? slides[0];
@@ -241,6 +252,26 @@ export function RoseHome() {
   }, [slides.length]);
 
   useEffect(() => {
+    if (!topSellerCarousel) return;
+
+    const timer = window.setInterval(() => {
+      topSellerCarousel.scrollNext();
+    }, 4000);
+
+    return () => window.clearInterval(timer);
+  }, [topSellerCarousel]);
+
+  useEffect(() => {
+    if (!packageCarousel) return;
+
+    const timer = window.setInterval(() => {
+      packageCarousel.scrollNext();
+    }, 4000);
+
+    return () => window.clearInterval(timer);
+  }, [packageCarousel]);
+
+  useEffect(() => {
     let active = true;
 
     async function loadPackageImages() {
@@ -284,17 +315,6 @@ export function RoseHome() {
   function go(next: number) {
     setIndex((next + slides.length) % slides.length);
   }
-
-  function moveTopSellers(direction: -1 | 1) {
-    setTopSellerOffset((current) => (
-      current + direction + topEquipment.length
-    ) % topEquipment.length);
-  }
-
-  const displayedTopEquipment = [
-    ...topEquipment.slice(topSellerOffset),
-    ...topEquipment.slice(0, topSellerOffset),
-  ];
 
   return (
     <div className="overflow-hidden bg-[#FFF3F4] text-[#2b2118]">
@@ -414,19 +434,30 @@ export function RoseHome() {
             <p className="mt-3 text-sm leading-5">Get the best deals on our premium coffee bundles.</p>
             <Link href="/espresso-machines" className="mt-4 inline-flex rounded-full bg-[#D7192D] px-5 py-2.5 text-xs font-semibold text-white">Shop Bundles <ChevronRight className="ml-1 inline size-3.5" /></Link>
           </div>
-          <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
-            {packageCards.map((item, imageIndex) => (
-              <article key={item.name} className="relative overflow-hidden rounded-lg bg-white px-3 pb-3 pt-2 text-center ring-1 ring-[#FCE4E7]">
-                <span className="absolute right-2 top-2 z-10 rounded-full bg-[#D7192D] px-2 py-1 text-[9px] font-semibold text-white">Save 21%</span>
-                <div className="relative h-[108px]">
-                  <Image src={packageImages[imageIndex] ?? item.src} alt={item.name} fill className="object-contain p-2" sizes="180px" />
-                </div>
-                <h3 className="text-sm font-semibold">{item.name}</h3>
-                <p className="mt-1 text-[11px] text-[#6f6259]">{item.detail}</p>
-                <p className="mt-1 text-xs"><span className="text-[#f4b400]" aria-label="5 out of 5 stars">★★★★★</span> <span className="text-[10px]">(4.8)</span></p>
-              </article>
-            ))}
-          </div>
+          <Carousel
+            opts={{ align: "start", loop: true, slidesToScroll: 1, duration: 40 }}
+            setApi={setPackageCarousel}
+            className="min-w-0"
+          >
+            <CarouselContent className="ml-0">
+              {packageCardSlides.map((item, index) => {
+                const imageIndex = index % packageCards.length;
+                return (
+                  <CarouselItem key={`${item.name}-${index}`} className="basis-1/2 lg:basis-1/4">
+                    <article className="relative h-full overflow-hidden rounded-lg bg-white px-3 pb-3 pt-2 text-center ring-1 ring-[#FCE4E7]">
+                      <span className="absolute right-2 top-2 z-10 rounded-full bg-[#D7192D] px-2 py-1 text-[9px] font-semibold text-white">Save 21%</span>
+                      <div className="relative h-[108px]">
+                        <Image src={packageImages[imageIndex] ?? item.src} alt={item.name} fill className="object-contain p-2" sizes="180px" />
+                      </div>
+                      <h3 className="text-sm font-semibold">{item.name}</h3>
+                      <p className="mt-1 text-[11px] text-[#6f6259]">{item.detail}</p>
+                      <p className="mt-1 text-xs"><span className="text-[#f4b400]" aria-label="5 out of 5 stars">★★★★★</span> <span className="text-[10px]">(4.8)</span></p>
+                    </article>
+                  </CarouselItem>
+                );
+              })}
+            </CarouselContent>
+          </Carousel>
         </div>
         {packageImageError ? (
           <p role="status" className="mt-2 text-center text-xs text-[#8a7568]">
@@ -454,39 +485,50 @@ export function RoseHome() {
               <button
                 type="button"
                 aria-label="Previous top sellers"
-                onClick={() => moveTopSellers(-1)}
+                onClick={() => topSellerCarousel?.scrollPrev()}
                 className="absolute top-1/2 -left-3 z-20 hidden size-11 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full bg-[#D7192D] text-white shadow-md transition hover:bg-[#b91427] sm:flex"
               >
                 <ChevronLeft className="size-6" />
               </button>
-              <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
-                {displayedTopEquipment.map((item) => (
-                  <article key={item.name} className="rounded-2xl border border-[#FCE4E7] bg-white p-3 shadow-[0_5px_18px_rgba(215,25,45,0.08)] transition hover:-translate-y-1 hover:shadow-[0_12px_28px_rgba(215,25,45,0.14)]">
-                    <Link href={item.href} className="group block">
-                      <div className="relative h-[210px] overflow-hidden rounded-xl bg-white sm:h-[225px]">
-                        <Image
-                          src={item.src}
-                          alt={item.name}
-                          fill
-                          className="object-contain p-3 transition-transform duration-500 group-hover:scale-[1.04]"
-                          sizes="(min-width: 1280px) 18vw, (min-width: 640px) 40vw, 90vw"
-                        />
-                      </div>
-                      <h3 className="mt-3 line-clamp-1 text-center font-serif text-lg font-semibold text-[#2b2118]">{item.name}</h3>
-                      <p className="mt-1 text-center text-sm text-[#77716d]">{item.brand}</p>
-                      <div className="mt-3 flex items-center justify-center gap-1.5 whitespace-nowrap text-xs">
-                        <span className="text-lg leading-none tracking-[-0.12em] text-[#D7192D]" aria-label="Rated five stars">★★★★★</span>
-                        <span className="font-medium text-[#2b2118]">{item.rating}</span>
-                        <span className="text-[#665b53]">({item.reviews} reviews)</span>
-                      </div>
-                    </Link>
-                  </article>
-                ))}
-              </div>
+              <Carousel
+                opts={{ align: "start", loop: true, slidesToScroll: 1 }}
+                setApi={setTopSellerCarousel}
+                className="mx-3"
+              >
+                <CarouselContent className="ml-0">
+                  {topEquipmentSlides.map((item, index) => (
+                    <CarouselItem
+                      key={`${item.name}-${index}`}
+                      className="basis-full pl-0 pr-3 sm:basis-1/2 lg:basis-1/3 xl:basis-1/5"
+                    >
+                      <article className="rounded-2xl border border-[#FCE4E7] bg-white p-3 shadow-[0_5px_18px_rgba(215,25,45,0.08)] transition hover:-translate-y-1 hover:shadow-[0_12px_28px_rgba(215,25,45,0.14)]">
+                        <Link href={item.href} className="group block">
+                          <div className="relative h-[210px] overflow-hidden rounded-xl bg-white sm:h-[225px]">
+                            <Image
+                              src={item.src}
+                              alt={item.name}
+                              fill
+                              className="object-contain p-3 transition-transform duration-500 group-hover:scale-[1.04]"
+                              sizes="(min-width: 1280px) 18vw, (min-width: 640px) 40vw, 90vw"
+                            />
+                          </div>
+                          <h3 className="mt-3 line-clamp-1 text-center font-serif text-lg font-semibold text-[#2b2118]">{item.name}</h3>
+                          <p className="mt-1 text-center text-sm text-[#77716d]">{item.brand}</p>
+                          <div className="mt-3 flex items-center justify-center gap-1.5 whitespace-nowrap text-xs">
+                            <span className="text-lg leading-none tracking-[-0.12em] text-[#D7192D]" aria-label="Rated five stars">★★★★★</span>
+                            <span className="font-medium text-[#2b2118]">{item.rating}</span>
+                            <span className="text-[#665b53]">({item.reviews} reviews)</span>
+                          </div>
+                        </Link>
+                      </article>
+                    </CarouselItem>
+                  ))}
+                </CarouselContent>
+              </Carousel>
               <button
                 type="button"
                 aria-label="Next top sellers"
-                onClick={() => moveTopSellers(1)}
+                onClick={() => topSellerCarousel?.scrollNext()}
                 className="absolute top-1/2 -right-3 z-20 hidden size-11 translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full bg-[#D7192D] text-white shadow-md transition hover:bg-[#b91427] sm:flex"
               >
                 <ChevronRight className="size-6" />

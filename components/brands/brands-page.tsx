@@ -68,6 +68,10 @@ const brandBoardLogos = [
   { name: "Marcafé", src: "/images/brand-marcafe.png", width: 105, height: 129 },
   { name: "puly CAFF", src: "/images/brand-pulycaff-official.png", width: 354, height: 236 },
   { name: "didiesse", src: "/images/brand-didiesse-official.png", width: 602, height: 212 },
+  { name: "BEOBE", src: "/images/brand-beobe.png", width: 1191, height: 460 },
+  { name: "WEGA", src: "/images/brand-wega.png", width: 2053, height: 768 },
+  { name: "ORSA Drinks", src: "/images/brand-orsa-drinks.png", width: 1897, height: 768 },
+  { name: "TORQ Blender", src: "/images/brand-torq.png", width: 1086, height: 768 },
 ] as const;
 
 const productCategories = [
@@ -257,22 +261,21 @@ export function BrandsPage({ brand }: { brand?: string }) {
       </section>
 
       <section id="our-brands" className="px-4 pt-2 sm:px-6 lg:px-8">
-        <div className="mx-auto grid max-w-[1280px] grid-cols-2 overflow-hidden rounded-[20px] border border-[#f2ded7] bg-white/90 shadow-[0_8px_24px_rgba(114,39,35,.06)] sm:grid-cols-4 lg:grid-cols-8">
+        <div className="mx-auto grid max-w-[1280px] grid-cols-2 overflow-hidden rounded-[20px] border border-[#f2ded7] bg-white/90 shadow-[0_8px_24px_rgba(114,39,35,.06)] sm:grid-cols-4 lg:grid-cols-6">
           {brandBoardLogos.map((logo, index) => {
             const brandLink = brandLogos.find((item) => item.name === logo.name);
-            if (!brandLink) return null;
 
             return (
               <Link
                 key={logo.name}
-                href={brandLink.href}
-                aria-label={`View ${logo.name} products`}
+                href={brandLink?.href ?? "/brands#our-brands"}
+                aria-label={`Explore ${logo.name}`}
                 className={`flex h-[78px] items-center justify-center px-3 py-2 transition hover:bg-[#fff1f1] sm:h-[88px] ${
                   index % 2 === 1 ? "border-l border-[#d5c7bf]" : ""
                 } ${
                   index % 4 === 0 ? "sm:border-l-0" : "sm:border-l sm:border-[#d5c7bf]"
                 } ${
-                  index === 0 ? "lg:border-l-0" : "lg:border-l lg:border-[#d5c7bf]"
+                  index % 6 === 0 ? "lg:border-l-0" : "lg:border-l lg:border-[#d5c7bf]"
                 } lg:h-[92px]`}
               >
                 <Image
