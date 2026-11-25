@@ -52,6 +52,52 @@ export function NewsEventsPage() {
     });
   }, []);
 
+  useEffect(() => {
+    let active = true;
+
+    async function loadTrainingImage() {
+      try {
+        const bucket = createClient().storage.from("Barista_Training");
+        const { data, error } = await bucket.list("", {
+          limit: 1000,
+          search: "website7.png",
+        });
+
+        if (error) throw error;
+
+        const image = data?.find(
+          (file) => file.id !== null && file.name.toLowerCase() === "website7.png"
+        );
+        if (!image) throw new Error('"website7.png" was not found in the Barista_Training bucket.');
+        if (!active) return;
+
+        const publicUrl = bucket.getPublicUrl(image.name).data.publicUrl;
+        const cacheVersion = image.updated_at ?? image.created_at;
+        const imageUrl = cacheVersion
+          ? `${publicUrl}?v=${encodeURIComponent(cacheVersion)}`
+          : publicUrl;
+
+        setItems((current) =>
+          current.map((item) =>
+            /training|academy/i.test(`${item.category} ${item.title}`)
+              ? { ...item, image: imageUrl }
+              : item
+          )
+        );
+      } catch (error) {
+        console.error(
+          'Unable to load the training image from the Barista_Training bucket.',
+          error
+        );
+      }
+    }
+
+    void loadTrainingImage();
+    return () => {
+      active = false;
+    };
+  }, []);
+
   const visible = useMemo(() => items.slice(0, visibleCount), [items, visibleCount]);
 
   return (
