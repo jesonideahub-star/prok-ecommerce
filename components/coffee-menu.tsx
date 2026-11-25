@@ -2,20 +2,14 @@ import {
   Bean,
   ArrowRight,
   ChevronRight,
-  Coffee,
   CupSoda,
-  GlassWater,
-  Milk,
 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 
 const categories = [
-  { label: "Coffee Beans", href: "/coffee?category=beans", icon: Bean },
-  { label: "Ground Coffee", href: "/coffee?category=beans", icon: Coffee },
-  { label: "Capsules & Pods", href: "/coffee?category=pods", icon: CupSoda },
-  { label: "Cold Brew", href: "/coffee?category=beans&brew=drip", icon: GlassWater },
-  { label: "Specialty Coffee", href: "/coffee?category=beans", icon: Milk },
+  { label: "Roasted Coffee Beans", href: "/coffee?category=beans", icon: Bean },
+  { label: "Pods", href: "/coffee?category=pods", icon: CupSoda },
 ] as const;
 
 export function CoffeeMenu({ onNavigate }: { onNavigate?: () => void }) {

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
@@ -95,6 +95,7 @@ function NavLink({
   return (
     <div
       onMouseEnter={onOpen}
+      onFocus={onOpen}
       className={cn(
         "shrink-0",
         item.label === "Puly Caff Product" && "ml-2 border-l border-[#D7192D] pl-2"
@@ -173,14 +174,31 @@ function SearchForm({
 
 export function SiteHeader() {
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [mobileExpanded, setMobileExpanded] = useState<string | null>(null);
   const [mega, setMega] = useState<string | null>(null);
   const pathname = usePathname();
 
   const openItem = navItems.find((item) => item.label === mega);
 
+  useEffect(() => {
+    if (!mobileOpen) return;
+
+    function onKeyDown(event: KeyboardEvent) {
+      if (event.key === "Escape") {
+        setMobileOpen(false);
+        setMobileExpanded(null);
+        setMega(null);
+      }
+    }
+
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, [mobileOpen]);
+
   function close() {
     setMega(null);
     setMobileOpen(false);
+    setMobileExpanded(null);
   }
 
   function openNavItem(item: NavItem) {
@@ -243,9 +261,10 @@ export function SiteHeader() {
         <SiteLogo className="min-w-0 shrink-0 [&_img]:h-10 sm:[&_img]:h-11 lg:[&_img]:h-12" />
         <button
           type="button"
-          className="inline-flex size-10 items-center justify-center text-[#3a2a22] hover:text-[#D7192D]"
+          className="inline-flex size-11 items-center justify-center rounded-full text-[#3a2a22] hover:bg-[#FFF3F4] hover:text-[#D7192D] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#D7192D]"
           onClick={() => setMobileOpen((value) => !value)}
           aria-expanded={mobileOpen}
+          aria-controls="mobile-primary-navigation"
           aria-label={mobileOpen ? "Close menu" : "Open menu"}
         >
           {mobileOpen ? <X className="size-5" /> : <Menu className="size-5" />}
@@ -266,9 +285,9 @@ export function SiteHeader() {
         </div>
       </div>
 
-      <div className="mx-auto hidden h-[84px] max-w-[1900px] items-center px-8 xl:flex">
-        <nav aria-label="Main navigation" className="min-w-0 flex-1 overflow-x-auto [scrollbar-width:none]">
-          <div className="flex w-max min-w-full items-center justify-between gap-1.5">
+      <div className="mx-auto hidden min-h-[84px] max-w-[1900px] items-center px-4 py-3 xl:flex 2xl:px-8">
+        <nav aria-label="Main navigation" className="min-w-0 flex-1">
+          <div className="flex min-w-0 flex-wrap items-center justify-center gap-x-1.5 gap-y-1">
             {desktopNav.map((item) => (
               <NavLink
                 key={item.label}
@@ -338,6 +357,7 @@ export function SiteHeader() {
           "border-t border-[#FCE4E7] bg-white xl:hidden",
           mobileOpen ? "block" : "hidden"
         )}
+        id="mobile-primary-navigation"
       >
         <div className="flex max-h-[70vh] flex-col overflow-y-auto px-4 py-3">
           <div className="mb-2 flex flex-col gap-3 border-b border-[#FCE4E7] pb-3">
@@ -352,60 +372,100 @@ export function SiteHeader() {
           </div>
           {mobileNav.map((item) => (
             <div key={item.label} className="py-1.5">
-              <Link
-                href={item.href}
-                aria-current={pathMatches(pathname, item.href) ? "page" : undefined}
-                className={cn(
-                  "flex items-center justify-between rounded-full border px-4 py-2.5 text-sm font-medium",
-                  pathMatches(pathname, item.href)
-                    ? "border-[#D7192D] bg-[#D7192D] text-white"
-                    : item.label === "Contact Us"
-                      ? "border-[#FFBF55] bg-[#FFBF55] text-[#2b2118]"
-                      : "border-[#FCE4E7] bg-[#FFF3F4] text-[#2b2118]"
-                )}
-                onClick={close}
-              >
-                {navDisplayLabel(item.label)}
-                {hasDropdown(item) ? (
-                  <ChevronDown className="size-4 text-current" />
-                ) : null}
-              </Link>
-              {hasChildren(item)
-                ? item.children.map((child) => (
-                    <Link
-                      key={child.label}
-                      href={child.href}
-                      className="block py-2 pl-3 text-sm text-neutral-600"
-                      onClick={close}
-                    >
-                      {child.label}
-                    </Link>
-                  ))
-                : null}
-              {isCatalogMega(item)
-                ? item.extras.map((child) => (
-                    <Link
-                      key={child.label}
-                      href={child.href}
-                      className="block py-2 pl-3 text-sm text-neutral-600"
-                      onClick={close}
-                    >
-                      {child.label}
-                    </Link>
-                  ))
-                : null}
-              {isBrandsMega(item)
-                ? item.brands.map((name) => (
-                    <Link
-                      key={name}
-                      href={brandPageHref(name)}
-                      className="block py-2 pl-3 text-sm text-neutral-600"
-                      onClick={close}
-                    >
-                      {name}
-                    </Link>
-                  ))
-                : null}
+              {hasDropdown(item) ? (
+                <button
+                  type="button"
+                  aria-expanded={mobileExpanded === item.label}
+                  aria-controls={`mobile-subnav-${item.label.replaceAll(" ", "-")}`}
+                  className={cn(
+                    "flex w-full items-center justify-between rounded-full border px-4 py-2.5 text-left text-sm font-medium",
+                    pathMatches(pathname, item.href)
+                      ? "border-[#D7192D] bg-[#D7192D] text-white"
+                      : item.label === "Contact Us"
+                        ? "border-[#FFBF55] bg-[#FFBF55] text-[#2b2118]"
+                        : "border-[#FCE4E7] bg-[#FFF3F4] text-[#2b2118]"
+                  )}
+                  onClick={() =>
+                    setMobileExpanded((current) =>
+                      current === item.label ? null : item.label
+                    )
+                  }
+                >
+                  {navDisplayLabel(item.label)}
+                  <ChevronDown
+                    className={cn(
+                      "size-4 text-current transition-transform",
+                      mobileExpanded === item.label && "rotate-180"
+                    )}
+                  />
+                </button>
+              ) : (
+                <Link
+                  href={item.href}
+                  aria-current={pathMatches(pathname, item.href) ? "page" : undefined}
+                  className={cn(
+                    "flex items-center justify-between rounded-full border px-4 py-2.5 text-sm font-medium",
+                    pathMatches(pathname, item.href)
+                      ? "border-[#D7192D] bg-[#D7192D] text-white"
+                      : item.label === "Contact Us"
+                        ? "border-[#FFBF55] bg-[#FFBF55] text-[#2b2118]"
+                        : "border-[#FCE4E7] bg-[#FFF3F4] text-[#2b2118]"
+                  )}
+                  onClick={close}
+                >
+                  {navDisplayLabel(item.label)}
+                </Link>
+              )}
+              {hasDropdown(item) && mobileExpanded === item.label ? (
+                <div
+                  id={`mobile-subnav-${item.label.replaceAll(" ", "-")}`}
+                  className="ml-3 mt-1 border-l border-[#F2C5CB] pl-3"
+                >
+                  <Link
+                    href={item.href}
+                    className="block py-2 text-sm font-semibold text-[#D7192D]"
+                    onClick={close}
+                  >
+                    View all {navDisplayLabel(item.label)}
+                  </Link>
+                  {hasChildren(item)
+                    ? item.children.map((child) => (
+                        <Link
+                          key={child.label}
+                          href={child.href}
+                          className="block py-2 text-sm text-neutral-600"
+                          onClick={close}
+                        >
+                          {child.label}
+                        </Link>
+                      ))
+                    : null}
+                  {isCatalogMega(item)
+                    ? item.extras.map((child) => (
+                        <Link
+                          key={child.label}
+                          href={child.href}
+                          className="block py-2 text-sm text-neutral-600"
+                          onClick={close}
+                        >
+                          {child.label}
+                        </Link>
+                      ))
+                    : null}
+                  {isBrandsMega(item)
+                    ? item.brands.map((name) => (
+                        <Link
+                          key={name}
+                          href={brandPageHref(name)}
+                          className="block py-2 text-sm text-neutral-600"
+                          onClick={close}
+                        >
+                          {name}
+                        </Link>
+                      ))
+                    : null}
+                </div>
+              ) : null}
             </div>
           ))}
         </div>

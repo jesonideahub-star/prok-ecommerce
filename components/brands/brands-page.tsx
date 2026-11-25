@@ -65,7 +65,7 @@ const brandBoardLogos = [
   { name: "Eureka 1920", src: "/images/brand-eureka-official.png", width: 782, height: 768 },
   { name: "Slayer", src: "/images/brand-slayer-official.png", width: 2000, height: 450 },
   { name: "La Nuova Era", src: "/images/brand-lanuovaera-official.png", width: 2558, height: 768 },
-  { name: "Marcafé", src: "/images/brand-marcafe.png", width: 105, height: 129 },
+  { name: "Marcafé", src: "/images/marcafe-logo.png", width: 1536, height: 1024 },
   { name: "puly CAFF", src: "/images/brand-pulycaff-official.png", width: 354, height: 236 },
   { name: "didiesse", src: "/images/brand-didiesse-official.png", width: 602, height: 212 },
   { name: "BEOBE", src: "/images/brand-beobe.png", width: 1191, height: 460 },
@@ -270,21 +270,25 @@ export function BrandsPage({ brand }: { brand?: string }) {
                 key={logo.name}
                 href={brandLink?.href ?? "/brands#our-brands"}
                 aria-label={`Explore ${logo.name}`}
-                className={`flex h-[78px] items-center justify-center px-3 py-2 transition hover:bg-[#fff1f1] sm:h-[88px] ${
+                className={`flex h-[88px] items-center justify-center px-3 py-2 transition hover:bg-[#fff1f1] sm:h-[98px] lg:h-[104px] ${
                   index % 2 === 1 ? "border-l border-[#d5c7bf]" : ""
                 } ${
-                  index % 4 === 0 ? "sm:border-l-0" : "sm:border-l sm:border-[#d5c7bf]"
+                  index % 4 === 0
+                    ? "sm:border-l-0"
+                    : "sm:border-l sm:border-[#d5c7bf]"
                 } ${
-                  index % 6 === 0 ? "lg:border-l-0" : "lg:border-l lg:border-[#d5c7bf]"
-                } lg:h-[92px]`}
+                  index % 6 === 0
+                    ? "lg:border-l-0"
+                    : "lg:border-l lg:border-[#d5c7bf]"
+                }`}
               >
                 <Image
                   src={logo.src}
                   alt={logo.name}
                   width={logo.width}
                   height={logo.height}
-                  className="h-full max-h-[58px] w-full object-contain"
-                  sizes="(min-width: 1024px) 140px, (min-width: 640px) 25vw, 45vw"
+                  className="h-full max-h-[72px] w-full object-contain"
+                  sizes="(min-width: 1024px) 180px, (min-width: 640px) 30vw, 45vw"
                 />
               </Link>
             );

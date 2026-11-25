@@ -19,7 +19,6 @@ const flavourTypes = [
   { label: "Premium Syrups", href: "/flavours?tab=syrups" },
   { label: "Gourmet Sauces", href: "/flavours?tab=sauce" },
   { label: "Powdered Mixes", href: "/flavours?tab=powder" },
-  { label: "Toppings & Add-ons", href: "/flavours?tab=sauce" },
 ] as const;
 
 const heroBottles = [
@@ -84,19 +83,19 @@ export function FlavourMenu({ onNavigate }: { onNavigate?: () => void }) {
         </section>
 
         <section className="lg:border-r lg:border-[#f3b9c0] lg:px-9">
-          <h2 className="border-b border-[#f0a3ae] pb-3 text-[18px] font-bold uppercase text-[#D7192D] sm:text-[20px]">
+          <h2 className="border-b border-[#f0a3ae] pb-2 text-[15px] font-bold uppercase text-[#D7192D] sm:text-[16px]">
             Explore Flavours
           </h2>
-          <ul className="mt-2">
+          <ul className="mt-1">
             {flavourTypes.map((item) => (
               <li key={item.label}>
                 <Link
                   href={item.href}
                   onClick={onNavigate}
-                  className="group flex items-center justify-between gap-3 py-[11px] text-[18px] font-medium text-[#29282d] transition-colors hover:text-[#D7192D] sm:text-[20px]"
+                  className="group flex items-center justify-between gap-3 py-2 text-[15px] font-medium text-[#29282d] transition-colors hover:text-[#D7192D] sm:text-[16px]"
                 >
                   {item.label}
-                  <ChevronRight className="size-6 shrink-0 transition-transform group-hover:translate-x-1" />
+                  <ChevronRight className="size-4 shrink-0 transition-transform group-hover:translate-x-1" />
                 </Link>
               </li>
             ))}
