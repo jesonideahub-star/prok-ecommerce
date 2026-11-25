@@ -18,18 +18,10 @@ const categories = [
   { label: "Specialty Coffee", href: "/coffee?category=beans", icon: Milk },
 ] as const;
 
-const coffeeStyles = [
-  { label: "Single Origin", href: "/coffee?category=beans" },
-  { label: "Blends", href: "/coffee?category=beans" },
-  { label: "Decaf", href: "/coffee?category=pods" },
-  { label: "Organic", href: "/coffee?category=beans" },
-  { label: "Fair Trade", href: "/coffee?category=beans" },
-] as const;
-
 export function CoffeeMenu({ onNavigate }: { onNavigate?: () => void }) {
   return (
     <div className="bg-[#FCE4E7] px-3 py-3 sm:px-5">
-      <div className="mx-auto grid min-h-[430px] max-w-[2000px] grid-cols-1 overflow-hidden rounded-[30px] border border-[#f5b5c0] bg-[linear-gradient(110deg,#fffafa_0%,#fff5f6_46%,#FCE4E7_100%)] p-5 shadow-[0_18px_40px_rgba(215,25,45,.16)] sm:p-7 lg:grid-cols-[minmax(300px,21%)_minmax(310px,20%)_minmax(0,1fr)] lg:gap-0 lg:px-9 lg:py-10">
+      <div className="mx-auto grid min-h-[430px] max-w-[2000px] grid-cols-1 overflow-hidden rounded-[30px] border border-[#f5b5c0] bg-[linear-gradient(110deg,#fffafa_0%,#fff5f6_46%,#FCE4E7_100%)] p-5 shadow-[0_18px_40px_rgba(215,25,45,.16)] sm:p-7 lg:grid-cols-[minmax(300px,21%)_minmax(0,1fr)] lg:gap-0 lg:px-9 lg:py-10">
         <section className="lg:border-r lg:border-[#f3b9c0] lg:pr-9">
           <h2 className="border-b border-[#f0a3ae] pb-3 text-[20px] font-bold text-[#D7192D]">
             Coffee Categories
@@ -51,26 +43,6 @@ export function CoffeeMenu({ onNavigate }: { onNavigate?: () => void }) {
                 </li>
               );
             })}
-          </ul>
-        </section>
-
-        <section className="lg:border-r lg:border-[#f3b9c0] lg:px-9">
-          <h2 className="border-b border-[#f0a3ae] pb-3 text-[20px] font-bold text-[#D7192D]">
-            Explore Coffee
-          </h2>
-          <ul className="mt-2">
-            {coffeeStyles.map((item) => (
-              <li key={item.label}>
-                <Link
-                  href={item.href}
-                  onClick={onNavigate}
-                  className="group flex items-center justify-between gap-3 py-[11px] text-[18px] font-medium text-[#29282d] transition-colors hover:text-[#D7192D] sm:text-[20px]"
-                >
-                  {item.label}
-                  <ChevronRight className="size-6 shrink-0 transition-transform group-hover:translate-x-1" />
-                </Link>
-              </li>
-            ))}
           </ul>
         </section>
 
