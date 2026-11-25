@@ -185,15 +185,17 @@ export function ServicesPage() {
         <div className="relative mx-auto flex min-h-[230px] max-w-[1440px] items-center px-5 py-6 sm:min-h-[250px] sm:px-8 lg:px-14">
           <div className="max-w-[53%] sm:max-w-[47%]">
             <div className="flex items-center gap-3 text-[11px] font-bold tracking-wide text-[#d7192d] uppercase">
-              <span>Our Services</span>
+              <span>Service Center</span>
               <span className="h-px w-20 bg-[#e14b56] sm:w-36" />
             </div>
             <h1 className="mt-2 max-w-[570px] font-serif text-[27px] leading-[1.03] font-bold tracking-tight text-[#32221e] sm:text-[30px] lg:text-[42px]">
-              Complete Solutions
-              <span className="block text-[#d7192d]">for Your Coffee Business</span>
+              Service Center
             </h1>
             <p className="mt-2 max-w-[400px] text-[11px] leading-relaxed text-[#423a38] sm:text-[13px]">
-              From expert maintenance to professional training, we&apos;re here to support your business every step of the way.
+              Comprehensive preventive maintenance, diagnostics and troubleshooting, boiler reconditioning, water softener regeneration, and total overhauling—ensuring your coffee machine performs at its best.
+            </p>
+            <p className="mt-2 max-w-[400px] text-[11px] leading-relaxed text-[#423a38] sm:text-[13px]">
+              We also service machines purchased from other dealers.
             </p>
             <a
               href="#services"
@@ -282,7 +284,7 @@ export function ServicesPage() {
             </h2>
             <span className="h-px flex-1 bg-[#ed7d83]" />
           </div>
-          <div className="mt-2 grid grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-4">
+          <div className="mx-auto mt-2 grid max-w-[760px] grid-cols-1 gap-2 sm:grid-cols-2">
             {moreServices.map((service) => (
               <Link
                 key={service.title}

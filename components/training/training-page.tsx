@@ -22,7 +22,7 @@ type TrainingVideo = {
 
 type TrainingCourseImages = Record<string, string>;
 
-const trainingBucket = "Barista_training";
+const trainingBucket = "Barista_Training";
 const videoExtensions = /\.(mp4|webm|mov|m4v|ogv)$/i;
 const courseImageNames = ["website2.png", "website10.png"];
 

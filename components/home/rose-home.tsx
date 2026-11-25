@@ -178,7 +178,7 @@ export function RoseHome() {
 
     async function loadTrainingCardImage() {
       try {
-        const bucket = createClient().storage.from("Barista_training");
+        const bucket = createClient().storage.from("Barista_Training");
         const { data, error } = await bucket.list("", {
           limit: 1000,
           search: "website10.png",

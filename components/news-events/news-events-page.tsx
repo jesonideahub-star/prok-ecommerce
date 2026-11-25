@@ -17,15 +17,7 @@ import {
   type NewsEventItem,
 } from "@/components/news-events/news-events-data";
 
-const categories = ["All", "Events", "Training", "News", "Press Releases"] as const;
-type Category = (typeof categories)[number];
 const PAGE_SIZE = 6;
-
-function matchesCategory(item: NewsEventItem, category: Category) {
-  if (category === "All") return true;
-  if (category === "Events") return item.isEvent;
-  return item.category.toLowerCase() === category.toLowerCase();
-}
 
 function displayDate(value: string) {
   if (!value) return "";
@@ -41,7 +33,6 @@ function displayDate(value: string) {
 
 export function NewsEventsPage() {
   const [items, setItems] = useState<NewsEventItem[]>(fallbackNewsEvents);
-  const [category, setCategory] = useState<Category>("All");
   const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
 
   useEffect(() => {
@@ -61,15 +52,11 @@ export function NewsEventsPage() {
     });
   }, []);
 
-  const filtered = useMemo(
-    () => items.filter((item) => matchesCategory(item, category)),
-    [items, category]
-  );
-  const visible = filtered.slice(0, visibleCount);
+  const visible = useMemo(() => items.slice(0, visibleCount), [items, visibleCount]);
 
   return (
     <main className="flex-1 overflow-hidden bg-[#fff6f6]">
-      <section className="relative isolate h-[150px] overflow-hidden border-y border-[#ed8c99] bg-[#ffe8eb] sm:h-[170px]">
+      <section className="relative isolate h-[240px] overflow-hidden border-y border-[#ed8c99] bg-[#ffe8eb] sm:h-[320px] lg:h-[380px]">
         <Image
           src="/images/news-events-hero.png"
           alt=""
@@ -85,27 +72,6 @@ export function NewsEventsPage() {
       <section className="relative isolate min-h-[300px] overflow-hidden px-4 pt-4 pb-6 sm:px-6 sm:pt-5 lg:px-8">
         <div className="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(ellipse_at_50%_0%,#fffdfd_0%,#fff6f6_70%,#ffe8ea_100%)]" />
         <div className="mx-auto max-w-[1280px]">
-          <nav aria-label="Filter news and events" className="mb-4 flex flex-wrap justify-center gap-2">
-            {categories.map((item) => (
-              <button
-                key={item}
-                type="button"
-                aria-pressed={category === item}
-                onClick={() => {
-                  setCategory(item);
-                  setVisibleCount(PAGE_SIZE);
-                }}
-                className={`rounded-full border px-4 py-1.5 text-[11px] font-medium transition ${
-                  category === item
-                    ? "border-[#e50925] bg-[#e50925] text-white shadow-[0_3px_8px_rgba(229,9,37,.16)]"
-                    : "border-[#eadada] bg-white/70 text-[#4c4141] hover:border-[#ed8792] hover:text-[#d0122d]"
-                }`}
-              >
-                {item}
-              </button>
-            ))}
-          </nav>
-
           {visible.length ? (
             <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
               {visible.map((item) => (
@@ -150,11 +116,11 @@ export function NewsEventsPage() {
             </div>
           ) : (
             <p className="rounded-2xl border border-[#f1d9d9] bg-white/75 px-4 py-12 text-center text-sm text-[#706667]">
-              No {category.toLowerCase()} items are available right now.
+              No news or events are available right now.
             </p>
           )}
 
-          {visibleCount < filtered.length ? (
+          {visibleCount < items.length ? (
             <div className="mt-4 flex justify-center">
               <button
                 type="button"
